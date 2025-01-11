@@ -135,6 +135,7 @@ public class TunerConstants {
 
     private static final Distance kFrontLeftXPos = Inches.of(11.375);
     private static final Distance kFrontLeftYPos = Inches.of(11.375);
+    
     // Front Right
     private static final int kFrontRightDriveMotorId = 0;
     private static final int kFrontRightSteerMotorId = 1;
