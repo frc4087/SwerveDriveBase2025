@@ -6,7 +6,12 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.config.RobotConfig;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.autonomous.AutonomousController;
+import frc.robot.subsystems.autonomous.AutonomousControllerImpl;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -31,12 +38,25 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    private final RobotConfig config = readConfig();
+
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
+
     public RobotContainer() {
         configureBindings();
+    }
+
+    private static RobotConfig readConfig() {
+        try {
+            return RobotConfig.fromGUISettings();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+            throw new Error("Unable to load Robot Config: %s".formatted(e.getMessage()));
+        }
     }
 
     private void configureBindings() {
@@ -69,7 +89,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+    public AutonomousController auto() {
+        return autonomousController;
     }
 }
