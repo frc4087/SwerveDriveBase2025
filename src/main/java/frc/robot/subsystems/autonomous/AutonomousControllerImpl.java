@@ -14,7 +14,7 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private static AutonomousControllerImpl controller;
 
-    private AutonomousControllerImpl(RobotConfig config, PathPlannable driveSystem) {
+    private AutonomousControllerImpl(RobotConfig config, PathPlannableSubsystem driveSystem) {
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -32,7 +32,7 @@ public class AutonomousControllerImpl implements AutonomousController {
                 driveSystem);
     }
 
-    public static synchronized AutonomousControllerImpl initialize(RobotConfig config, PathPlannable driveSystem) {
+    public static synchronized AutonomousControllerImpl initialize(RobotConfig config, PathPlannableSubsystem driveSystem) {
         controller = new AutonomousControllerImpl(config, driveSystem);
         return controller;
     }

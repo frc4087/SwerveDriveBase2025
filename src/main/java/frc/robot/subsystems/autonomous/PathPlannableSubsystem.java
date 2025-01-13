@@ -13,7 +13,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
  * See {@link https://pathplanner.dev/pplib-build-an-auto.html#configure-autobuilder}
  * for more information.
  */
-public interface PathPlannable extends Subsystem {
+public interface PathPlannableSubsystem extends Subsystem {
 
   /**
    * @return the current robot {@link Pose2d }. Units in meters.
