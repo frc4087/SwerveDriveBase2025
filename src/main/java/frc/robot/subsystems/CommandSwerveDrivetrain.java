@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.autonomous.PathPlannableSubsystem;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -118,6 +119,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private Pigeon2 gyro = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -200,8 +202,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
                 new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY));
 
-        // // TODO: Figure out how to initialize odometry
-        // odometry = new SwerveDriveOdometry(kinematics, null, null);
+        // TODO: Figure out how to use the Pigeon2 for the gyro
+        odometry = new SwerveDriveOdometry(kinematics, null, null);
 
         if (Utils.isSimulation()) {
             startSimThread();
