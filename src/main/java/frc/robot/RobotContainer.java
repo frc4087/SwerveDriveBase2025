@@ -22,6 +22,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.autonomous.AutonomousController;
 import frc.robot.subsystems.autonomous.AutonomousControllerImpl;
+import frc.robot.subsystems.disabled.DisabledController;
+import frc.robot.subsystems.disabled.DisabledControllerImpl;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -43,6 +45,8 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
+
+    public final DisabledController disabledController = DisabledControllerImpl.initialize();
 
     public RobotContainer() {
         configureBindings();
@@ -89,5 +93,9 @@ public class RobotContainer {
 
     public AutonomousController auto() {
         return autonomousController;
+    }
+
+    public DisabledController disabled() {
+        return disabledController;
     }
 }
