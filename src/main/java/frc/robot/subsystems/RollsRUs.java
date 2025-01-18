@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -23,6 +24,14 @@ import frc.robot.generated.TunerConstants;
 
 public class RollsRUs extends SubsystemBase {
     public TalonFX intakeMotor = new TalonFX(TunerConstants.IntakeMotor);
+
+    public RollsRUs() {
+        var limitConfigs = new CurrentLimitsConfigs();
+        limitConfigs.StatorCurrentLimit = 40;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        intakeMotor.getConfigurator().apply(limitConfigs);
+    }
 
     public void runIntake() {
         intakeMotor.set(1.0);
