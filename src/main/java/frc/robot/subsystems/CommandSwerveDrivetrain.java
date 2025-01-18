@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -47,6 +48,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     private SwerveDriveKinematics kinematics;
     private SwerveDriveOdometry odometry;
+
+    //initialize currentPosition
+    private SwerveModulePosition currentPosition = new SwerveModulePosition();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -138,6 +142,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         this.initialize();
     }
 
+    
+    public SwerveModulePosition getPosition() {
+        return currentPosition;
+    }
+  
+
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
@@ -158,6 +168,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         super(drivetrainConstants, odometryUpdateFrequency, modules);
         this.initialize();
     }
+
+    
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
