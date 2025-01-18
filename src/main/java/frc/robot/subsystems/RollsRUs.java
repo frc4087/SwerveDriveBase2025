@@ -14,8 +14,12 @@ public class RollsRUs extends SubsystemBase {
 
     public RollsRUs(Config config) {
         var limitConfigs = new CurrentLimitsConfigs();
-        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
+
+        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.statorCurrent.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
+
+        limitConfigs.SupplyCurrentLimit = config.readIntegerProperty("rollsRUs.motor.supplyCurrent.limit.amps");
+        limitConfigs.SupplyCurrentLimitEnable = true;
 
         intakeMotor.getConfigurator().apply(limitConfigs);
 

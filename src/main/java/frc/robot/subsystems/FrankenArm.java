@@ -28,8 +28,13 @@ public class FrankenArm extends SubsystemBase {
 
   public FrankenArm(Config config) {
         var limitConfigs = new CurrentLimitsConfigs();
-        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
+
+        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
+
+        limitConfigs.SupplyCurrentLimit = config.readIntegerProperty("frankenarm.motor.supplyCurrent.limit.amps");
+        limitConfigs.SupplyCurrentLimitEnable = true;
+
         armMotor.getConfigurator().apply(limitConfigs);
 
         fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
