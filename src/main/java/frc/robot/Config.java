@@ -22,7 +22,15 @@ public class Config {
         this("./src/main/resources/robot.properties");
     }
 
-    protected RobotConfig readGeneratedConfig() {
+    public Integer readIntegerProperty(String property) {
+        var rawProperty = fileConfig.getProperty(property);
+        if (rawProperty == null) {
+            throw new RuntimeException(property + " was not found.");
+        }
+        return Integer.parseInt(rawProperty);
+    }
+
+    protected static RobotConfig readGeneratedConfig() {
         try {
             return RobotConfig.fromGUISettings();
         } catch (IOException | ParseException e) {
