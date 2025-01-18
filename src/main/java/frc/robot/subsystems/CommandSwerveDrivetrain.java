@@ -49,8 +49,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private SwerveDriveKinematics kinematics;
     private SwerveDriveOdometry odometry;
 
-    //initialize currentPosition
+    //initialize currentPosition and currentState
     private SwerveModulePosition currentPosition = new SwerveModulePosition();
+   // private SwerveModuleState currentState = new SwerveModuleState();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -142,10 +143,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         this.initialize();
     }
 
-    
+    //getPosition and getState
     public SwerveModulePosition getPosition() {
         return currentPosition;
     }
+    // public SwerveModuleState getState() {
+    //     return currentState;
+    //   }
   
 
     /**
