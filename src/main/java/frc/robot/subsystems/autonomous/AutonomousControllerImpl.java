@@ -3,9 +3,9 @@ package frc.robot.subsystems.autonomous;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Config;
 
 /**
  * Initial implementation of the Autonomous mode behavior
@@ -14,7 +14,7 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private static AutonomousControllerImpl controller;
 
-    private AutonomousControllerImpl(RobotConfig config, PathPlannableSubsystem driveSystem) {
+    private AutonomousControllerImpl(Config config, PathPlannableSubsystem driveSystem) {
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -27,12 +27,12 @@ public class AutonomousControllerImpl implements AutonomousController {
                 driveSystem::getRobotRelativeChassisSpeeds,
                 driveSystem::driveRobotRelative,
                 driveSystem.getPathFollowingController(),
-                config,
+                config.generatedConfig,
                 requiresFlip,
                 driveSystem);
     }
 
-    public static synchronized AutonomousControllerImpl initialize(RobotConfig config, PathPlannableSubsystem driveSystem) {
+    public static synchronized AutonomousControllerImpl initialize(Config config, PathPlannableSubsystem driveSystem) {
         controller = new AutonomousControllerImpl(config, driveSystem);
         return controller;
     }

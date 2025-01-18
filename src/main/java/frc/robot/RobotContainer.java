@@ -6,12 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.io.IOException;
-
-import org.json.simple.parser.ParseException;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.pathplanner.lib.config.RobotConfig;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,7 +31,7 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final RobotConfig config = readConfig();
+    private final Config config = new Config();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -46,15 +41,6 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureBindings();
-    }
-
-    private static RobotConfig readConfig() {
-        try {
-            return RobotConfig.fromGUISettings();
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-            throw new Error("Unable to load Robot Config: %s".formatted(e.getMessage()));
-        }
     }
 
     private void configureBindings() {
