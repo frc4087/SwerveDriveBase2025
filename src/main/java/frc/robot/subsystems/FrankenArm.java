@@ -20,6 +20,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,7 +42,6 @@ public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor = new TalonFX(TunerConstants.ArmMotor);
   
   public FrankenArm() {
-    armMotor.cu
   }
 
   public void runFoward() {

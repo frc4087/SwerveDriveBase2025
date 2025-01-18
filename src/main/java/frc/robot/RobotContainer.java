@@ -6,15 +6,24 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FrankenArm;
+import frc.robot.subsystems.RollsRUs;
 import frc.robot.subsystems.autonomous.AutonomousController;
 import frc.robot.subsystems.autonomous.AutonomousControllerImpl;
 
@@ -38,6 +47,12 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
+
+    public final FrankenArm frankenArm = new FrankenArm();
+
+    public final RollsRUs rollsRUs = new RollsRUs();
+
+    public TalonFX IntakeMotor = new TalonFX(TunerConstants.IntakeMotor);
 
     public RobotContainer() {
         configureBindings();
@@ -69,6 +84,19 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        // Controll intake
+        joystick.povRight().whileTrue(
+            Commands.run(rollsRUs::runOutput, rollsRUs)
+        );
+        joystick.povLeft().whileTrue(
+            Commands.run(rollsRUs::runIntake, rollsRUs)
+        );
+
+        // Arm Controll
+        joystick.povUp().whileTrue(Commands.run(frankenArm::runFoward, frankenArm));
+        joystick.povDown().whileTrue(Commands.run(frankenArm::runBack, frankenArm));
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
