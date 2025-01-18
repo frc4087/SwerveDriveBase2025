@@ -47,4 +47,8 @@ public class RollsRUs extends SubsystemBase {
     public void runOutput() {
         intakeMotor.set(outputSpeed);
     }
+
+    public void stop() {
+        intakeMotor.set(0);
+    }
 }

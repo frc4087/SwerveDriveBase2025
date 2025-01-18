@@ -87,16 +87,19 @@ public class RobotContainer {
 
         // Controll intake
         joystick.povRight().whileTrue(
-            Commands.run(rollsRUs::runOutput, rollsRUs)
+            Commands.runEnd(rollsRUs::runOutput, rollsRUs::stop, rollsRUs)
         );
         joystick.povLeft().whileTrue(
-            Commands.run(rollsRUs::runIntake, rollsRUs)
+            Commands.runEnd(rollsRUs::runIntake, rollsRUs::stop, rollsRUs)
         );
 
         // Arm Controll
-        joystick.povUp().whileTrue(Commands.run(frankenArm::runFoward, frankenArm));
-        joystick.povDown().whileTrue(Commands.run(frankenArm::runBack, frankenArm));
-
+        joystick.povUp().whileTrue(
+            Commands.runEnd(frankenArm::runFoward, frankenArm::stop, frankenArm)
+        );
+        joystick.povDown().whileTrue(
+            Commands.runEnd(frankenArm::runBack, frankenArm::stop, frankenArm)
+        );
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

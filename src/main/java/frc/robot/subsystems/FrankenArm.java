@@ -58,6 +58,10 @@ public class FrankenArm extends SubsystemBase {
     armMotor.set(fwdSpeed);
   }
 
+  public void stop() {
+    armMotor.set(0);
+  }
+
   public void runBack() {
     armMotor.set(backwardSpeed);
   }
