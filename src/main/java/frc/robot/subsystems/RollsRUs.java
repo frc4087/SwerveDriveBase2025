@@ -20,14 +20,14 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 
-public class IntakeRoller extends SubsystemBase {
+public class RollsRUs extends SubsystemBase {
     public TalonFX IntakeMotor = new TalonFX(TunerConstants.IntakeMotor);
 
     public void runIntake() {
-        // stuff
+        IntakeMotor.set(1.0);
     }
 
     public void runOutput() {
-        // stuff
+        IntakeMotor.set(-1.0);
     }
 }

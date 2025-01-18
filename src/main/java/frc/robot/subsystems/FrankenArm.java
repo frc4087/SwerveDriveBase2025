@@ -5,6 +5,8 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.video.FarnebackOpticalFlow;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -36,16 +38,17 @@ import frc.robot.generated.TunerConstants;
  * project.
  */
 public class FrankenArm extends SubsystemBase {
-  public TalonFX ArmMotor = new TalonFX(TunerConstants.ArmMotor);
+  public TalonFX armMotor = new TalonFX(TunerConstants.ArmMotor);
+  
+  public FrankenArm() {
+    armMotor.cu
+  }
 
   public void runFoward() {
-    // stuff
+    armMotor.set(1.0);
   }
 
   public void runBack() {
-    // stuff
+    armMotor.set(-1.0);
   }
-
-
-
 }
