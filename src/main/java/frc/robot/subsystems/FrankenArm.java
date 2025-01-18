@@ -9,6 +9,7 @@ import org.opencv.video.FarnebackOpticalFlow;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -26,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.Config;
 import frc.robot.generated.TunerConstants;
 
 /**
@@ -40,15 +41,24 @@ import frc.robot.generated.TunerConstants;
  */
 public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor = new TalonFX(TunerConstants.ArmMotor);
-  
-  public FrankenArm() {
+  private final Integer fwdSpeed;
+  private final Integer backwardSpeed;
+
+  public FrankenArm(Config config) {
+        var limitConfigs = new CurrentLimitsConfigs();
+        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
+        limitConfigs.StatorCurrentLimitEnable = true;
+        armMotor.getConfigurator().apply(limitConfigs);
+
+        fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
+        backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
   }
 
   public void runFoward() {
-    armMotor.set(1.0);
+    armMotor.set(fwdSpeed);
   }
 
   public void runBack() {
-    armMotor.set(-1.0);
+    armMotor.set(backwardSpeed);
   }
 }

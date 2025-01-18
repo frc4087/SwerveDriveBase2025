@@ -20,24 +20,31 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Config;
 import frc.robot.generated.TunerConstants;
 
 public class RollsRUs extends SubsystemBase {
-    public TalonFX intakeMotor = new TalonFX(TunerConstants.IntakeMotor);
+    private TalonFX intakeMotor = new TalonFX(TunerConstants.IntakeMotor);
+    private Integer intakeSpeed;
+    private Integer outputSpeed;
 
-    public RollsRUs() {
+    public RollsRUs(Config config) {
         var limitConfigs = new CurrentLimitsConfigs();
-        limitConfigs.StatorCurrentLimit = 40;
+        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
 
         intakeMotor.getConfigurator().apply(limitConfigs);
+
+        intakeSpeed = config.readIntegerProperty("rollsRUs.motor.intake.speed");
+        outputSpeed = config.readIntegerProperty("rollsRUs.motor.output.speed");
+
     }
 
     public void runIntake() {
-        intakeMotor.set(1.0);
+        intakeMotor.set(intakeSpeed);
     }
 
     public void runOutput() {
-        intakeMotor.set(-1.0);
+        intakeMotor.set(outputSpeed);
     }
 }

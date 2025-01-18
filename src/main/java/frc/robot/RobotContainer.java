@@ -48,9 +48,9 @@ public class RobotContainer {
 
     public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
 
-    public final FrankenArm frankenArm = new FrankenArm();
+    public final FrankenArm frankenArm = new FrankenArm(config);
 
-    public final RollsRUs rollsRUs = new RollsRUs();
+    public final RollsRUs rollsRUs = new RollsRUs(config);
 
     public TalonFX IntakeMotor = new TalonFX(TunerConstants.IntakeMotor);
 
