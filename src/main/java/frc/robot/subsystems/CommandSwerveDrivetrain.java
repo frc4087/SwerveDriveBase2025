@@ -296,14 +296,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     @Override
     public Pose2d getPose() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getPose'");
+        // return odometry.getPoseMeters();
+    }
+
+    @Override
+    public void resetPose(Pose2d pose) {
+        throw new UnsupportedOperationException("Unimplemented method 'resetPose'");
+        // System.out.println(pose);
+        // odometry.resetPosition(gyro.getRotation2d(), getPositions(), pose);
     }
 
     @Override
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSpeeds'");
+        // return kinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
