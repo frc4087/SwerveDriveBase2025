@@ -21,15 +21,15 @@ public class AutonomousControllerImpl implements AutonomousController {
         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
         BooleanSupplier requiresFlip = driveSystem::isRedAlliance;
 
-        AutoBuilder.configure(
-                driveSystem::getPose,
-                driveSystem::resetPose,
-                driveSystem::getRobotRelativeChassisSpeeds,
-                driveSystem::driveRobotRelative,
-                driveSystem.getPathFollowingController(),
-                config.generatedConfig,
-                requiresFlip,
-                driveSystem);
+        // AutoBuilder.configure(
+        //         driveSystem::getPose,
+        //         driveSystem::resetPose,
+        //         driveSystem::getRobotRelativeChassisSpeeds,
+        //         driveSystem::driveRobotRelative,
+        //         driveSystem.getPathFollowingController(),
+        //         config.generatedConfig,
+        //         requiresFlip,
+        //         driveSystem);
     }
 
     public static synchronized AutonomousControllerImpl initialize(Config config, PathPlannableSubsystem driveSystem) {

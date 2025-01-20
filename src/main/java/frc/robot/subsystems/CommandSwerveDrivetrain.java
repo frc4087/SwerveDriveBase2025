@@ -200,8 +200,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
                 new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY));
 
-        // TODO: Figure out how to initialize odometry
-        odometry = new SwerveDriveOdometry(kinematics, null, null);
+        // // TODO: Figure out how to initialize odometry
+        // odometry = new SwerveDriveOdometry(kinematics, null, null);
 
         if (Utils.isSimulation()) {
             startSimThread();
