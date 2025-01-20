@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -32,10 +33,14 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Config;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.autonomous.PathPlannableSubsystem;
+
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -49,10 +54,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private SwerveDriveKinematics kinematics;
     private SwerveDriveOdometry odometry;
 
-    //initialize currentPosition and currentState
+    private SwerveModule<TalonFX, TalonFX, CANcoder> frontLeftModule;
+    private SwerveModule<TalonFX, TalonFX, CANcoder> frontRightModule;
+    private SwerveModule<TalonFX, TalonFX, CANcoder> backLeftModule;
+    private SwerveModule<TalonFX, TalonFX, CANcoder> backRightModule;
+    
+    private Pigeon2 pigeon = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
+    
     private SwerveModulePosition currentPosition = new SwerveModulePosition();
-   // private SwerveModuleState currentState = new SwerveModuleState();
-
+    private Boolean refreshPositions;
+    
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -124,7 +135,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
-    private Pigeon2 gyro = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -137,20 +147,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * @param modules             Constants for each specific module
      */
     public CommandSwerveDrivetrain(
+            Config config,
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
-        this.initialize();
+        this.initialize(config);
     }
 
     //getPosition and getState
     public SwerveModulePosition getPosition() {
         return currentPosition;
     }
-    // public SwerveModuleState getState() {
-    //     return currentState;
-    //   }
-  
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -166,14 +173,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * @param modules                 Constants for each specific module
      */
     public CommandSwerveDrivetrain(
+            Config config,
             SwerveDrivetrainConstants drivetrainConstants,
             double odometryUpdateFrequency,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
-        this.initialize();
+        this.initialize(config);
     }
-
-    
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -201,6 +207,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * @param modules                   Constants for each specific module
      */
     public CommandSwerveDrivetrain(
+            Config config,
             SwerveDrivetrainConstants drivetrainConstants,
             double odometryUpdateFrequency,
             Matrix<N3, N1> odometryStandardDeviation,
@@ -208,22 +215,63 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation,
                 modules);
-        this.initialize();
+        this.initialize(config);
     }
 
-    private void initialize() {
+    private void initialize(Config config) {
+        refreshPositions = config.readBooleanProperty("drivetrain.refresh.on.getPositions");
+        createSwerveModules();
         kinematics = new SwerveDriveKinematics(
                 new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
                 new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
                 new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY));
 
-        // TODO: Figure out how to use the Pigeon2 for the gyro
-        odometry = new SwerveDriveOdometry(kinematics, null, null);
+        odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), getModulePositions());
 
         if (Utils.isSimulation()) {
             startSimThread();
         }
+    }
+
+    private void createSwerveModules() {
+        frontLeftModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
+            TalonFX::new,
+            TalonFX::new,
+            CANcoder::new,
+            TunerConstants.FrontLeft,
+            TunerConstants.kCANBus.getName(),
+            TunerConstants.FrontLeft.DriveMotorId,
+            0
+        );
+
+        frontRightModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
+            TalonFX::new,
+            TalonFX::new,
+            CANcoder::new,
+            TunerConstants.FrontRight,
+            TunerConstants.kCANBus.getName(),
+            TunerConstants.FrontRight.DriveMotorId,
+            1
+        );
+        backLeftModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
+            TalonFX::new,
+            TalonFX::new,
+            CANcoder::new,
+            TunerConstants.BackLeft,
+            TunerConstants.kCANBus.getName(),
+            TunerConstants.BackLeft.DriveMotorId,
+            2
+        );
+        backRightModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
+            TalonFX::new,
+            TalonFX::new,
+            CANcoder::new,
+            TunerConstants.FrontRight,
+            TunerConstants.kCANBus.getName(),
+            TunerConstants.FrontRight.DriveMotorId,
+            3
+        );
     }
 
     /**
@@ -293,6 +341,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
+
+    public SwerveModulePosition[] getModulePositions() {
+        return new SwerveModulePosition[]{
+            frontLeftModule.getPosition(this.refreshPositions), 
+            frontRightModule.getPosition(this.refreshPositions),
+            backLeftModule.getPosition(this.refreshPositions), 
+            backRightModule.getPosition(this.refreshPositions)
+        };
+    }
+    
 
     @Override
     public Pose2d getPose() {

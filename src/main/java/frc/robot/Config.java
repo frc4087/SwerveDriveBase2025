@@ -27,11 +27,19 @@ public class Config {
     }
 
     public Integer readIntegerProperty(String property) {
+        return Integer.parseInt(readOrThrow(property));
+    }
+
+    public Boolean readBooleanProperty(String property) {
+        return Boolean.parseBoolean(readOrThrow(property));
+    }
+
+    private String readOrThrow(String property){
         var rawProperty = fileConfig.getProperty(property);
         if (rawProperty == null) {
             throw new RuntimeException(property + " was not found.");
         }
-        return Integer.parseInt(rawProperty);
+        return rawProperty;
     }
 
     protected static RobotConfig readGeneratedConfig() {

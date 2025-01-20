@@ -57,7 +57,14 @@ public class RobotContainer {
 
   private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
+      config,
+      TunerConstants.DrivetrainConstants, 
+      TunerConstants.FrontLeft, 
+      TunerConstants.FrontRight, 
+      TunerConstants.BackLeft, 
+      TunerConstants.BackRight
+  );
 
   public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
 
