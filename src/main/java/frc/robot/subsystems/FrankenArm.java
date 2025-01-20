@@ -54,15 +54,15 @@ public class FrankenArm extends SubsystemBase {
         backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
   }
 
-  public void runFoward() {
-    armMotor.set(fwdSpeed);
+  public Command runFoward() {
+    return this.runEnd(() -> armMotor.set(fwdSpeed), this::stop);
   }
 
-  public void stop() {
+  public Command runBack() {
+    return this.runEnd(() -> armMotor.set(backwardSpeed), this::stop);
+  }
+
+  private void stop() {
     armMotor.set(0);
-  }
-
-  public void runBack() {
-    armMotor.set(backwardSpeed);
   }
 }

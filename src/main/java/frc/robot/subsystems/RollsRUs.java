@@ -40,15 +40,15 @@ public class RollsRUs extends SubsystemBase {
 
     }
 
-    public void runIntake() {
-        intakeMotor.set(intakeSpeed);
+    public Command runIntake() {
+        return this.runEnd(() -> intakeMotor.set(intakeSpeed), this::stop);
     }
 
-    public void runOutput() {
-        intakeMotor.set(outputSpeed);
+    public Command runOutput() {
+        return this.runEnd(() -> intakeMotor.set(outputSpeed), this::stop);
     }
 
-    public void stop() {
+    private void stop() {
         intakeMotor.set(0);
     }
 }

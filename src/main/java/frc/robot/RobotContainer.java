@@ -86,20 +86,12 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // Controll intake
-        joystick.povRight().whileTrue(
-            Commands.runEnd(rollsRUs::runOutput, rollsRUs::stop, rollsRUs)
-        );
-        joystick.povLeft().whileTrue(
-            Commands.runEnd(rollsRUs::runIntake, rollsRUs::stop, rollsRUs)
-        );
+        joystick.povRight().whileTrue(rollsRUs.runOutput());
+        joystick.povLeft().whileTrue(rollsRUs.runIntake());
 
         // Arm Controll
-        joystick.povUp().whileTrue(
-            Commands.runEnd(frankenArm::runFoward, frankenArm::stop, frankenArm)
-        );
-        joystick.povDown().whileTrue(
-            Commands.runEnd(frankenArm::runBack, frankenArm::stop, frankenArm)
-        );
+        joystick.povUp().whileTrue(frankenArm.runFoward());
+        joystick.povDown().whileTrue(frankenArm.runBack());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
