@@ -34,6 +34,10 @@ public class Config {
         return Boolean.parseBoolean(readOrThrow(property));
     }
 
+    public Double readDoubleProperty(String property) {
+        return Double.parseDouble(readOrThrow(property));
+    }
+
     private String readOrThrow(String property){
         var rawProperty = fileConfig.getProperty(property);
         if (rawProperty == null) {

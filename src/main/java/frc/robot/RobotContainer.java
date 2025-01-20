@@ -51,7 +51,7 @@ public class RobotContainer {
 
   private final Config config = new Config();
 
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController driverJoystick = new CommandXboxController(0);
 
@@ -78,8 +78,8 @@ public class RobotContainer {
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
-    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    // SmartDashboard.putData("Auto Mode", autoChooser);
 
   }
 
@@ -126,46 +126,46 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
-    SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
+    // SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
 
-    // Add a button to run pathfinding commands to SmartDashboard
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
-    SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
+    // // Add a button to run pathfinding commands to SmartDashboard
+    // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
+    // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
 
-    // Add a button to SmartDashboard that will create and follow an on-the-fly path
-    // This example will simply move the robot 2m in the +X field direction
-    SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-      Pose2d currentPose = drivetrain.getPose();
+    // // Add a button to SmartDashboard that will create and follow an on-the-fly path
+    // // This example will simply move the robot 2m in the +X field direction
+    // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+    //   Pose2d currentPose = drivetrain.getPose();
 
-      // The rotation component in these poses represents the direction of travel
-      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+    //   // The rotation component in these poses represents the direction of travel
+    //   Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+    //   Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
 
-      List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-      PathPlannerPath path = new PathPlannerPath(
-          waypoints,
-          new PathConstraints(
-              4.0, 4.0,
-              Units.degreesToRadians(360), Units.degreesToRadians(540)),
-          null, // Ideal starting state can be null for on-the-fly paths
-          new GoalEndState(0.0, currentPose.getRotation()));
+    //   List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+    //   PathPlannerPath path = new PathPlannerPath(
+    //       waypoints,
+    //       new PathConstraints(
+    //           4.0, 4.0,
+    //           Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //       null, // Ideal starting state can be null for on-the-fly paths
+    //       new GoalEndState(0.0, currentPose.getRotation()));
 
-      // Prevent this path from being flipped on the red alliance, since the given
-      // positions are already correct
-      path.preventFlipping = true;
+    //   // Prevent this path from being flipped on the red alliance, since the given
+    //   // positions are already correct
+    //   path.preventFlipping = true;
 
-      AutoBuilder.followPath(path).schedule();
-    }));
+    //   AutoBuilder.followPath(path).schedule();
+
   }
 
   public AutonomousController auto() {

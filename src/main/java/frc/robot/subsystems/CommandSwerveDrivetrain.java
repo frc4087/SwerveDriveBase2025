@@ -61,8 +61,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     private Pigeon2 pigeon = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
 
-    private SwerveModulePosition currentPosition = new SwerveModulePosition();
     private Boolean refreshPositions;
+    private Double discretizationDelta;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -157,11 +157,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         this.initialize(config);
     }
 
-    // getPosition and getState
-    public SwerveModulePosition getPosition() {
-        return currentPosition;
-    }
-
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
@@ -227,6 +222,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     private void initialize(Config config) {
         refreshPositions = config.readBooleanProperty("drivetrain.refresh.on.getPositions");
+        discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
         createSwerveModules();
         kinematics = new SwerveDriveKinematics(
                 new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
@@ -392,19 +388,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      */
     @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
         SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-        setStates(targetStates);
+        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, TunerConstants.kSpeedAt12Volts);
+        updateStates(targetStates);
     }
 
-    private void setStates(SwerveModuleState[] targetStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, TunerConstants.kSpeedAt12Volts);
-
-        // frontLeftModule.setTargetState(targetStates[0]);
-        // frontRightModule.setTargetState(targetStates[1]);
-        // backLeftModule.setTargetState(targetStates[2]);
-        // backRightModule.setTargetState(targetStates[3]);
+    private void updateStates(SwerveModuleState[] targetStates) {
+        // TODO: Figure out if/how we need to update based on the target
     }
 
     @Override
