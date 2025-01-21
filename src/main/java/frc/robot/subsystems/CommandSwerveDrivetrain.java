@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveModule.ModuleRequest;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -54,9 +55,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private SwerveDriveKinematics kinematics;
     private SwerveDriveOdometry odometry;
 
+    private final Integer frontLeftModuleIdx = 0;
     private SwerveModule<TalonFX, TalonFX, CANcoder> frontLeftModule;
+    private final Integer frontRightModuleIdx = 1;
     private SwerveModule<TalonFX, TalonFX, CANcoder> frontRightModule;
+    private final Integer backLeftModuleIdx = 2;
     private SwerveModule<TalonFX, TalonFX, CANcoder> backLeftModule;
+    private final Integer backRightModuleIdx = 3;
     private SwerveModule<TalonFX, TalonFX, CANcoder> backRightModule;
 
     private Pigeon2 pigeon = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
@@ -245,7 +250,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
                 TunerConstants.FrontLeft,
                 TunerConstants.kCANBus.getName(),
                 TunerConstants.FrontLeft.DriveMotorId,
-                0);
+                frontLeftModuleIdx);
 
         frontRightModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
                 TalonFX::new,
@@ -254,7 +259,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
                 TunerConstants.FrontRight,
                 TunerConstants.kCANBus.getName(),
                 TunerConstants.FrontRight.DriveMotorId,
-                1);
+                frontRightModuleIdx);
         backLeftModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
                 TalonFX::new,
                 TalonFX::new,
@@ -262,7 +267,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
                 TunerConstants.BackLeft,
                 TunerConstants.kCANBus.getName(),
                 TunerConstants.BackLeft.DriveMotorId,
-                2);
+                backLeftModuleIdx);
         backRightModule = new SwerveModule<TalonFX, TalonFX, CANcoder>(
                 TalonFX::new,
                 TalonFX::new,
@@ -270,7 +275,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
                 TunerConstants.FrontRight,
                 TunerConstants.kCANBus.getName(),
                 TunerConstants.FrontRight.DriveMotorId,
-                3);
+                backRightModuleIdx);
     }
 
     /**
@@ -391,11 +396,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
         SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, TunerConstants.kSpeedAt12Volts);
-        updateStates(targetStates);
+        updateModuleStates(targetStates);
     }
 
-    private void updateStates(SwerveModuleState[] targetStates) {
-        // TODO: Figure out if/how we need to update based on the target
+    private void updateModuleStates(SwerveModuleState[] targetStates) {
+        this.frontLeftModule.apply(new ModuleRequest().withState(targetStates[frontLeftModuleIdx]));
+        this.frontRightModule.apply(new ModuleRequest().withState(targetStates[frontRightModuleIdx]));
+        this.backLeftModule.apply(new ModuleRequest().withState(targetStates[backLeftModuleIdx]));
+        this.backRightModule.apply(new ModuleRequest().withState(targetStates[backRightModuleIdx]));
     }
 
     @Override
