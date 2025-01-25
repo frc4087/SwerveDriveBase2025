@@ -1,10 +1,11 @@
 package frc.robot;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
-
+import edu.wpi.first.wpilibj.Filesystem;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.config.RobotConfig;
@@ -20,7 +21,9 @@ public class Config {
     }
 
     public Config() {
-        this("./src/main/resources/robot.properties");
+        this(
+            new File(Filesystem.getDeployDirectory(), "robot.properties").getPath()
+        );
     }
 
     public Integer readIntegerProperty(String property) {
