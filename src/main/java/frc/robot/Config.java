@@ -15,8 +15,7 @@ public class Config {
     public final Properties fileConfig;
 
     public Config(String fileLocation) {
-        // generatedConfig = readGeneratedConfig();
-        generatedConfig = null;
+        generatedConfig = readGeneratedConfig();
         fileConfig = readFileConfig(fileLocation);
     }
 

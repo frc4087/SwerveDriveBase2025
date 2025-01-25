@@ -1,4 +1,4 @@
-package frc.robot.subsystems.autonomous;
+package frc.robot.system.autonomous;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 
 /**
