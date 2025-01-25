@@ -62,6 +62,15 @@ public class AutonomousControllerImpl implements AutonomousController {
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
 
+        this.driveSystem = driveSystem;
+        this.startingX = driveSystem.getPose().getMeasureX();
+        this.startingY = driveSystem.getPose().getMeasureY();
+        Commands.print(String.format(
+            "Starting At: (%s, %s)", 
+            driveSystem.getPose().getMeasureX().minus(startingX),
+            driveSystem.getPose().getMeasureY().minus(startingY)
+        )).schedule();
+
     }
 
     private void loadAutos() {
@@ -84,11 +93,18 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     @Override
     public void runInit() {
-        Commands.print(
+        Commands.sequence(
+            Commands.print(
                 String.format("Starting auto init (%s)...", autos.get("Config") != null)
+            ),
+            autos.get("Config"),
+            Commands.print("Completed auto init.")
         ).schedule();
-        autoChooser.getSelected().schedule();
-        Commands.print("Completed auto init.").schedule();
+        // Commands.print(
+        //         String.format("Starting auto init (%s)...", autos.get("Config") != null)
+        // ).schedule();
+        // autos.get("Config").schedule();
+        // Commands.print("Completed auto init.").schedule();
     }
 
     @Override

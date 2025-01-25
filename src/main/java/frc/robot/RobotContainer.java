@@ -78,9 +78,6 @@ public class RobotContainer {
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
-    // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-    // SmartDashboard.putData("Auto Mode", autoChooser);
-
   }
 
   private void setUpDriverController() {

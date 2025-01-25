@@ -230,6 +230,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         refreshPositions = config.readBooleanProperty("drivetrain.refresh.on.getPositions");
         discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
         createSwerveModules();
+
         kinematics = new SwerveDriveKinematics(
                 new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
                 new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
@@ -376,6 +377,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     @Override
     public void resetPose(Pose2d pose) {
+        System.out.println("Reset pose: " + pose.toString());
         odometry.resetPose(pose);
     }
 
@@ -394,10 +396,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      */
     @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
+        System.out.println("driveRobotRelative::robotRelativeSpeeds:: " + robotRelativeSpeeds.toString());
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
         SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, TunerConstants.kSpeedAt12Volts);
+
+        logModuleState(getModuleStates());
+        logModuleState(targetStates);
+
         updateModuleStates(targetStates);
+    }
+
+    private void logModuleState(SwerveModuleState[] states) {
+        for (var s : states) {
+            System.out.println("driveRobotRelative::robotRelativeSpeeds::" + s.toString());
+        }
     }
 
     private void updateModuleStates(SwerveModuleState[] targetStates) {
@@ -412,10 +425,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         Slot0Configs driveGains = TunerConstants.FrontLeft.DriveMotorGains;
         Slot0Configs steerGains = TunerConstants.FrontLeft.SteerMotorGains;
         return new PPHolonomicDriveController(
-            new PIDConstants(5,0,0),
-            new PIDConstants(5,0,0)
-            // new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
-            // new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
+            new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
+            new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
         );
     }
 
