@@ -11,6 +11,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+
 
 /**
  * Initial implementation of the Autonomous mode behavior
@@ -22,6 +26,7 @@ public class AutonomousControllerImpl implements AutonomousController {
     private Map<String, PathPlannerAuto> autos;
 
     private PathPlannableSubsystem driveSystem;
+    private final SendableChooser<Command> autoChooser;
 
     private Distance startingX;
     private Distance startingY;
@@ -53,6 +58,10 @@ public class AutonomousControllerImpl implements AutonomousController {
             requiresFlip,
             driveSystem);
         loadAutos();
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Mode", autoChooser);
+
     }
 
     private void loadAutos() {
@@ -78,7 +87,7 @@ public class AutonomousControllerImpl implements AutonomousController {
         Commands.print(
                 String.format("Starting auto init (%s)...", autos.get("Config") != null)
         ).schedule();
-        // autos.get("Config").schedule();
+        autoChooser.getSelected().schedule();
         Commands.print("Completed auto init.").schedule();
     }
 

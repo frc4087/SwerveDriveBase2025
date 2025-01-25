@@ -412,8 +412,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         Slot0Configs driveGains = TunerConstants.FrontLeft.DriveMotorGains;
         Slot0Configs steerGains = TunerConstants.FrontLeft.SteerMotorGains;
         return new PPHolonomicDriveController(
-            new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
-            new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
+            new PIDConstants(5,0,0),
+            new PIDConstants(5,0,0)
+            // new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
+            // new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
         );
     }
 
