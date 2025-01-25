@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModule.ModuleRequest;
@@ -375,7 +376,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     @Override
     public void resetPose(Pose2d pose) {
-        odometry.resetPosition(pigeon.getRotation2d(), getModulePositions(), pose);
+        odometry.resetPose(pose);
     }
 
     @Override
@@ -408,9 +409,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     @Override
     public PathFollowingController getPathFollowingController() {
+        Slot0Configs driveGains = TunerConstants.FrontLeft.DriveMotorGains;
+        Slot0Configs steerGains = TunerConstants.FrontLeft.SteerMotorGains;
         return new PPHolonomicDriveController(
-                new PIDConstants(5.0, 0.0, 0.0),
-                new PIDConstants(5.0, 0.0, 0.0));
+            new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
+            new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
+        );
     }
 
     @Override
