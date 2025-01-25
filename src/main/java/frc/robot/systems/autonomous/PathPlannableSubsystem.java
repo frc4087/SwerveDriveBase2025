@@ -1,4 +1,4 @@
-package frc.robot.system.autonomous;
+package frc.robot.systems.autonomous;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

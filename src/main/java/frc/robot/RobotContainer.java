@@ -32,8 +32,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
-import frc.robot.system.autonomous.AutonomousController;
-import frc.robot.system.autonomous.AutonomousControllerImpl;
+import frc.robot.systems.autonomous.AutonomousController;
+import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
