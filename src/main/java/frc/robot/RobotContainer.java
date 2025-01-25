@@ -53,9 +53,9 @@ public class RobotContainer {
 
   // private final SendableChooser<Command> autoChooser;
 
-  private final CommandXboxController driverJoystick = new CommandXboxController(0);
+  private final CommandXboxController driverController = new CommandXboxController(0);
 
-  private final CommandXboxController operatorJoystick = new CommandXboxController(1);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
       config,
@@ -88,38 +88,38 @@ public class RobotContainer {
     // and Y is defined as to the left according to WPILib convention.
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive
                                                                                                  // forward with
                                                                                                  // negative Y
                                                                                                  // (forward)
-            .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with
+            .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
                                                                               // negative X (left)
         ));
 
-    driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    driverJoystick.b().whileTrue(drivetrain.applyRequest(() -> point
-        .withModuleDirection(new Rotation2d(-driverJoystick.getLeftY(), -driverJoystick.getLeftX()))));
+    driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    driverController.b().whileTrue(drivetrain.applyRequest(() -> point
+        .withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
-    driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    driverJoystick.back().and(driverJoystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    driverJoystick.start().and(driverJoystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
-    driverJoystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
   }
 
   public void setUpOpController() {
     // Controll intake
-    operatorJoystick.povRight().whileTrue(rollsRUs.runOutput());
-    operatorJoystick.povLeft().whileTrue(rollsRUs.runIntake());
+    operatorController.povRight().whileTrue(rollsRUs.runOutput());
+    operatorController.povLeft().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorJoystick.povUp().whileTrue(frankenArm.runFoward());
-    operatorJoystick.povDown().whileTrue(frankenArm.runBack());
+    operatorController.povUp().whileTrue(frankenArm.runFoward());
+    operatorController.povDown().whileTrue(frankenArm.runBack());
   }
 
   private void setUpTelemetry() {
