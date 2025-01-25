@@ -59,13 +59,17 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     @Override
     public void runInit() {
-        autos.get("Config").schedule();
+        Commands.sequence(
+            Commands.print(
+                String.format("Starting auto init (%s)...", autos.get("Config") != null)
+            ),
+            autos.get("Config"),
+            Commands.print("Completed auto init.")
+        ).schedule();
     }
 
     @Override
-    public void runPeriodic() {
-        Commands.print("No autonomous periodic commands configured").schedule();
-    }
+    public void runPeriodic() {}
 
     @Override
     public void runExit() {
