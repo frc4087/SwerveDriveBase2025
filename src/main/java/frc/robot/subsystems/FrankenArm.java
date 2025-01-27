@@ -43,16 +43,18 @@ public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor = new TalonFX(TunerConstants.ArmMotor);
   private final Integer fwdSpeed;
   private final Integer backwardSpeed;
+  //var talonFXConfigurator = m_talonFX.getConfigurator();
+  
 
   public FrankenArm(Config config) {
         var limitConfigs = new CurrentLimitsConfigs();
         limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
         armMotor.getConfigurator().apply(limitConfigs);
-
         fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
         backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
   }
+
 
   public Command runFoward() {
     return this.runEnd(() -> armMotor.set(fwdSpeed), this::stop);
@@ -65,4 +67,5 @@ public class FrankenArm extends SubsystemBase {
   private void stop() {
     armMotor.set(0);
   }
+  
 }
