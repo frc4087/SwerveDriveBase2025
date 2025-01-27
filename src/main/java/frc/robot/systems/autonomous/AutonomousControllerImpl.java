@@ -6,8 +6,6 @@ import java.util.function.BooleanSupplier;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,9 +25,6 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
-    private Distance startingX;
-    private Distance startingY;
-
     private AutonomousControllerImpl(Config config, PathPlannableSubsystem driveSystem) {
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
@@ -39,11 +34,7 @@ public class AutonomousControllerImpl implements AutonomousController {
 
         AutoBuilder.configure(
             driveSystem::getPose,
-            (Pose2d pose) -> {
-                startingX = pose.getMeasureX();
-                startingY = pose.getMeasureY();
-                driveSystem.resetPose(pose);
-            },
+            driveSystem::resetPose,
             driveSystem::getRobotRelativeChassisSpeeds,
             driveSystem::driveRobotRelative,
             driveSystem.getPathFollowingController(),
@@ -54,15 +45,6 @@ public class AutonomousControllerImpl implements AutonomousController {
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        this.startingX = driveSystem.getPose().getMeasureX();
-        this.startingY = driveSystem.getPose().getMeasureY();
-        Commands.print(String.format(
-            "Starting At: (%s, %s)", 
-            driveSystem.getPose().getMeasureX().minus(startingX),
-            driveSystem.getPose().getMeasureY().minus(startingY)
-        )).schedule();
-
     }
 
     private void loadAutos() {

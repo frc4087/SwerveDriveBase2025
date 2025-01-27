@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -39,6 +40,7 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.systems.autonomous.PathPlannableSubsystem;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -214,6 +216,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     }
 
     private void initialize(Config config) {
+        discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
         kinematics = new SwerveDriveKinematics(
                 new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
                 new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
@@ -334,11 +337,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
         System.out.println("driveRobotRelative::robotRelativeSpeeds:: " + robotRelativeSpeeds.toString());
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
-        SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, TunerConstants.kSpeedAt12Volts);
 
         logModuleState("Before", getModuleStates());
-        this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(targetSpeeds).withDesaturateWheelSpeeds(true));
+        this.setControl(new SwerveRequest.ApplyRobotSpeeds()
+            .withSpeeds(targetSpeeds)
+            .withDesaturateWheelSpeeds(true)
+        );
         logModuleState("Target", this.getState().ModuleTargets);
         logModuleState("Current", this.getState().ModuleStates);
     }
