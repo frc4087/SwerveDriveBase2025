@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -40,7 +39,6 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.systems.autonomous.PathPlannableSubsystem;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
