@@ -17,7 +17,7 @@
   "java.test.config": [
     {
       "name": "WPIlibUnitTests",
-      "workingDirectory": "${workspaceFolder}/build/jni/release",
+      "workingDirectory": "${workspaceFolder}",
       "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
       "env": {
         "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,

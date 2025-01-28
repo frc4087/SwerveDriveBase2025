@@ -1,5 +1,7 @@
 package frc.robot.systems.autonomous;
+
 import edu.wpi.first.wpilibj.IterativeRobotBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * Describes the high-level behavior required to controll a robot's
@@ -34,4 +36,9 @@ public interface AutonomousController {
      * See {@link IterativeRobotBase#autonomousExit()}
      */
     void runExit();
+
+    /**
+     * Get a specific auto command by name
+     */
+    Command getAuto(String name);
 }
