@@ -78,4 +78,14 @@ public class AutonomousControllerImpl implements AutonomousController {
     public void runExit() {
         Commands.print("No autonomous exit configured").schedule();
     }
+
+    @Override
+    public Command getAuto(String name) {
+        var cmd = autos.get("Config");
+        if (cmd == null) {
+            throw new RuntimeException(String.format("Command %s not found.", name));
+        } else {
+            return cmd;
+        }
+    }
 }
