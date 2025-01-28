@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -31,9 +33,12 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Config;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.subsystems.autonomous.PathPlannableSubsystem;
+import frc.robot.systems.autonomous.PathPlannableSubsystem;
+
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -47,6 +52,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private SwerveDriveKinematics kinematics;
     private SwerveDriveOdometry odometry;
 
+    private Pigeon2 pigeon = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
+    private Double discretizationDelta;
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -59,62 +67,65 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
+    /*
+     * SysId routine for characterizing translation. This is used to find PID gains
+     * for the drive motors.
+     */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> setControl(m_translationCharacterization.withVolts(output)),
-            null,
+            new SysIdRoutine.Config(
+                    null, // Use default ramp rate (1 V/s)
+                    Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    output -> setControl(m_translationCharacterization.withVolts(output)),
+                    null,
                     this));
 
-    /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
+    /*
+     * SysId routine for characterizing steer. This is used to find PID gains for
+     * the steer motors.
+     */
+    @SuppressWarnings("unused")
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(7), // Use dynamic voltage of 7 V
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            volts -> setControl(m_steerCharacterization.withVolts(volts)),
-            null,
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                    null, // Use default ramp rate (1 V/s)
+                    Volts.of(7), // Use dynamic voltage of 7 V
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdSteer_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    volts -> setControl(m_steerCharacterization.withVolts(volts)),
+                    null,
+                    this));
 
     /*
      * SysId routine for characterizing rotation.
-     * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
-     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
+     * This is used to find PID gains for the FieldCentricFacingAngle
+     * HeadingController.
+     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on
+     * importing the log to SysId.
      */
+    @SuppressWarnings("unused")
     private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            /* This is in radians per second², but SysId only supports "volts per second" */
-            Volts.of(Math.PI / 6).per(Second),
-            /* This is in radians per second, but SysId only supports "volts" */
-            Volts.of(Math.PI),
-            null, // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> {
-                /* output is actually radians per second, but SysId only supports "volts" */
-                setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-                /* also log the requested output for SysId */
-                SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
-            },
-            null,
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                    /* This is in radians per second², but SysId only supports "volts per second" */
+                    Volts.of(Math.PI / 6).per(Second),
+                    /* This is in radians per second, but SysId only supports "volts" */
+                    Volts.of(Math.PI),
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdRotation_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    output -> {
+                        /* output is actually radians per second, but SysId only supports "volts" */
+                        setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
+                        /* also log the requested output for SysId */
+                        SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
+                    },
+                    null,
+                    this));
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
@@ -122,25 +133,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
+     * This constructs the underlying hardware devices, so users should not
+     * construct
+     * the devices themselves. If they need the devices, they can access them
+     * through
      * getters in the classes.
      *
      * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
      * @param modules             Constants for each specific module
      */
     public CommandSwerveDrivetrain(
+            Config config,
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
-        this.initialize();
+        this.initialize(config);
     }
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
+     * This constructs the underlying hardware devices, so users should not
+     * construct
+     * the devices themselves. If they need the devices, they can access them
+     * through
      * getters in the classes.
      *
      * @param drivetrainConstants     Drivetrain-wide constants for the swerve drive
@@ -150,18 +166,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * @param modules                 Constants for each specific module
      */
     public CommandSwerveDrivetrain(
+            Config config,
             SwerveDrivetrainConstants drivetrainConstants,
             double odometryUpdateFrequency,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
-        this.initialize();
+        this.initialize(config);
     }
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
+     * This constructs the underlying hardware devices, so users should not
+     * construct
+     * the devices themselves. If they need the devices, they can access them
+     * through
      * getters in the classes.
      *
      * @param drivetrainConstants       Drivetrain-wide constants for the swerve
@@ -183,6 +202,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * @param modules                   Constants for each specific module
      */
     public CommandSwerveDrivetrain(
+            Config config,
             SwerveDrivetrainConstants drivetrainConstants,
             double odometryUpdateFrequency,
             Matrix<N3, N1> odometryStandardDeviation,
@@ -190,18 +210,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation,
                 modules);
-        this.initialize();
+        this.initialize(config);
     }
 
-    private void initialize() {
+    private void initialize(Config config) {
+        discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
         kinematics = new SwerveDriveKinematics(
                 new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
                 new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
                 new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY));
 
-        // // TODO: Figure out how to initialize odometry
-        // odometry = new SwerveDriveOdometry(kinematics, null, null);
+        odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), getModulePositions());
 
         if (Utils.isSimulation()) {
             startSimThread();
@@ -245,10 +265,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     public void periodic() {
         /*
          * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+         * If we haven't applied the operator perspective before, then we should apply
+         * it regardless of DS state.
+         * This allows us to correct the perspective in case the robot code restarts
+         * mid-match.
+         * Otherwise, only check and apply the operator perspective if the DS is
+         * disabled.
+         * This ensures driving behavior doesn't change until an explicit disable event
+         * occurs during testing.
          */
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
@@ -276,16 +300,27 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public SwerveModulePosition[] getModulePositions() {
+        return this.getState().ModulePositions;
+    }
+
+    public SwerveModuleState[] getModuleStates() {
+        return this.getState().ModuleStates;
+    }
+
     @Override
     public Pose2d getPose() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPose'");
+        return odometry.getPoseMeters();
+    }
+
+    @Override
+    public void resetPose(Pose2d pose) {
+        odometry.resetPose(pose);
     }
 
     @Override
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSpeeds'");
+        return kinematics.toChassisSpeeds(getModuleStates());
     }
 
     /**
@@ -298,21 +333,32 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      */
     @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+        System.out.println("driveRobotRelative::robotRelativeSpeeds:: " + robotRelativeSpeeds.toString());
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
 
-        SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-        setStates(targetStates);
+        logModuleState("Before", getModuleStates());
+        this.setControl(new SwerveRequest.ApplyRobotSpeeds()
+            .withSpeeds(targetSpeeds)
+            .withDesaturateWheelSpeeds(true)
+        );
+        logModuleState("Target", this.getState().ModuleTargets);
+        logModuleState("Current", this.getState().ModuleStates);
     }
 
-    private void setStates(SwerveModuleState[] targetStates) {
-        throw new UnsupportedOperationException("Unimplemented method 'setStates'");
+    private void logModuleState(String prefix, SwerveModuleState[] states) {
+        for (var s : states) {
+            System.out.println(String.format("driveRobotRelative::robotRelativeSpeeds::logModuleState::%s::%s", prefix, s));
+        }
     }
 
     @Override
     public PathFollowingController getPathFollowingController() {
+        Slot0Configs driveGains = TunerConstants.FrontLeft.DriveMotorGains;
+        Slot0Configs steerGains = TunerConstants.FrontLeft.SteerMotorGains;
         return new PPHolonomicDriveController(
-                new PIDConstants(5.0, 0.0, 0.0),
-                new PIDConstants(5.0, 0.0, 0.0));
+            new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
+            new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
+        );
     }
 
     @Override
