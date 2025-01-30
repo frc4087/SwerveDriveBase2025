@@ -44,6 +44,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+    private Double discretizationDelta;
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -204,7 +206,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     private void initialize(Config config) {
         discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
-        // The swerve drive kinematics class supplies kinematics for us.
 
         if (Utils.isSimulation()) {
             startSimThread();
@@ -319,7 +320,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
         System.out.println("driveRobotRelative::robotRelativeSpeeds:: " + robotRelativeSpeeds.toString());
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.getOdometryFrequency());
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
 
         logModuleState("Before", getModuleStates());
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
