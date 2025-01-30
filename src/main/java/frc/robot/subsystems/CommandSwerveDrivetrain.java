@@ -19,10 +19,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
@@ -38,8 +35,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.systems.autonomous.PathPlannableSubsystem;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
@@ -49,10 +44,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    private SwerveDriveKinematics kinematics;
-    private SwerveDriveOdometry odometry;
-
-    private Pigeon2 pigeon = new Pigeon2(TunerConstants.DrivetrainConstants.Pigeon2Id);
     private Double discretizationDelta;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -215,13 +206,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     private void initialize(Config config) {
         discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
-        kinematics = new SwerveDriveKinematics(
-                new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
-                new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
-                new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
-                new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY));
-
-        odometry = new SwerveDriveOdometry(kinematics, pigeon.getRotation2d(), getModulePositions());
+        // The swerve drive kinematics class supplies kinematics for us.
 
         if (Utils.isSimulation()) {
             startSimThread();
@@ -310,17 +295,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
 
     @Override
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        return this.getState().Pose;
     }
 
-    @Override
+    // The SwerveDriveTrain class already has an identical resetPose() function that
+    // is being overriden by the one we wrote, so I have removed ours.
+    /* @Override
     public void resetPose(Pose2d pose) {
-        odometry.resetPose(pose);
-    }
+        this.resetPose(pose);
+    } */
 
     @Override
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-        return kinematics.toChassisSpeeds(getModuleStates());
+        return this.getState().Speeds;
     }
 
     /**
@@ -334,7 +321,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
     @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
         System.out.println("driveRobotRelative::robotRelativeSpeeds:: " + robotRelativeSpeeds.toString());
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.getOdometryFrequency());
 
         logModuleState("Before", getModuleStates());
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
