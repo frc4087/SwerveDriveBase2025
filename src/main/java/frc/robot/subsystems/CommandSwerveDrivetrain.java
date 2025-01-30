@@ -292,17 +292,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         return this.getState().ModuleStates;
     }
 
-    @Override
     public Pose2d getPose() {
         return this.getState().Pose;
     }
 
-    // The SwerveDriveTrain class already has an identical resetPose() function that
-    // is being overriden by the one we wrote, so I have removed ours.
-    /* @Override
-    public void resetPose(Pose2d pose) {
-        this.resetPose(pose);
-    } */
+    // The SwerveDriveTrain class already has a resetPose() function.
 
     @Override
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
