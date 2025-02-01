@@ -9,8 +9,8 @@ import frc.robot.generated.TunerConstants;
 
 public class RollsRUs extends SubsystemBase {
     private TalonFX intakeMotor = new TalonFX(TunerConstants.IntakeMotor);
-    private Integer intakeSpeed;
-    private Integer outputSpeed;
+    private Double intakeSpeed;
+    private Double outputSpeed;
 
     public RollsRUs(Config config) {
         var limitConfigs = new CurrentLimitsConfigs();
@@ -23,8 +23,8 @@ public class RollsRUs extends SubsystemBase {
 
         intakeMotor.getConfigurator().apply(limitConfigs);
 
-        intakeSpeed = config.readIntegerProperty("rollsRUs.motor.intake.speed");
-        outputSpeed = config.readIntegerProperty("rollsRUs.motor.output.speed");
+        intakeSpeed = config.readDoubleProperty("rollsRUs.motor.intake.speed");
+        outputSpeed = config.readDoubleProperty("rollsRUs.motor.output.speed");
 
     }
 

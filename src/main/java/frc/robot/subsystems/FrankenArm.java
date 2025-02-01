@@ -23,8 +23,10 @@ import frc.robot.generated.TunerConstants;
  */
 public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor = new TalonFX(TunerConstants.ArmMotor);
-  private final Integer fwdSpeed;
-  private final Integer backwardSpeed;
+  private final Double fwdSpeed;
+  private final Double backwardSpeed;
+  private final Double fwdStall;
+  private final Double backwardStall;
 
   public FrankenArm(Config config) {
         var limitConfigs = new CurrentLimitsConfigs();
@@ -37,19 +39,26 @@ public class FrankenArm extends SubsystemBase {
 
         armMotor.getConfigurator().apply(limitConfigs);
 
-        fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
-        backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
+        fwdSpeed = config.readDoubleProperty("frankenarm.motor.forwards.speed");
+        backwardSpeed = config.readDoubleProperty("frankenarm.motor.backwards.speed");
+
+        fwdStall = config.readDoubleProperty("frankenarm.motor.forwards.speed.stall");
+        backwardStall = config.readDoubleProperty("frankenarm.motor.backwards.speed.stall");
   }
 
   public Command runFoward() {
-    return this.runEnd(() -> armMotor.set(fwdSpeed), this::stop);
+    return this.runEnd(() -> armMotor.set(fwdSpeed), this::stallfwd);
   }
 
   public Command runBack() {
-    return this.runEnd(() -> armMotor.set(backwardSpeed), this::stop);
+    return this.runEnd(() -> armMotor.set(backwardSpeed), this::stallback);
   }
 
-  private void stop() {
-    armMotor.set(0);
+  private void stallfwd() {
+    armMotor.set(fwdStall);
+  }
+
+  private void stallback() {
+    armMotor.set(backwardStall);
   }
 }
