@@ -97,12 +97,19 @@ public class RobotContainer {
 
   public void setUpOpController() {
     // Controll intake
-    operatorController.povRight().whileTrue(rollsRUs.runOutput());
-    operatorController.povLeft().whileTrue(rollsRUs.runIntake());
+    // operatorController.povRight().whileTrue(rollsRUs.runOutput());
+    // operatorController.povLeft().whileTrue(rollsRUs.runIntake());
+
+    // // Arm Controll
+    // operatorController.povUp().whileTrue(frankenArm.runFoward());
+    // operatorController.povDown().whileTrue(frankenArm.runBack());
+
+    operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
+    operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.povUp().whileTrue(frankenArm.runFoward());
-    operatorController.povDown().whileTrue(frankenArm.runBack());
+    operatorController.x().whileTrue(frankenArm.runFoward());
+    operatorController.b().whileTrue(frankenArm.runBack());
   }
 
   private void setUpTelemetry() {
