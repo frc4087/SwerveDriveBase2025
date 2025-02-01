@@ -280,6 +280,6 @@ public class TunerConstants {
         }
     }
 
-    public static final int IntakeMotor = 41, ArmMotor = 42, ClimbMotor = 43;
+    public static final int IntakeMotor = 41, ArmMotor = 42, ClimbMotor=43;
 
 }
