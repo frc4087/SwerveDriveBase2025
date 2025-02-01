@@ -313,22 +313,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      */
     @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
-        System.out.println("driveRobotRelative::robotRelativeSpeeds:: " + robotRelativeSpeeds.toString());
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
-
-        logModuleState("Before", getModuleStates());
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
             .withSpeeds(targetSpeeds)
+            .withWheelForceFeedforwardsX(driveFeedforwards.robotRelativeForcesX())
+            .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
             .withDesaturateWheelSpeeds(true)
         );
-        logModuleState("Target", this.getState().ModuleTargets);
-        logModuleState("Current", this.getState().ModuleStates);
-    }
-
-    private void logModuleState(String prefix, SwerveModuleState[] states) {
-        for (var s : states) {
-            System.out.println(String.format("driveRobotRelative::robotRelativeSpeeds::logModuleState::%s::%s", prefix, s));
-        }
     }
 
     @Override
