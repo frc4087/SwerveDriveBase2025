@@ -28,16 +28,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Config;
 import frc.robot.generated.CompBotTunerConstants.TunerSwerveDrivetrain;
-import frc.robot.systems.autonomous.PathPlannableSubsystem;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements PathPlannableSubsystem {
+public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -294,9 +294,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         return this.getState().Pose;
     }
 
-    // The SwerveDriveTrain class already has a resetPose() function.
-
-    @Override
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         return this.getState().Speeds;
     }
@@ -309,7 +306,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * we will need to reverse the feedforwards for modules that have been flipped.
      * See the output argument in {@link AutoBuilder#configure}
      */
-    @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
@@ -318,22 +314,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
             .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
             .withDesaturateWheelSpeeds(true)
         );
-    }
-
-    @Override
-    public PathFollowingController getPathFollowingController() {
-        return new PPHolonomicDriveController(
-            new PIDConstants(5,0,0),
-            new PIDConstants(5,0,0)
-        );
-    }
-
-    @Override
-    public boolean isRedAlliance() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
     }
 }
