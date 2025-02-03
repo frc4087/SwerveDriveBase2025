@@ -5,10 +5,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
-import frc.robot.generated.TunerConstants;
 
 public class RollsRUs extends SubsystemBase {
-    private TalonFX intakeMotor = new TalonFX(TunerConstants.IntakeMotor);
+    private TalonFX intakeMotor;
     private Integer intakeSpeed;
     private Integer outputSpeed;
 
@@ -21,7 +20,9 @@ public class RollsRUs extends SubsystemBase {
 
         intakeSpeed = config.readIntegerProperty("rollsRUs.motor.intake.speed");
         outputSpeed = config.readIntegerProperty("rollsRUs.motor.output.speed");
-
+        
+        var intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
+        intakeMotor= new TalonFX(intakeMotorPort);
     }
 
     public Command runIntake() {
