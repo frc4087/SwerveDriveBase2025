@@ -98,7 +98,7 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(new Rotation2d(Math.toRadians(fieldDirectionInDegrees)))));
+    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(new Rotation2d(0))));
   }
 
   public void setUpOpController() {
