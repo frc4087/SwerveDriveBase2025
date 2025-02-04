@@ -24,7 +24,7 @@ public class RobotContainer {
 
   private final Config config = new Config();
 
-  private double MaxSpeed = config.kSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                     // max angular velocity
 
@@ -46,11 +46,11 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
       config,
-      config.drivetrainConstants(), 
-      config.frontLeftModule(), 
-      config.frontRightModule(),
-      config.backLeftModule(),
-      config.backRightModule()
+      config.TunerConstants.getDrivetrainConstants(), 
+      config.TunerConstants.getFrontLeftModule(), 
+      config.TunerConstants.getFrontRightModule(),
+      config.TunerConstants.getBackLeftModule(),
+      config.TunerConstants.getBackRightModule()
   );
 
   public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
