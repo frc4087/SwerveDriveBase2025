@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
@@ -22,7 +21,10 @@ import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
 public class RobotContainer {
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+
+  private final Config config = new Config();
+
+  private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                     // max angular velocity
 
@@ -35,7 +37,6 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final Config config = new Config();
 
   // private final SendableChooser<Command> autoChooser;
 
@@ -45,11 +46,11 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
       config,
-      TunerConstants.DrivetrainConstants, 
-      TunerConstants.FrontLeft, 
-      TunerConstants.FrontRight, 
-      TunerConstants.BackLeft, 
-      TunerConstants.BackRight
+      config.TunerConstants.getDrivetrainConstants(), 
+      config.TunerConstants.getFrontLeftModule(), 
+      config.TunerConstants.getFrontRightModule(),
+      config.TunerConstants.getBackLeftModule(),
+      config.TunerConstants.getBackRightModule()
   );
 
   public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
@@ -58,7 +59,9 @@ public class RobotContainer {
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
 
-  public TalonFX IntakeMotor = new TalonFX(TunerConstants.IntakeMotor);
+
+  Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
+  public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
 
   public RobotContainer() {
     setUpDriverController();
