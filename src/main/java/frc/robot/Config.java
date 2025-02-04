@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.generated.CompBotTunerConstants;
 import frc.robot.generated.PracticeBotTunerConstants;
@@ -95,6 +96,14 @@ public class Config {
         }
     }
 
+    public static boolean isRedAlliance() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+    }
+
     static class TunerConstants {
         private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> frontLeftModule;
         private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> frontRightModule;
@@ -176,5 +185,5 @@ public class Config {
             }
             return kSpeedAt12Volts;
         }
-    }    
+    }
 }
