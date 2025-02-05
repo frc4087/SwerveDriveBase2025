@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -64,10 +65,21 @@ public class RobotContainer {
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
 
   public RobotContainer() {
-    setUpDriverController();
-    setUpOpController();
-    setUpTelemetry();
-  }
+//     CommandSwerveDrivetrain.setDefaultCommand(new SwerveJoystickCmd(
+//     () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis),// driverJoystick.getLeftY(),
+//     () -> driverJoytick.getRawAxis(OIConstants.kDriverXAxis),//driverJoystick.getLeftX(),
+//     () -> driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),//driverJoystick.getRightX(),
+//     () -> !driverJoytick.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx) /* driverJoystick.getAButton()*/));
+// configureButtonBindings();
+//     setUpDriverController();
+//     setUpOpController();
+//     setUpTelemetry();
+//   }
+//   private void configureButtonBindings() {
+//         new JoystickButton(driverJoytick, 2).whenPressed(() -> swerveSubsystem.zeroHeading());//arrumar depois
+      //   
+      //  
+    }
 
   private void setUpDriverController() {
     // Note that X is defined as forward according to WPILib convention,
