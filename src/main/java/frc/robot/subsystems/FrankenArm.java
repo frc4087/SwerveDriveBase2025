@@ -26,16 +26,18 @@ public class FrankenArm extends SubsystemBase {
   private final Integer backwardSpeed;
 
   public FrankenArm(Config config) {
-        var limitConfigs = new CurrentLimitsConfigs();
-        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
-        limitConfigs.StatorCurrentLimitEnable = true;
-        armMotor.getConfigurator().apply(limitConfigs);
+    
+    var armMotorPort = config.readIntegerProperty("ports.arm.motor");
+    armMotor = new TalonFX(armMotorPort);
 
-        fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
-        backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
-        
-        var armMotorPort = config.readIntegerProperty("ports.arm.motor");
-        armMotor = new TalonFX(armMotorPort);
+    var limitConfigs = new CurrentLimitsConfigs();
+    limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
+    limitConfigs.StatorCurrentLimitEnable = true;
+    armMotor.getConfigurator().apply(limitConfigs);
+
+    fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
+    backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
+    
   }
 
   public Command runFoward() {

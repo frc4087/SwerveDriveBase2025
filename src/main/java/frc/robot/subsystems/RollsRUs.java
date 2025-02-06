@@ -12,6 +12,10 @@ public class RollsRUs extends SubsystemBase {
     private Integer outputSpeed;
 
     public RollsRUs(Config config) {
+
+        var intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
+        intakeMotor = new TalonFX(intakeMotorPort);
+        
         var limitConfigs = new CurrentLimitsConfigs();
         limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
@@ -21,8 +25,6 @@ public class RollsRUs extends SubsystemBase {
         intakeSpeed = config.readIntegerProperty("rollsRUs.motor.intake.speed");
         outputSpeed = config.readIntegerProperty("rollsRUs.motor.output.speed");
         
-        var intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
-        intakeMotor= new TalonFX(intakeMotorPort);
     }
 
     public Command runIntake() {
