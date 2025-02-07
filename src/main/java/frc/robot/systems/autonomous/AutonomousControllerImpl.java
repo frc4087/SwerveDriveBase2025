@@ -54,7 +54,8 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private void loadAutos() {
         autos = Map.of(
-            "Config", new PathPlannerAuto("Config")
+            "Config", new PathPlannerAuto("Config"),
+            "Test Auto", new PathPlannerAuto("Test Auto")
         );
     }
 
@@ -73,7 +74,7 @@ public class AutonomousControllerImpl implements AutonomousController {
     @Override
     public void runInit() {
         CommandScheduler.getInstance().cancelAll();
-        autos.get("Config").schedule();
+        autos.get("Test Auto").schedule();
     }
 
     @Override
