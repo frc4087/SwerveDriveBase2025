@@ -55,7 +55,8 @@ public class AutonomousControllerImpl implements AutonomousController {
     private void loadAutos() {
         autos = Map.of(
             "Config", new PathPlannerAuto("Config"),
-            "Test Auto", new PathPlannerAuto("Test Auto")
+            "Test Auto", new PathPlannerAuto("Test Auto"),
+            "Simple Coral Auto", new PathPlannerAuto("Simple Coral Auto")
         );
     }
 
