@@ -31,7 +31,17 @@ public class StrikeAPose extends SubsystemBase {
         return headingController.calculate(currentHeading, desiredHeading);
     }
 
+    public void maintainHeading(double x, double y, boolean fieldRelative) {
+        double correction = calculateCorrection();
+        double ffRotation = Math.signum(correction) * CompBotTunerConstants.ROTATE_TO_TARGET_FF;
+        double desiredRotation = correction - ffRotation;
 
+        if (Math.abs(desiredRotation) < CompBotTunerConstants.ROTATION_DEADBAND_THRESHOLD) {
+            desiredRotation = 0;
+        }
+
+        drivetrain.drive(x, y, desiredRotation);
+    }
     }
 
     // public int convertCardinalDirections(int povAngleDeg) {
