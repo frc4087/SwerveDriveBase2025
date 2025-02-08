@@ -75,7 +75,7 @@ public class AutonomousControllerImpl implements AutonomousController {
     @Override
     public void runInit() {
         CommandScheduler.getInstance().cancelAll();
-        autos.get("Test Auto").schedule();
+        autoChooser.getSelected().schedule();
     }
 
     @Override

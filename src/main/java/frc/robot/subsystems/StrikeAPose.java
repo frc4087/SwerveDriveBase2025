@@ -6,13 +6,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.CompBotTunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class StrikeAPose extends SubsystemBase {
     private final PIDController headingController;
-    private double desiredHeading;
-    private final DrivetrainSubsystem drivetrain;
+    public double desiredHeading;
+    private final CommandSwerveDrivetrain drivetrain;
 
-    public StrikeAPose(DrivetrainSubsystem drivetrain) {
+    public StrikeAPose(CommandSwerveDrivetrain drivetrain) {
         this.drivetrain = drivetrain;
         this.headingController = new PIDController(0.015, 0, 0.000); // PID constants from the Chief Delphi Team
         this.headingController.enableContinuousInput(-180, 180); // This was recommended so we don't correct error from the more inefficient side.
