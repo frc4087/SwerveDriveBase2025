@@ -178,7 +178,7 @@ public class CompBotTunerConstants {
 
     //Snap to Heading Constants
 
-    public static final PIDController ROTATE_TO_TARGET_PID_CONTROLLER = new PIDController(0.015, 0, 0.000);
+    //public static final PIDController ROTATE_TO_TARGET_PID_CONTROLLER = new PIDController(0.015, 0, 0.000);
 
     public static final double ROTATE_TO_TARGET_FF = 0.01;
 

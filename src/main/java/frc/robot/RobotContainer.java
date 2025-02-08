@@ -104,10 +104,11 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // driverController.povUp().whileTrue(strikeAPose.snapTo());
-    // driverController.povRight().whileTrue(strikeAPose.snapTo());
-    // driverController.povDown().whileTrue(strikeAPose.snapTo());
-    // driverController.povLeft().whileTrue(strikeAPose.snapTo());
+    strikeAPose.sn
+    driverController.povUp().onTrue(strikeAPose.snapTo(0.0, false));
+    driverController.povRight().onTrue(strikeAPose.snapTo(90.0, false));
+    driverController.povDown().onTrue(strikeAPose.snapTo(180.0, false));
+    driverController.povLeft().onTrue(strikeAPose.snapTo(270.0, false));
   }
 
   public void setUpOpController() {
