@@ -30,6 +30,11 @@ public class AutonomousControllerImpl implements AutonomousController {
     private final SendableChooser<Command> autoChooser;
 
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem) {
+        var controller = new PPHolonomicDriveController(
+            readPidConstants(config, "translation"),
+            readPidConstants(config, "rotation"),
+        );
+
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -41,7 +46,7 @@ public class AutonomousControllerImpl implements AutonomousController {
             driveSystem::resetPose,
             driveSystem::getRobotRelativeChassisSpeeds,
             driveSystem::driveRobotRelative,
-            createPathFollowingController(),
+            controller,
             config.generatedConfig,
             requiresFlip,
             driveSystem
@@ -72,6 +77,14 @@ public class AutonomousControllerImpl implements AutonomousController {
         return controller;
     }
 
+    private PIDConstants readPidConstants(Config config, String type) {
+        return new PIDConstants(
+            config.readDoubleProperty(String.format("pfc.pid.%s.kp", type)),
+            config.readDoubleProperty(String.format("pfc.pid.%s.ki", type)),
+            config.readDoubleProperty(String.format("pfc.pid.%s.kd", type))
+        );
+    }
+
     @Override
     public void runInit() {
         CommandScheduler.getInstance().cancelAll();
@@ -84,12 +97,5 @@ public class AutonomousControllerImpl implements AutonomousController {
     @Override
     public void runExit() {
         Commands.print("No autonomous exit configured").schedule();
-    }
-
-    private PathFollowingController createPathFollowingController() {
-        return new PPHolonomicDriveController(
-            new PIDConstants(5, 0, 0),
-            new PIDConstants(5, 0, 0)
-        );
     }
 }
