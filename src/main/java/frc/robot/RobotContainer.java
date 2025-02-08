@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
+import frc.robot.subsystems.StrikeAPose;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -61,6 +62,7 @@ public class RobotContainer {
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
 
+  public final StrikeAPose strikeAPose = new StrikeAPose(drivetrain);
 
   Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
@@ -101,18 +103,15 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(new Rotation2d(0))));
+
+    // driverController.povUp().whileTrue(strikeAPose.snapTo());
+    // driverController.povRight().whileTrue(strikeAPose.snapTo());
+    // driverController.povDown().whileTrue(strikeAPose.snapTo());
+    // driverController.povLeft().whileTrue(strikeAPose.snapTo());
   }
 
   public void setUpOpController() {
-    // Controll intake
-    // operatorController.povRight().whileTrue(rollsRUs.runOutput());
-    // operatorController.povLeft().whileTrue(rollsRUs.runIntake());
-
-    // // Arm Controll
-    // operatorController.povUp().whileTrue(frankenArm.runFoward());
-    // operatorController.povDown().whileTrue(frankenArm.runBack());
-
+    // Intake Control
     operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
