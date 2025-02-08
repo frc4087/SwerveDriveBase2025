@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class StrikeAPose extends SubsystemBase {
     private final PIDController headingController;
     private final CommandSwerveDrivetrain drivetrain;
+    public double desiredHeading;
 
     public StrikeAPose(CommandSwerveDrivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -22,7 +23,7 @@ public class StrikeAPose extends SubsystemBase {
         this.headingController.enableContinuousInput(-180, 180); // This was recommended so we don't correct error from the more inefficient side.
     }
 
-    public Command snapTo(Double desiredHeading, Boolean isFieldRelative) {
+    public Command snappy(Double desiredHeading, Boolean isFieldRelative) {
         return new InstantCommand(() -> maintainHeading(0, 0, desiredHeading, isFieldRelative)); 
     }
 
@@ -31,8 +32,8 @@ public class StrikeAPose extends SubsystemBase {
         return headingController.calculate(currentHeading, desiredHeading);
     }
 
-    public void maintainHeading(double x, double y, boolean fieldRelative) {
-        double correction = calculateCorrection();
+    public void maintainHeading(double x, double y, double desiredHeading, boolean fieldRelative) {
+        double correction = calculateCorrection(desiredHeading);
         double ffRotation = Math.signum(correction) * CompBotTunerConstants.ROTATE_TO_TARGET_FF;
         double desiredRotation = correction - ffRotation;
 
@@ -41,7 +42,6 @@ public class StrikeAPose extends SubsystemBase {
         }
 
         drivetrain.drive(x, y, desiredRotation);
-    }
     }
 
     // public int convertCardinalDirections(int povAngleDeg) {
