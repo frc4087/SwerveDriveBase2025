@@ -5,13 +5,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
-import frc.robot.generated.TunerConstants;
 
 public class SirLiftsALot extends SubsystemBase {
-    private TalonFX climbMotor = new TalonFX(TunerConstants.ClimbMotor);
+    private TalonFX climbMotor;
     private Integer climbSpeed;
 
     public SirLiftsALot(Config config) {
+        var climbMotorPort = config.readIntegerProperty("ports.climb.motor");
+        climbMotor = new TalonFX(climbMotorPort);
+
         var limitConfigs = new CurrentLimitsConfigs();
 
         limitConfigs.StatorCurrentLimit = config.readIntegerProperty("sirLiftsALot.motor.statorCurrent.limit.amps");
@@ -23,7 +25,6 @@ public class SirLiftsALot extends SubsystemBase {
         climbMotor.getConfigurator().apply(limitConfigs);
 
         climbSpeed = config.readIntegerProperty("sirLiftsALot.motor.climb.speed");
-
     }
 
     public Command runClimber() {

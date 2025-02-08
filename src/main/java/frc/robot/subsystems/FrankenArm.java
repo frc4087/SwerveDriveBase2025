@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
-import frc.robot.generated.TunerConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,13 +21,16 @@ import frc.robot.generated.TunerConstants;
  * project.
  */
 public class FrankenArm extends SubsystemBase {
-  public TalonFX armMotor = new TalonFX(TunerConstants.ArmMotor);
+  public TalonFX armMotor;
   private final Double fwdSpeed;
   private final Double backwardSpeed;
   private final Double fwdStall;
   private final Double backwardStall;
 
   public FrankenArm(Config config) {
+        var armMotorPort = config.readIntegerProperty("ports.arm.motor");
+        armMotor = new TalonFX(armMotorPort);
+
         var limitConfigs = new CurrentLimitsConfigs();
 
         limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");

@@ -6,14 +6,10 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.Matrix;
@@ -29,17 +25,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Config;
-import frc.robot.generated.TunerConstants;
-import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.systems.autonomous.PathPlannableSubsystem;
+import frc.robot.generated.PracticeBotTunerConstants.TunerSwerveDrivetrain;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements PathPlannableSubsystem {
+public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -296,9 +291,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
         return this.getState().Pose;
     }
 
-    // The SwerveDriveTrain class already has a resetPose() function.
-
-    @Override
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         return this.getState().Speeds;
     }
@@ -311,7 +303,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
      * we will need to reverse the feedforwards for modules that have been flipped.
      * See the output argument in {@link AutoBuilder#configure}
      */
-    @Override
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
@@ -320,24 +311,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Pa
             .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
             .withDesaturateWheelSpeeds(true)
         );
-    }
-
-    @Override
-    public PathFollowingController getPathFollowingController() {
-        Slot0Configs driveGains = TunerConstants.FrontLeft.DriveMotorGains;
-        Slot0Configs steerGains = TunerConstants.FrontLeft.SteerMotorGains;
-        return new PPHolonomicDriveController(
-            new PIDConstants(driveGains.kP, driveGains.kI, driveGains.kD),
-            new PIDConstants(steerGains.kP, steerGains.kI, steerGains.kD)
-        );
-    }
-
-    @Override
-    public boolean isRedAlliance() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
     }
 }

@@ -5,14 +5,17 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
-import frc.robot.generated.TunerConstants;
 
 public class RollsRUs extends SubsystemBase {
-    private TalonFX intakeMotor = new TalonFX(TunerConstants.IntakeMotor);
+    private TalonFX intakeMotor;
     private Double intakeSpeed;
     private Double outputSpeed;
 
     public RollsRUs(Config config) {
+
+        var intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
+        intakeMotor = new TalonFX(intakeMotorPort);
+        
         var limitConfigs = new CurrentLimitsConfigs();
 
         limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.statorCurrent.limit.amps");
