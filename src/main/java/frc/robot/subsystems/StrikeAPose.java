@@ -35,7 +35,8 @@ public class StrikeAPose extends SubsystemBase {
     }
 
     public Command snapTo(Double degrees, Boolean isFieldRelative) {
-
+        setDesiredHeading(degrees);
+        return new InstantCommand(() -> maintainHeading(0, 0, isFieldRelative)); 
     }
 
     public void maintainHeading(double x, double y, boolean fieldRelative) {
