@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -300,10 +301,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().RawHeading.getDegrees();
     }
 
-    public void drive(double xSpeed, double ySpeed, double rot) {
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation());
-
-        this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
+    public void drive(double xSpeed, double ySpeed, double radSpeed) {
+        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, radSpeed);
+        // ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, radSpeed, getPose().getRotation());
+        this.setControl(new SwerveRequest.ApplyFieldSpeeds()
+            .withSpeeds(speeds)
+        );
+        System.out.println(String.format(
+            "Drive velocities: (%s, %s) at %s rads. Total: %s",
+            speeds.vxMetersPerSecond,
+            speeds.vyMetersPerSecond,
+            speeds.omegaRadiansPerSecond,
+            speeds.toString()
+        ));
     }
     
     

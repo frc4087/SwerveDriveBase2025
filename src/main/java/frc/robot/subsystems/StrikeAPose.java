@@ -13,36 +13,40 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 //import edu.wpi.first.wpilibj2.command.CommandBase;//
 
 public class StrikeAPose extends SubsystemBase {
-    private final PIDController headingController;
+    // private final PIDController headingController;
     private final CommandSwerveDrivetrain drivetrain;
     public double desiredHeading;
 
     public StrikeAPose(CommandSwerveDrivetrain drivetrain) {
         this.drivetrain = drivetrain;
-        this.headingController = new PIDController(0.015, 0, 0.000); // PID constants from the Chief Delphi Team
-        this.headingController.enableContinuousInput(-180, 180); // This was recommended so we don't correct error from the more inefficient side.
+        // this.headingController = new PIDController(0.015, 0, 0.000); // PID constants from the Chief Delphi Team
+        // this.headingController.enableContinuousInput(-180, 180); // This was recommended so we don't correct error from the more inefficient side.
     }
 
     public Command snappy(Double desiredHeading, Boolean isFieldRelative) {
-        return new InstantCommand(() -> maintainHeading(0, 0, desiredHeading, isFieldRelative)); 
+        // return new InstantCommand(() -> maintainHeading(desiredHeading, isFieldRelative)); 
+        return drivetrain.run(() -> {
+                drivetrain.drive(0, 0, 3.14159/2);
+            })
+            .withTimeout(1);
     }
 
-    double calculateCorrection(double desiredHeading) {
-        double currentHeading = drivetrain.getHeadingDegrees();
-        return headingController.calculate(currentHeading, desiredHeading);
-    }
+    // double calculateCorrection(double desiredHeading) {
+    //     double currentHeading = drivetrain.getHeadingDegrees();
+    //     return headingController.calculate(currentHeading, desiredHeading);
+    // }
 
-    public void maintainHeading(double x, double y, double desiredHeading, boolean fieldRelative) {
-        double correction = calculateCorrection(desiredHeading);
-        double ffRotation = Math.signum(correction) * CompBotTunerConstants.ROTATE_TO_TARGET_FF;
-        double desiredRotation = correction - ffRotation;
+    // public void maintainHeading(double desiredHeading, boolean fieldRelative) {
+    //     double correction = calculateCorrection(desiredHeading);
+    //     double ffRotation = Math.signum(correction) * CompBotTunerConstants.ROTATE_TO_TARGET_FF;
+    //     double desiredRotation = correction - ffRotation;
 
-        if (Math.abs(desiredRotation) < CompBotTunerConstants.ROTATION_DEADBAND_THRESHOLD) {
-            desiredRotation = 0;
-        }
+    //     if (Math.abs(desiredRotation) < CompBotTunerConstants.ROTATION_DEADBAND_THRESHOLD) {
+    //         desiredRotation = 0;
+    //     }
 
-        drivetrain.drive(x, y, desiredRotation);
-    }
+    //     drivetrain.drive(0, 0, 1);
+    // }
 
     // public int convertCardinalDirections(int povAngleDeg) {
     //     if (povAngleDeg == 270) {
