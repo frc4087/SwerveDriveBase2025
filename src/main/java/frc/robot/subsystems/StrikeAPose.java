@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.CompBotTunerConstants;
@@ -33,6 +34,10 @@ public class StrikeAPose extends SubsystemBase {
         return headingController.calculate(currentHeading, desiredHeading);
     }
 
+    public Command snapTo(Double degrees, Boolean isFieldRelative) {
+
+    }
+
     public void maintainHeading(double x, double y, boolean fieldRelative) {
         double correction = calculateCorrection();
         double ffRotation = Math.signum(correction) * CompBotTunerConstants.ROTATE_TO_TARGET_FF;
@@ -42,7 +47,7 @@ public class StrikeAPose extends SubsystemBase {
             desiredRotation = 0;
         }
 
-        drivetrain.drive(x, y, desiredRotation, fieldRelative);
+        drivetrain.drive(x, y, desiredRotation);
     }
 
     public int convertCardinalDirections(int povAngleDeg) {
@@ -62,7 +67,7 @@ public class StrikeAPose extends SubsystemBase {
             maintainHeading(x, y, fieldRelative);
         } else {
             setDesiredHeading(drivetrain.getHeadingDegrees());
-            drivetrain.drive(x, y, rot, fieldRelative);
+            drivetrain.drive(x, y, rot);
         }
     }
 }

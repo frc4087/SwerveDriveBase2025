@@ -306,7 +306,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
     }
     
-}
     
     /**
      * TODO: update after optimization
@@ -325,4 +324,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withDesaturateWheelSpeeds(true)
         );
         //new SwerveRequest.ApplyFieldSpeeds().with//
+    }
 }
