@@ -40,9 +40,9 @@ public class RobotContainer {
 
   // private final SendableChooser<Command> autoChooser;
 
-  private final CommandXboxController driverController = new CommandXboxController(0);
+  public final CommandXboxController driverController = new CommandXboxController(0);
 
-  private final CommandXboxController operatorController = new CommandXboxController(1);
+  public final CommandXboxController operatorController = new CommandXboxController(1);
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
       config,
