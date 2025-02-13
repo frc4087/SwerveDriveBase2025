@@ -25,8 +25,6 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private static AutonomousControllerImpl controller;
 
-    private Map<String, PathPlannerAuto> autos;
-
     private final SendableChooser<Command> autoChooser;
 
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem) {
@@ -51,18 +49,9 @@ public class AutonomousControllerImpl implements AutonomousController {
             requiresFlip,
             driveSystem
         );
-        loadAutos();
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
-    }
-
-    private void loadAutos() {
-        autos = Map.of(
-            "Config", new PathPlannerAuto("Config"),
-            "Test Auto", new PathPlannerAuto("Test Auto"),
-            "Simple Coral Auto", new PathPlannerAuto("Simple Coral Auto")
-        );
     }
 
     public static synchronized AutonomousControllerImpl initialize(Config config, CommandSwerveDrivetrain driveSystem) {
@@ -88,7 +77,7 @@ public class AutonomousControllerImpl implements AutonomousController {
     @Override
     public void runInit() {
         CommandScheduler.getInstance().cancelAll();
-        autos.get("Test Auto").schedule();
+        autoChooser.getSelected().schedule();
     }
 
     @Override
