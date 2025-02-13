@@ -31,7 +31,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_robotContainer.auto().runInit();
+    // m_robotContainer.auto().runInit();
+
+    m_robotContainer.strikeAPose
+      .snappy(90.0, true)
+      .schedule();
 
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.schedule();

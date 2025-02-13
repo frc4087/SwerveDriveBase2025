@@ -296,24 +296,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         return this.getState().Speeds;
     }
-    
-    public double getHeadingDegrees() {
-        return this.getState().RawHeading.getDegrees();
-    }
 
     public void drive(double xSpeed, double ySpeed, double radSpeed) {
         ChassisSpeeds speeds = new ChassisSpeeds(0, 0, radSpeed);
-        // ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, radSpeed, getPose().getRotation());
-        this.setControl(new SwerveRequest.ApplyFieldSpeeds()
+        this.setControl(new SwerveRequest.ApplyRobotSpeeds()
             .withSpeeds(speeds)
         );
-        System.out.println(String.format(
-            "Drive velocities: (%s, %s) at %s rads. Total: %s",
-            speeds.vxMetersPerSecond,
-            speeds.vyMetersPerSecond,
-            speeds.omegaRadiansPerSecond,
-            speeds.toString()
-        ));
     }
     
     
