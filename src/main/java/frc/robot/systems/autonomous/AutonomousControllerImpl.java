@@ -32,7 +32,7 @@ public class AutonomousControllerImpl implements AutonomousController {
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem) {
         var controller = new PPHolonomicDriveController(
             readPidConstants(config, "translation"),
-            readPidConstants(config, "rotation"),
+            readPidConstants(config, "rotation")
         );
 
         // Boolean supplier that controls when the path will be mirrored for the red
