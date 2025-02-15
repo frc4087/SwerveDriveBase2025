@@ -23,7 +23,6 @@ import frc.robot.systems.autonomous.AutonomousControllerImpl;
 public class RobotContainer {
 
   public final Config config = new Config();
-  private final RobotContainer m_robotContainer;
 
   private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -37,11 +36,6 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
-
-
-  private Integer fieldDirectionInDegrees;
-
-  // private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
 
@@ -69,9 +63,6 @@ public class RobotContainer {
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
-
-    fieldDirectionInDegrees = config.readIntegerProperty("robotContainer.fieldDirection");
-
   }
 
   private void setUpDriverController() {
@@ -102,15 +93,27 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-    new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
-    .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-    .schedule();
     
-    driverController.povUp().onTrue(RotateBotCommand.(0.0, false));
-    driverController.povRight().onTrue(RotateBotCommand.onTrue(90.0, false));
-    driverController.povDown().onTrue(RotateBotCommand.onTrue(180.0, false));
-    driverController.povLeft().onTrue(RotateBotCommand.onTrue(270.0, false));
+    driverController.povUp().onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withRobotRelativeCurrentRads(Radians.convertFrom(-180, Degree))
+    );
+
+    driverController.povRight().onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
+    );
+    driverController.povDown().onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withRobotRelativeCurrentRads(Radians.convertFrom(180, Degree))
+    );
+    driverController.povLeft().onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withRobotRelativeCurrentRads(Radians.convertFrom(-90, Degree))
+    );
+
+    
+    
   }
 
   public void setUpOpController() {

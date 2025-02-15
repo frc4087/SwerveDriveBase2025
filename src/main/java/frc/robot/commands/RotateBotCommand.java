@@ -30,7 +30,7 @@ public class RotateBotCommand extends Command {
         return this;
     }
     public RotateBotCommand withRobotRelativeStartRads(double targetRads) {
-        this.targetRads = targetRads + drivetrain.getState().Pose.getRotation().getRadians();
+        this.targetRads = targetRads;
         return this;
     }
 
