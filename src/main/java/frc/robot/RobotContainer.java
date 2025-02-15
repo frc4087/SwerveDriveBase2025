@@ -38,6 +38,8 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
 
+  private Integer fieldDirectionInDegrees;
+
   // private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -67,6 +69,9 @@ public class RobotContainer {
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
+
+    fieldDirectionInDegrees = config.readIntegerProperty("robotContainer.fieldDirection");
+
   }
 
   private void setUpDriverController() {
@@ -96,16 +101,24 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(new Rotation2d(0))));
   }
 
   public void setUpOpController() {
     // Controll intake
-    operatorController.povRight().whileTrue(rollsRUs.runOutput());
-    operatorController.povLeft().whileTrue(rollsRUs.runIntake());
+    // operatorController.povRight().whileTrue(rollsRUs.runOutput());
+    // operatorController.povLeft().whileTrue(rollsRUs.runIntake());
+
+    // // Arm Controll
+    // operatorController.povUp().whileTrue(frankenArm.runFoward());
+    // operatorController.povDown().whileTrue(frankenArm.runBack());
+
+    operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
+    operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.povUp().whileTrue(frankenArm.runFoward());
-    operatorController.povDown().whileTrue(frankenArm.runBack());
+    operatorController.x().whileTrue(frankenArm.runFoward());
+    operatorController.b().whileTrue(frankenArm.runBack());
   }
 
   private void setUpTelemetry() {
