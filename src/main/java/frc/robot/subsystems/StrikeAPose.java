@@ -26,13 +26,12 @@ public class StrikeAPose extends SubsystemBase {
         this.headingController.enableContinuousInput(-Math.PI, Math.PI); // This was recommended so we don't correct error from the more inefficient side.
     }
 
-    public Command snappy(Double inputTarget, Boolean isFieldRelative) {
-        var targetRads = determineTargetRadFromRelative(inputTarget);
+    public Command snappy(Double inputTargetRads, Boolean isFieldRelative) {
+        var targetRads = determineTargetRadFromRelative(inputTargetRads);
         System.out.println(String.format("Target: %s", targetRads));
         return new Command() {
             @Override
             public void execute() {
-                System.out.println("RUNNING");
                 double current = drivetrain.getState().Pose.getRotation().getRadians();
                 double next = headingController.calculate(current, targetRads);
                 drivetrain.drive(0, 0, next);

@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.Rotations;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import static edu.wpi.first.units.Units.*;
 
 public class Robot extends TimedRobot {
 
@@ -32,9 +36,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.auto().runInit();
-
     m_robotContainer.strikeAPose
-      .snappy(90.0, true)
+      .snappy(Radians.convertFrom(90, Degree), true)
       .schedule();
 
     // if (m_autonomousCommand != null) {
