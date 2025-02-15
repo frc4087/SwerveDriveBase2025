@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Config;
 import frc.robot.generated.PracticeBotTunerConstants.TunerSwerveDrivetrain;
-import frc.robot.subsystems.StrikeAPose;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -298,9 +297,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void drive(double xSpeed, double ySpeed, double radSpeed) {
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, radSpeed);
+        ChassisSpeeds speeds = new ChassisSpeeds(xSpeed, ySpeed, radSpeed);
+        // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(speeds, this.discretizationDelta);
+
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
             .withSpeeds(speeds)
+            // .withDesaturateWheelSpeeds(true)
         );
     }
     
@@ -321,6 +323,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
             .withDesaturateWheelSpeeds(true)
         );
-        //new SwerveRequest.ApplyFieldSpeeds().with//
     }
 }

@@ -13,17 +13,17 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
-import frc.robot.subsystems.StrikeAPose;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
 public class RobotContainer {
 
-  private final Config config = new Config();
+  public final Config config = new Config();
+  private final RobotContainer m_robotContainer;
 
   private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -61,8 +61,6 @@ public class RobotContainer {
   public final FrankenArm frankenArm = new FrankenArm(config);
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
-
-  public final StrikeAPose strikeAPose = new StrikeAPose(drivetrain);
 
   Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
@@ -104,11 +102,15 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
+    .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
+    .schedule();
     
-    driverController.povUp().whileTrue(strikeAPose.snappy(0.0, false));
-    driverController.povRight().onTrue(strikeAPose.snappy(90.0, false));
-    driverController.povDown().whileTrue(strikeAPose.snappy(180.0, false));
-    driverController.povLeft().whileTrue(strikeAPose.snappy(270.0, false));
+    driverController.povUp().onTrue(RotateBotCommand.(0.0, false));
+    driverController.povRight().onTrue(RotateBotCommand.onTrue(90.0, false));
+    driverController.povDown().onTrue(RotateBotCommand.onTrue(180.0, false));
+    driverController.povLeft().onTrue(RotateBotCommand.onTrue(270.0, false));
   }
 
   public void setUpOpController() {
