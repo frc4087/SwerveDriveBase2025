@@ -12,6 +12,7 @@ import com.pathplanner.lib.controllers.PathFollowingController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FrankenArm;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +30,13 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
-    private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem) {
+    private FrankenArm frankenArm;
+
+    private AutonomousControllerImpl(
+        Config config, 
+        CommandSwerveDrivetrain driveSystem,
+        FrankenArm frankenArm
+    ) {
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -50,6 +57,8 @@ public class AutonomousControllerImpl implements AutonomousController {
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
+
+        this.frankenArm = frankenArm;
     }
 
     private void loadAutos() {
@@ -60,8 +69,12 @@ public class AutonomousControllerImpl implements AutonomousController {
         );
     }
 
-    public static synchronized AutonomousControllerImpl initialize(Config config, CommandSwerveDrivetrain driveSystem) {
-        controller = new AutonomousControllerImpl(config, driveSystem);
+    public static synchronized AutonomousControllerImpl initialize(
+        Config config,
+        CommandSwerveDrivetrain driveSystem,
+        FrankenArm frankenArm
+    ) {
+        controller = new AutonomousControllerImpl(config, driveSystem, frankenArm);
         return controller;
     }
 
@@ -79,7 +92,11 @@ public class AutonomousControllerImpl implements AutonomousController {
     }
 
     @Override
-    public void runPeriodic() {}
+    public void runPeriodic() {
+        Commands.run(() -> {
+            frankenArm.periodicConfig();
+        }, frankenArm).schedule();
+    }
 
     @Override
     public void runExit() {

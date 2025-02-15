@@ -6,14 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FrankenArm;
 
 import static edu.wpi.first.units.Units.*;
 
 public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
+  //private final FrankenArm m_frankenArm;
 
   public Robot() {
    m_robotContainer = new RobotContainer();
@@ -64,7 +67,11 @@ public class Robot extends TimedRobot {
   public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Commands.run(() -> {
+      m_robotContainer.frankenArm.periodicConfig();
+    }, m_robotContainer.frankenArm).schedule();
+  }
 
   @Override
   public void teleopExit() {}

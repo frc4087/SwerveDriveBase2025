@@ -56,9 +56,14 @@ public class RobotContainer {
       config.TunerConstants.getBackRightModule()
   );
 
-  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
-
   public final FrankenArm frankenArm = new FrankenArm(config);
+
+  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(
+    config, 
+    drivetrain,
+    frankenArm
+  );
+
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
 
