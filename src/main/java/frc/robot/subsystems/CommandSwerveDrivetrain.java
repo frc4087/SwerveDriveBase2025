@@ -20,7 +20,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -296,13 +295,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Speeds;
     }
 
-    public void spinnySpeedRad(double xSpeed, double ySpeed, double radSpeed) {
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
-        // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(speeds, this.discretizationDelta);
+    public Double getRotationRads() {
+        return this.getState().Pose.getRotation().getRadians();
+    }
 
+    public void spinWithSpeedRad(double radSpeed) {
+        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, radSpeed);
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
             .withSpeeds(speeds)
-            // .withDesaturateWheelSpeeds(true)
+            .withDesaturateWheelSpeeds(true)
         );
     }
     

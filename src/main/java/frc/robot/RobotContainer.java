@@ -39,7 +39,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController driverController = new CommandXboxController(0);
-
+ 
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
@@ -95,19 +95,24 @@ public class RobotContainer {
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     
-    driverController.povUp().onTrue(
-      new RotateBotCommand(drivetrain, config)
-        .withRobotRelativeCurrentRads(Radians.convertFrom(-180, Degree))
-    );
+    // driverController.povUp().onTrue(
+    //   new RotateBotCommand(drivetrain, config)
+    //     .withRobotRelativeCurrentRads(Radians.convertFrom(-180, Degree))
+    // );
 
     driverController.povRight().onTrue(
       new RotateBotCommand(drivetrain, config)
         .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
     );
-    driverController.povDown().onTrue(
+
+    driverController.povUp().onTrue(
       new RotateBotCommand(drivetrain, config)
-        .withRobotRelativeCurrentRads(Radians.convertFrom(180, Degree))
+        .withRobotRelativeStartRads(Radians.convertFrom(90, Degree))
     );
+    // driverController.povDown().onTrue(
+    //   new RotateBotCommand(drivetrain, config)
+    //     .withRobotRelativeCurrentRads(Radians.convertFrom(180, Degree))
+    // );
     driverController.povLeft().onTrue(
       new RotateBotCommand(drivetrain, config)
         .withRobotRelativeCurrentRads(Radians.convertFrom(-90, Degree))

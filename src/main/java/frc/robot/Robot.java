@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.RotateBotCommand;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -35,7 +34,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // m_robotContainer.auto().runInit();
+    m_robotContainer.auto().runInit();
     // m_robotContainer.strikeAPose
     //   .snappy(Radians.convertFrom(90, Degree), true)
     //   .schedule();
@@ -44,10 +43,9 @@ public class Robot extends TimedRobot {
     //   m_autonomousCommand.schedule();
     // }
     
-    new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
-      .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-      .schedule();
-
+    // new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
+    //   .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
+    //   .schedule();
   }
 
   @Override
