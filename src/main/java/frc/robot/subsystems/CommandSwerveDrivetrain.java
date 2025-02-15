@@ -296,8 +296,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return this.getState().Speeds;
     }
 
-    public void drive(double xSpeed, double ySpeed, double radSpeed) {
-        ChassisSpeeds speeds = new ChassisSpeeds(xSpeed, ySpeed, radSpeed);
+    public void spinnySpeedRad(double xSpeed, double ySpeed, double radSpeed) {
+        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
         // ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(speeds, this.discretizationDelta);
 
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()

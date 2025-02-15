@@ -38,7 +38,7 @@ public class RotateBotCommand extends Command {
     public void execute() {
         double current = drivetrain.getState().Pose.getRotation().getRadians();
         double next = headingController.calculate(current, targetRads);
-        drivetrain.drive(0, 0, next);
+        drivetrain.spinnySpeedRad(0, 0, next);
     }
 
     @Override
