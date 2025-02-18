@@ -23,7 +23,7 @@ import frc.robot.systems.autonomous.AutonomousControllerImpl;
 public class RobotContainer {
 
   public final Config config = new Config();
-  private final RobotContainer m_robotContainer;
+  //private final RobotContainer m_robotContainer;
 
   private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -75,7 +75,7 @@ public class RobotContainer {
     setUpOpController();
     setUpTelemetry();
 
-    fieldDirectionInDegrees = config.readIntegerProperty("robotContainer.fieldDirection");
+    // fieldDirectionInDegrees = config.readIntegerProperty("robotContainer.fieldDirection");
 
   }
 
@@ -108,14 +108,14 @@ public class RobotContainer {
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
-    .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-    .schedule();
+    // new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
+    // .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
+    // .schedule();
     
-    driverController.povUp().onTrue(RotateBotCommand.(0.0, false));
-    driverController.povRight().onTrue(RotateBotCommand.onTrue(90.0, false));
-    driverController.povDown().onTrue(RotateBotCommand.onTrue(180.0, false));
-    driverController.povLeft().onTrue(RotateBotCommand.onTrue(270.0, false));
+    // driverController.povUp().onTrue(RotateBotCommand.(0.0, false));
+    // driverController.povRight().onTrue(RotateBotCommand.onTrue(90.0, false));
+    // driverController.povDown().onTrue(RotateBotCommand.onTrue(180.0, false));
+    // driverController.povLeft().onTrue(RotateBotCommand.onTrue(270.0, false));
   }
 
   public void setUpOpController() {
@@ -124,8 +124,8 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.x().whileTrue(frankenArm.runFoward());
-    operatorController.b().whileTrue(frankenArm.runBack());
+    operatorController.x().onTrue(frankenArm.goZero());
+    operatorController.b().onTrue(frankenArm.goNine());
   }
 
   private void setUpTelemetry() {
