@@ -131,34 +131,51 @@ public class RobotContainer {
     // the blue reef faces as viewed
     // by the driver. Assumes the robot is started at the field origin (i.e. near
     // right corner, behind coral feed).
-    // TODO: Add offsets for distance from robot ref to reef face ref.
     double speedFac = 0.25;
+    double offset = -0.5; // offset from robot origin and its front edge.
 
-    driverController.povDown().onTrue( // 18
-        new DriveToPoseCommand(drivetrain,
-            new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50), Rotation2d.fromDegrees(0.0)),
-            speedFac));
-    driverController.povDownRight().onTrue( // 17
-        new DriveToPoseCommand(drivetrain,
-            new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17), Rotation2d.fromDegrees(+60.0)),
-            speedFac));
-    driverController.povDownLeft().onTrue( // 19
-        new DriveToPoseCommand(drivetrain,
-            new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83), Rotation2d.fromDegrees(-60.0)),
-            speedFac));
-    driverController.povUp().onTrue( // 21
-        new DriveToPoseCommand(drivetrain,
-            new Pose2d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.50), Rotation2d.fromDegrees(180.0)),
-            speedFac));
-    driverController.povUpRight().onTrue( // 22
-        new DriveToPoseCommand(drivetrain,
-            new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), Rotation2d.fromDegrees(+120.0)),
-            speedFac));
-    driverController.povUpLeft().onTrue( // 20
-        new DriveToPoseCommand(drivetrain,
-            new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83), Rotation2d.fromDegrees(-120.0)),
-            speedFac));
+    Pose2d pose18 = offsetFieldPose(new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50),
+        Rotation2d.fromDegrees(0.0)), offset);
+    Pose2d pose17 = offsetFieldPose(new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17),
+        Rotation2d.fromDegrees(+60.0)), offset);
+    Pose2d pose19 = offsetFieldPose(new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83),
+        Rotation2d.fromDegrees(-60.0)), offset);
+    Pose2d pose21 = offsetFieldPose(new Pose2d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.50),
+        Rotation2d.fromDegrees(180.0)), offset);
+    Pose2d pose22 = offsetFieldPose(new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17),
+        Rotation2d.fromDegrees(+120.0)), offset);
+    Pose2d pose20 = offsetFieldPose(new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83),
+        Rotation2d.fromDegrees(-120.0)), offset);
 
+    driverController.povDown().onTrue(
+        new DriveToPoseCommand(drivetrain, pose18, speedFac));
+    driverController.povDownRight().onTrue(
+        new DriveToPoseCommand(drivetrain, pose17, speedFac));
+    driverController.povDownLeft().onTrue(
+        new DriveToPoseCommand(drivetrain, pose19, speedFac));
+    driverController.povUp().onTrue(
+        new DriveToPoseCommand(drivetrain, pose21, speedFac));
+    driverController.povUpRight().onTrue(
+        new DriveToPoseCommand(drivetrain, pose22, speedFac));
+    driverController.povUpLeft().onTrue(
+        new DriveToPoseCommand(drivetrain, pose20, speedFac));
+
+  }
+
+  /**
+   * Returns a field pose that is offset by a given amount from a given input
+   * field pose in the direction of the pose. The field coordinate system is
+   * assumed right-handed with Z up.
+   * 
+   * @param poseIn Input pose.
+   * @param offset Offset (m) relative to the input pose direction (positive
+   *               offset is "forward").
+   * @return Output pose.
+   */
+  private static Pose2d offsetFieldPose(Pose2d poseIn, double offset) {
+    double resultX = poseIn.getX() + offset * Math.cos(poseIn.getRotation().getRadians());
+    double resultY = poseIn.getY() + offset * Math.sin(poseIn.getRotation().getRadians());
+    return new Pose2d(resultX, resultY, poseIn.getRotation());
   }
 
   public void setUpOpController() {
