@@ -4,16 +4,20 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.RotateBotCommand;
+import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
@@ -24,10 +28,10 @@ public class RobotContainer {
 
   public final Config config = new Config();
 
-  private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired
+                                                                                            // top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                     // max angular velocity
-                
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -39,17 +43,16 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController driverController = new CommandXboxController(0);
- 
+
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
       config,
-      config.TunerConstants.getDrivetrainConstants(), 
-      config.TunerConstants.getFrontLeftModule(), 
+      config.TunerConstants.getDrivetrainConstants(),
+      config.TunerConstants.getFrontLeftModule(),
       config.TunerConstants.getFrontRightModule(),
       config.TunerConstants.getBackLeftModule(),
-      config.TunerConstants.getBackRightModule()
-  );
+      config.TunerConstants.getBackRightModule());
 
   public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
 
@@ -72,12 +75,12 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive
-                                                                                                 // forward with
-                                                                                                 // negative Y
-                                                                                                 // (forward)
+            // forward with
+            // negative Y
+            // (forward)
             .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
-                                                                              // negative X (left)
+        // negative X (left)
         ));
 
     driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -94,32 +97,55 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    
+
     // driverController.povUp().onTrue(
-    //   new RotateBotCommand(drivetrain, config)
-    //     .withRobotRelativeCurrentRads(Radians.convertFrom(-180, Degree))
+    // new RotateBotCommand(drivetrain, config)
+    // .withRobotRelativeCurrentRads(Radians.convertFrom(-180, Degree))
     // );
 
-    driverController.povRight().onTrue(
-      new RotateBotCommand(drivetrain, config)
-        .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-    );
+    /////////////////////////////////
+    DriverStation.silenceJoystickConnectionWarning(true);
+    /////////////////////////////////
 
-    driverController.povUp().onTrue(
-      new RotateBotCommand(drivetrain, config)
-        .withRobotRelativeStartRads(Radians.convertFrom(90, Degree))
-    );
+    // driverController.povRight().onTrue(
+    // new RotateBotCommand(drivetrain, config)
+    // .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
+    // );
+    // driverController.povUp().onTrue(
+    // new RotateBotCommand(drivetrain, config)
+    // .withRobotRelativeStartRads(Radians.convertFrom(90, Degree))
+    // );
     // driverController.povDown().onTrue(
-    //   new RotateBotCommand(drivetrain, config)
-    //     .withRobotRelativeCurrentRads(Radians.convertFrom(180, Degree))
+    // new RotateBotCommand(drivetrain, config)
+    // .withRobotRelativeCurrentRads(Radians.convertFrom(180, Degree))
     // );
-    driverController.povLeft().onTrue(
-      new RotateBotCommand(drivetrain, config)
-        .withRobotRelativeCurrentRads(Radians.convertFrom(-90, Degree))
-    );
+    // driverController.povLeft().onTrue(
+    // new RotateBotCommand(drivetrain, config)
+    // .withRobotRelativeCurrentRads(Radians.convertFrom(-90, Degree))
+    // );
 
-    
-    
+    // All is per the field drawing
+    // (https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf)
+    // and relative to the view from the blue alliance. POV controls correspond to
+    // the blue reef faces as viewed
+    // by the driver. Assumes the robot is started at the field origin (i.e. near
+    // right corner, behind coral feed).
+    // TODO: Add offsets for distance from robot ref to reef face ref.
+    double speedFac = 0.25;
+
+    driverController.povDown().onTrue( // 18
+        new DriveToPoseCommand(drivetrain, new Pose2d(144.00, 158.50, Rotation2d.fromDegrees(0.0)), speedFac));
+    driverController.povDownRight().onTrue( // 17
+        new DriveToPoseCommand(drivetrain, new Pose2d(160.39, 130.17, Rotation2d.fromDegrees(+60.0)), speedFac));
+    driverController.povDownLeft().onTrue( // 19
+        new DriveToPoseCommand(drivetrain, new Pose2d(160.39, 186.83, Rotation2d.fromDegrees(-60.0)), speedFac));
+    driverController.povUp().onTrue( // 21
+        new DriveToPoseCommand(drivetrain, new Pose2d(209.49, 158.50, Rotation2d.fromDegrees(180.0)), speedFac));
+    driverController.povUpRight().onTrue( // 22
+        new DriveToPoseCommand(drivetrain, new Pose2d(193.10, 130.17, Rotation2d.fromDegrees(+120.0)), speedFac));
+    driverController.povUpLeft().onTrue( // 20
+        new DriveToPoseCommand(drivetrain, new Pose2d(193.10, 186.83, Rotation2d.fromDegrees(-120.0)), speedFac));
+
   }
 
   public void setUpOpController() {
@@ -140,41 +166,44 @@ public class RobotContainer {
 
     // // Add a button to run pathfinding commands to SmartDashboard
     // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-    //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
-    //     new PathConstraints(
-    //         4.0, 4.0,
-    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //     0));
+    // new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
+    // new PathConstraints(
+    // 4.0, 4.0,
+    // Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    // 0));
     // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-    //     new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-    //     new PathConstraints(
-    //         4.0, 4.0,
-    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //     0));
+    // new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
+    // new PathConstraints(
+    // 4.0, 4.0,
+    // Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    // 0));
 
-    // // Add a button to SmartDashboard that will create and follow an on-the-fly path
+    // // Add a button to SmartDashboard that will create and follow an on-the-fly
+    // path
     // // This example will simply move the robot 2m in the +X field direction
     // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-    //   Pose2d currentPose = drivetrain.getPose();
+    // Pose2d currentPose = drivetrain.getPose();
 
-    //   // The rotation component in these poses represents the direction of travel
-    //   Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-    //   Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+    // // The rotation component in these poses represents the direction of travel
+    // Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+    // Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new
+    // Translation2d(2.0, 0.0)), new Rotation2d());
 
-    //   List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-    //   PathPlannerPath path = new PathPlannerPath(
-    //       waypoints,
-    //       new PathConstraints(
-    //           4.0, 4.0,
-    //           Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //       null, // Ideal starting state can be null for on-the-fly paths
-    //       new GoalEndState(0.0, currentPose.getRotation()));
+    // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos,
+    // endPos);
+    // PathPlannerPath path = new PathPlannerPath(
+    // waypoints,
+    // new PathConstraints(
+    // 4.0, 4.0,
+    // Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    // null, // Ideal starting state can be null for on-the-fly paths
+    // new GoalEndState(0.0, currentPose.getRotation()));
 
-    //   // Prevent this path from being flipped on the red alliance, since the given
-    //   // positions are already correct
-    //   path.preventFlipping = true;
+    // // Prevent this path from being flipped on the red alliance, since the given
+    // // positions are already correct
+    // path.preventFlipping = true;
 
-    //   AutoBuilder.followPath(path).schedule();
+    // AutoBuilder.followPath(path).schedule();
 
   }
 
