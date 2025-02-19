@@ -46,10 +46,10 @@ public class DriveToPoseCommand extends Command {
 
         // build controller
         // TODO: Consider using profiles for X and Y
-        Pose2d tolerance = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(3.0));
-        PIDController pidX = new PIDController(1.0, 0.0, 0.0);
-        PIDController pidY = new PIDController(1.0, 0.0, 0.0);
-        ProfiledPIDController pidR = new ProfiledPIDController(2.0, 0.0,
+        Pose2d tolerance = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1.0));
+        PIDController pidX = new PIDController(10.0, 1.0, 0.0);
+        PIDController pidY = new PIDController(10.0, 1.0, 0.0);
+        ProfiledPIDController pidR = new ProfiledPIDController(10.0, 1.0,
                 0.0, new TrapezoidProfile.Constraints(specs.kMaxAngularVelRps, specs.kMaxAngularAccRpss));
         pidR.enableContinuousInput(-Math.PI, +Math.PI);
 
@@ -70,7 +70,7 @@ public class DriveToPoseCommand extends Command {
         Pose2d poseNow = _drive.getPose();
         ChassisSpeeds speeds = _holoPid.calculate(poseNow, _poseEnd,
                 _speeds.vxMetersPerSecond, _poseEnd.getRotation());
-        reportExecute(speeds);
+        ////reportExecute(speeds);
         _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
                 .withSpeeds(speeds)
                 .withDesaturateWheelSpeeds(true));
@@ -95,7 +95,7 @@ public class DriveToPoseCommand extends Command {
     private void reportInit() {
         Pose2d poseNow = _drive.getPose();
 
-        System.out.printf("DriveToPoseCommand: poseEnd[%6.2f %6.2f %6.1f], poseNow[%6.2f %6.2f %6.1f]\n",
+        System.out.printf("DriveToPoseCommand.init: poseEnd[%6.2f %6.2f %6.1f], poseNow[%6.2f %6.2f %6.1f]\n",
                 _poseEnd.getX(), _poseEnd.getY(), _poseEnd.getRotation().getDegrees(),
                 poseNow.getX(), poseNow.getY(), poseNow.getRotation().getDegrees());
     }
@@ -104,7 +104,7 @@ public class DriveToPoseCommand extends Command {
         Pose2d poseNow = _drive.getPose();
         Pose2d poseErr = _poseEnd.relativeTo(poseNow);
 
-        System.out.printf("DriveToPoseCommand: poseErr[%6.2f %6.2f %6.1f], poseSpd[%6.2f %6.2f %6.1f]\n",
+        System.out.printf("    poseErr[%6.2f %6.2f %6.1f], poseSpd[%6.2f %6.2f %6.1f]\n",
                 poseErr.getX(), poseErr.getY(), poseErr.getRotation().getDegrees(),
                 speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, Math.toDegrees(speeds.omegaRadiansPerSecond));
     }
@@ -113,7 +113,7 @@ public class DriveToPoseCommand extends Command {
         Pose2d poseNow = _drive.getPose();
         Pose2d poseErr = _poseEnd.relativeTo(poseNow);
 
-        System.out.printf("DriveToPoseCommand: poseEnd[%6.2f %6.2f %6.1f], poseErr[%6.2f %6.2f %6.1f]\n",
+        System.out.printf("DriveToPoseCommand.done: poseEnd[%6.2f %6.2f %6.1f], poseErr[%6.2f %6.2f %6.1f]\n",
                 _poseEnd.getX(), _poseEnd.getY(), _poseEnd.getRotation().getDegrees(),
                 poseErr.getX(), poseErr.getY(), poseErr.getRotation().getDegrees());
     }

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -134,17 +135,29 @@ public class RobotContainer {
     double speedFac = 0.25;
 
     driverController.povDown().onTrue( // 18
-        new DriveToPoseCommand(drivetrain, new Pose2d(144.00, 158.50, Rotation2d.fromDegrees(0.0)), speedFac));
+        new DriveToPoseCommand(drivetrain,
+            new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50), Rotation2d.fromDegrees(0.0)),
+            speedFac));
     driverController.povDownRight().onTrue( // 17
-        new DriveToPoseCommand(drivetrain, new Pose2d(160.39, 130.17, Rotation2d.fromDegrees(+60.0)), speedFac));
+        new DriveToPoseCommand(drivetrain,
+            new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17), Rotation2d.fromDegrees(+60.0)),
+            speedFac));
     driverController.povDownLeft().onTrue( // 19
-        new DriveToPoseCommand(drivetrain, new Pose2d(160.39, 186.83, Rotation2d.fromDegrees(-60.0)), speedFac));
+        new DriveToPoseCommand(drivetrain,
+            new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83), Rotation2d.fromDegrees(-60.0)),
+            speedFac));
     driverController.povUp().onTrue( // 21
-        new DriveToPoseCommand(drivetrain, new Pose2d(209.49, 158.50, Rotation2d.fromDegrees(180.0)), speedFac));
+        new DriveToPoseCommand(drivetrain,
+            new Pose2d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.50), Rotation2d.fromDegrees(180.0)),
+            speedFac));
     driverController.povUpRight().onTrue( // 22
-        new DriveToPoseCommand(drivetrain, new Pose2d(193.10, 130.17, Rotation2d.fromDegrees(+120.0)), speedFac));
+        new DriveToPoseCommand(drivetrain,
+            new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17), Rotation2d.fromDegrees(+120.0)),
+            speedFac));
     driverController.povUpLeft().onTrue( // 20
-        new DriveToPoseCommand(drivetrain, new Pose2d(193.10, 186.83, Rotation2d.fromDegrees(-120.0)), speedFac));
+        new DriveToPoseCommand(drivetrain,
+            new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83), Rotation2d.fromDegrees(-120.0)),
+            speedFac));
 
   }
 
