@@ -22,33 +22,45 @@ import frc.robot.Config;
  */
 public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor;
-  private final Integer fwdSpeed;
-  private final Integer backwardSpeed;
+  private final Double fwdSpeed;
+  private final Double backwardSpeed;
+  private final Double fwdStall;
+  private final Double backwardStall;
 
   public FrankenArm(Config config) {
-    
-    var armMotorPort = config.readIntegerProperty("ports.arm.motor");
-    armMotor = new TalonFX(armMotorPort);
+        var armMotorPort = config.readIntegerProperty("ports.arm.motor");
+        armMotor = new TalonFX(armMotorPort);
 
-    var limitConfigs = new CurrentLimitsConfigs();
-    limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
-    limitConfigs.StatorCurrentLimitEnable = true;
-    armMotor.getConfigurator().apply(limitConfigs);
+        var limitConfigs = new CurrentLimitsConfigs();
 
-    fwdSpeed = config.readIntegerProperty("frankenarm.motor.forwards.speed");
-    backwardSpeed = config.readIntegerProperty("frankenarm.motor.backwards.speed");
-    
+        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        limitConfigs.SupplyCurrentLimit = config.readIntegerProperty("frankenarm.motor.supplyCurrent.limit.amps");
+        limitConfigs.SupplyCurrentLimitEnable = true;
+
+        armMotor.getConfigurator().apply(limitConfigs);
+
+        fwdSpeed = config.readDoubleProperty("frankenarm.motor.forwards.speed");
+        backwardSpeed = config.readDoubleProperty("frankenarm.motor.backwards.speed");
+
+        fwdStall = config.readDoubleProperty("frankenarm.motor.forwards.speed.stall");
+        backwardStall = config.readDoubleProperty("frankenarm.motor.backwards.speed.stall");
   }
 
   public Command runFoward() {
-    return this.runEnd(() -> armMotor.set(fwdSpeed), this::stop);
+    return this.runEnd(() -> armMotor.set(fwdSpeed), this::stallfwd);
   }
 
   public Command runBack() {
-    return this.runEnd(() -> armMotor.set(backwardSpeed), this::stop);
+    return this.runEnd(() -> armMotor.set(backwardSpeed), this::stallback);
   }
 
-  private void stop() {
-    armMotor.set(0);
+  private void stallfwd() {
+    armMotor.set(fwdStall);
+  }
+
+  private void stallback() {
+    armMotor.set(backwardStall);
   }
 }

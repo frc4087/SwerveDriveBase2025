@@ -8,8 +8,8 @@ import frc.robot.Config;
 
 public class RollsRUs extends SubsystemBase {
     private TalonFX intakeMotor;
-    private Integer intakeSpeed;
-    private Integer outputSpeed;
+    private Double intakeSpeed;
+    private Double outputSpeed;
 
     public RollsRUs(Config config) {
 
@@ -17,14 +17,18 @@ public class RollsRUs extends SubsystemBase {
         intakeMotor = new TalonFX(intakeMotorPort);
         
         var limitConfigs = new CurrentLimitsConfigs();
-        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.current.limit.amps");
+
+        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("rollsRUs.motor.statorCurrent.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
+
+        limitConfigs.SupplyCurrentLimit = config.readIntegerProperty("rollsRUs.motor.supplyCurrent.limit.amps");
+        limitConfigs.SupplyCurrentLimitEnable = true;
 
         intakeMotor.getConfigurator().apply(limitConfigs);
 
-        intakeSpeed = config.readIntegerProperty("rollsRUs.motor.intake.speed");
-        outputSpeed = config.readIntegerProperty("rollsRUs.motor.output.speed");
-        
+        intakeSpeed = config.readDoubleProperty("rollsRUs.motor.intake.speed");
+        outputSpeed = config.readDoubleProperty("rollsRUs.motor.output.speed");
+
     }
 
     public Command runIntake() {
