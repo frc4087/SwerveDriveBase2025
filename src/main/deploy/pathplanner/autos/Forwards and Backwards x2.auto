@@ -19,13 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Turn"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Test Circle"
+            "pathName": "Test Forward"
           }
         }
       ]
