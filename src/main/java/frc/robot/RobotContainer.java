@@ -16,12 +16,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
+import frc.robot.subsystems.SwerveDriveSpecs;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -96,8 +98,10 @@ public class RobotContainer {
     driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
-    driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    //// driverController.leftBumper().onTrue(drivetrain.runOnce(() ->
+    // drivetrain.seedFieldCentric()));
+    //// driverController.rightBumper().onTrue(drivetrain.runOnce(() ->
+    // drivetrain.seedFieldCentric()));
 
     // driverController.povUp().onTrue(
     // new RotateBotCommand(drivetrain, config)
@@ -108,57 +112,78 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
     /////////////////////////////////
 
-    // driverController.povRight().onTrue(
-    // new RotateBotCommand(drivetrain, config)
-    // .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-    // );
-    // driverController.povUp().onTrue(
-    // new RotateBotCommand(drivetrain, config)
-    // .withRobotRelativeStartRads(Radians.convertFrom(90, Degree))
-    // );
-    // driverController.povDown().onTrue(
-    // new RotateBotCommand(drivetrain, config)
-    // .withRobotRelativeCurrentRads(Radians.convertFrom(180, Degree))
-    // );
-    // driverController.povLeft().onTrue(
-    // new RotateBotCommand(drivetrain, config)
-    // .withRobotRelativeCurrentRads(Radians.convertFrom(-90, Degree))
-    // );
-
     // All is per the field drawing
     // (https://firstfrc.blob.core.windows.net/frc2025/FieldAssets/2025FieldDrawings-FieldLayoutAndMarking.pdf)
     // and relative to the view from the blue alliance. POV controls correspond to
     // the blue reef faces as viewed
     // by the driver. Assumes the robot is started at the field origin (i.e. near
     // right corner, behind coral feed).
-    double speedFac = 0.25;
-    double offset = -0.5; // offset from robot origin and its front edge.
+    SwerveDriveSpecs specs = SwerveDriveSpecs.getInstance();
+
+    Pose2d poseStart = offsetFieldPose(new Pose2d(Units.inchesToMeters(0.00), Units.inchesToMeters(158.50),
+        Rotation2d.fromDegrees(0.0)), specs.kBackOffset); // X: back against blue line, Y: field mid point
+    drivetrain.resetPose(poseStart);
+
+    Pose2d pose12 = offsetFieldPose(new Pose2d(Units.inchesToMeters(33.51), Units.inchesToMeters(25.80),
+        Rotation2d.fromDegrees(-126.0)), specs.kFrontOffset);
+    Pose2d pose13 = offsetFieldPose(new Pose2d(Units.inchesToMeters(33.51), Units.inchesToMeters(291.20),
+        Rotation2d.fromDegrees(126.0)), specs.kFrontOffset);
 
     Pose2d pose18 = offsetFieldPose(new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50),
-        Rotation2d.fromDegrees(0.0)), offset);
+        Rotation2d.fromDegrees(0.0)), specs.kFrontOffset);
     Pose2d pose17 = offsetFieldPose(new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17),
-        Rotation2d.fromDegrees(+60.0)), offset);
+        Rotation2d.fromDegrees(+60.0)), specs.kFrontOffset);
     Pose2d pose19 = offsetFieldPose(new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83),
-        Rotation2d.fromDegrees(-60.0)), offset);
+        Rotation2d.fromDegrees(-60.0)), specs.kFrontOffset);
     Pose2d pose21 = offsetFieldPose(new Pose2d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.50),
-        Rotation2d.fromDegrees(180.0)), offset);
+        Rotation2d.fromDegrees(180.0)), specs.kFrontOffset);
     Pose2d pose22 = offsetFieldPose(new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17),
-        Rotation2d.fromDegrees(+120.0)), offset);
+        Rotation2d.fromDegrees(+120.0)), specs.kFrontOffset);
     Pose2d pose20 = offsetFieldPose(new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83),
-        Rotation2d.fromDegrees(-120.0)), offset);
+        Rotation2d.fromDegrees(-120.0)), specs.kFrontOffset);
 
-    driverController.povDown().onTrue(
+    // pose reset commands
+    driverController.povLeft().onTrue(new InstantCommand(() -> drivetrain.resetPose(pose13), drivetrain));
+    driverController.povDown().onTrue(new InstantCommand(() -> drivetrain.resetPose(poseStart), drivetrain));
+    driverController.povRight().onTrue(new InstantCommand(() -> drivetrain.resetPose(pose12), drivetrain));
+
+    // driveto commands
+    double speedFac = 1.0;
+
+    /// driveto loading stations
+    driverController.x().and(driverController.rightBumper()).whileTrue(
+        new DriveToPoseCommand(drivetrain, pose13, speedFac));
+    driverController.b().and(driverController.rightBumper()).whileTrue(
+        new DriveToPoseCommand(drivetrain, pose12, speedFac));
+
+    /// driveto near reef faces
+    driverController.a().and(driverController.rightBumper()).whileTrue(
         new DriveToPoseCommand(drivetrain, pose18, speedFac));
-    driverController.povDownRight().onTrue(
+    driverController.a().and(driverController.b()).and(driverController.rightBumper()).whileTrue(
         new DriveToPoseCommand(drivetrain, pose17, speedFac));
-    driverController.povDownLeft().onTrue(
+    driverController.a().and(driverController.x()).and(driverController.rightBumper()).whileTrue(
         new DriveToPoseCommand(drivetrain, pose19, speedFac));
-    driverController.povUp().onTrue(
+
+    /// driveto far reef faces
+    driverController.y().and(driverController.rightBumper()).whileTrue(
         new DriveToPoseCommand(drivetrain, pose21, speedFac));
-    driverController.povUpRight().onTrue(
+    driverController.y().and(driverController.b()).and(driverController.rightBumper()).whileTrue(
         new DriveToPoseCommand(drivetrain, pose22, speedFac));
-    driverController.povUpLeft().onTrue(
+    driverController.y().and(driverController.x()).and(driverController.rightBumper()).whileTrue(
         new DriveToPoseCommand(drivetrain, pose20, speedFac));
+
+    // driverController.povDown().onTrue(
+    // new DriveToPoseCommand(drivetrain, pose18, speedFac));
+    // driverController.povDownRight().onTrue(
+    // new DriveToPoseCommand(drivetrain, pose17, speedFac));
+    // driverController.povDownLeft().onTrue(
+    // new DriveToPoseCommand(drivetrain, pose19, speedFac));
+    // driverController.povUp().onTrue(
+    // new DriveToPoseCommand(drivetrain, pose21, speedFac));
+    // driverController.povUpRight().onTrue(
+    // new DriveToPoseCommand(drivetrain, pose22, speedFac));
+    // driverController.povUpLeft().onTrue(
+    // new DriveToPoseCommand(drivetrain, pose20, speedFac));
 
   }
 
@@ -173,8 +198,8 @@ public class RobotContainer {
    * @return Output pose.
    */
   private static Pose2d offsetFieldPose(Pose2d poseIn, double offset) {
-    double resultX = poseIn.getX() + offset * Math.cos(poseIn.getRotation().getRadians());
-    double resultY = poseIn.getY() + offset * Math.sin(poseIn.getRotation().getRadians());
+    double resultX = poseIn.getX() + offset * poseIn.getRotation().getCos();
+    double resultY = poseIn.getY() + offset * poseIn.getRotation().getSin();
     return new Pose2d(resultX, resultY, poseIn.getRotation());
   }
 

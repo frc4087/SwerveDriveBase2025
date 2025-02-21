@@ -9,9 +9,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.SwerveDriveSpecs;
 
 /**
  * Commands the robot to drive from its current pose to a new pose at a given
@@ -40,17 +40,17 @@ public class DriveToPoseCommand extends Command {
 
         _poseEnd = pose;
 
-        SwerveDriveSpecs specs = new SwerveDriveSpecs();
+        SwerveDriveSpecs specs = SwerveDriveSpecs.getInstance();
         _speeds = new ChassisSpeeds(specs.kMaxLinearVelMps, specs.kMaxLinearVelMps, specs.kMaxAngularVelRps)
                 .times(speedFactor);
 
         // build controller
         // TODO: Consider using profiles for X and Y
-        Pose2d tolerance = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1.0));
-        PIDController pidX = new PIDController(10.0, 1.0, 0.0);
-        PIDController pidY = new PIDController(10.0, 1.0, 0.0);
-        ProfiledPIDController pidR = new ProfiledPIDController(10.0, 1.0,
-                0.0, new TrapezoidProfile.Constraints(specs.kMaxAngularVelRps, specs.kMaxAngularAccRpss));
+        Pose2d tolerance = new Pose2d(0.01, 0.01, Rotation2d.fromDegrees(0.1));
+        PIDController pidX = new PIDController(15.0, 1.0, 0.0);
+        PIDController pidY = new PIDController(15.0, 1.0, 0.0);
+        ProfiledPIDController pidR = new ProfiledPIDController(15.0, 1.0, 0.0,
+                new TrapezoidProfile.Constraints(specs.kMaxAngularVelRps, specs.kMaxAngularAccRpss));
         pidR.enableContinuousInput(-Math.PI, +Math.PI);
 
         _holoPid = new HolonomicDriveController(pidX, pidY, pidR);
@@ -61,8 +61,7 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public void initialize() {
-        _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
-                .withSpeeds(new ChassisSpeeds(0, 0, 0)));
+        // do nothing, don't stop
     }
 
     @Override
@@ -70,7 +69,7 @@ public class DriveToPoseCommand extends Command {
         Pose2d poseNow = _drive.getPose();
         ChassisSpeeds speeds = _holoPid.calculate(poseNow, _poseEnd,
                 _speeds.vxMetersPerSecond, _poseEnd.getRotation());
-        ////reportExecute(speeds);
+        //// reportExecute(speeds);
         _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
                 .withSpeeds(speeds)
                 .withDesaturateWheelSpeeds(true));
@@ -79,7 +78,7 @@ public class DriveToPoseCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
-                .withSpeeds(new ChassisSpeeds(0, 0, 0)));
+                .withSpeeds(new ChassisSpeeds(0, 0, 0))); // stop
     }
 
     @Override
@@ -122,40 +121,4 @@ public class DriveToPoseCommand extends Command {
     private final Pose2d _poseEnd;
     private final ChassisSpeeds _speeds;
     private HolonomicDriveController _holoPid;
-
-    // class
-
-    public class SwerveDriveSpecs {
-        public final double kTrackWidthM = Units.inchesToMeters(24); // 24-inch width???
-        public final double kWheelBaseM = Units.inchesToMeters(24); // 24-inch length???
-        public final double kTotalMassK = Units.lbsToKilograms(20); // 20 lbs???
-
-        public final double kMaxLinearVelMps = 4.5; // Max speed in m/s
-        public final double kMaxLinearAccMpss = 2.0; // Max acceleration in m/s²
-
-        public final double kMaxAngularVelRps = getMaxAngularVel();
-        public final double kMaxAngularAccRpss = getMaxAngularAcc();
-
-        // class personal
-
-        private double getChassisRadius() {
-            return Math.hypot(kWheelBaseM / 2.0, kTrackWidthM / 2.0);
-        }
-
-        private double getMaxAngularVel() {
-            return kMaxLinearVelMps / getChassisRadius();
-        }
-
-        private double getMaxAngularAcc() {
-            // assume mass is equally distributed
-            double momentOfInertia = (1.0 / 12.0) * kTotalMassK
-                    * (Math.pow(kTrackWidthM, 2) + Math.pow(kWheelBaseM, 2));
-
-            // compute total torque from all 4 modules
-            double torque = 4 * ((kTotalMassK / 4) * kMaxLinearAccMpss * getChassisRadius());
-
-            // compute maximum angular acceleration
-            return torque / momentOfInertia;
-        }
-    }
 }
