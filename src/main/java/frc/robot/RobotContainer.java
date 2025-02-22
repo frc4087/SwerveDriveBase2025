@@ -52,11 +52,11 @@ public class RobotContainer {
       config.TunerConstants.getBackRightModule()
   );
 
-  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
-
   public final FrankenArm frankenArm = new FrankenArm(config);
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
+
+  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
 
   Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
@@ -119,9 +119,6 @@ public class RobotContainer {
       new RotateBotCommand(drivetrain, config)
         .withRobotRelativeCurrentRads(Radians.convertFrom(-90, Degree))
     );
-
-    
-    
   }
 
   public void setUpOpController() {
@@ -130,8 +127,8 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.x().whileTrue(frankenArm.runFoward());
-    operatorController.b().whileTrue(frankenArm.runBack());
+    operatorController.x().onTrue(frankenArm.goUp());
+    operatorController.b().onTrue(frankenArm.goDown());
   }
 
   private void setUpTelemetry() {

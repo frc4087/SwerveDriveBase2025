@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotation;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
