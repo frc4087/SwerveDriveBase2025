@@ -301,7 +301,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void spinWithSpeedRad(double radSpeed) {
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, radSpeed);
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            this.getState().Speeds.vxMetersPerSecond,
+            this.getState().Speeds.vyMetersPerSecond, 
+            radSpeed
+        );
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
             .withSpeeds(speeds)
             .withDesaturateWheelSpeeds(true)

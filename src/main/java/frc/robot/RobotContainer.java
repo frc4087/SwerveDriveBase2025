@@ -107,13 +107,13 @@ public class RobotContainer {
     // Bottom Left
     driverController.x().and(driverController.rightBumper().negate()).onTrue(
       new RotateBotCommand(drivetrain, config)
-        .withFieldRelativeAngle(-120.0)
+        .withFieldRelativeAngle(120.0)
     );
 
     // Bottom Right
     driverController.b().and(driverController.rightBumper().negate()).onTrue(
       new RotateBotCommand(drivetrain, config)
-        .withFieldRelativeAngle(120.0)
+        .withFieldRelativeAngle(-120.0)
     );
 
     // Top
@@ -125,13 +125,13 @@ public class RobotContainer {
     // Top Left
     driverController.x().and(driverController.rightBumper()).onTrue(
       new RotateBotCommand(drivetrain, config)
-        .withFieldRelativeAngle(-60.0)
+        .withFieldRelativeAngle(60.0)
     );
 
     // Top Right
     driverController.b().and(driverController.rightBumper()).onTrue(
       new RotateBotCommand(drivetrain, config)
-        .withFieldRelativeAngle(60.0)
+        .withFieldRelativeAngle(-60.0)
     );
     
   }
