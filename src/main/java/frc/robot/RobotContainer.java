@@ -154,10 +154,10 @@ public class RobotContainer {
 
   public void setUpOpController() {
     // Intake Control
-    operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
-    operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
+    operatorController.leftBumper().whileTrue(rollsRUs.runIntake());
+    operatorController.rightBumper().whileTrue(rollsRUs.runOutput());
 
-    // Arm Control
+    // Arm Controll
     operatorController.x().onTrue(frankenArm.goUp());
     operatorController.b().onTrue(frankenArm.goDown());
   }
