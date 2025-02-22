@@ -97,7 +97,6 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // Bottom
     driverController.a().onTrue(
@@ -106,13 +105,13 @@ public class RobotContainer {
     );
 
     // Bottom Left
-    driverController.x().and(driverController.rightTrigger().negate()).onTrue(
+    driverController.x().and(driverController.rightBumper().negate()).onTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(-60.0)
     );
 
     // Bottom Right
-    driverController.b().and(driverController.rightTrigger().negate()).onTrue(
+    driverController.b().and(driverController.rightBumper().negate()).onTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(60.0)
     );
