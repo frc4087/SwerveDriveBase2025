@@ -47,11 +47,18 @@ public class AutonomousControllerImpl implements AutonomousController {
             controller,
             config.generatedConfig,
             requiresFlip,
-            driveSystem
+            driveSystem,
+            arm,
+            intake
         );
 
-        // Register Autos Here
-
+        // Register Commands Here
+        NamedCommands.registerCommand("moveArmUp", arm.goUp());
+        NamedCommands.registerCommand("moveArmDown", arm.goDown());
+    
+        NamedCommands.registerCommand("runIntake", intake.runIntake());
+        NamedCommands.registerCommand("runOutput", intake.runOutput());
+    
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
     }

@@ -176,7 +176,6 @@ public class CompBotTunerConstants {
     private static final Distance kBackRightXPos = Inches.of(-12);
     private static final Distance kBackRightYPos = Inches.of(-12);
 
-
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(
             kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset,

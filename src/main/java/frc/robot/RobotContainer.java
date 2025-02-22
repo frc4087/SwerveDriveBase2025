@@ -14,7 +14,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
@@ -23,7 +22,7 @@ import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
 public class RobotContainer {
 
-  private final Config config = new Config();
+  public final Config config = new Config();
 
   private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -37,9 +36,6 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
-
-
-  // private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
 
@@ -55,6 +51,7 @@ public class RobotContainer {
   );
 
   public final FrankenArm frankenArm = new FrankenArm(config);
+
   public final RollsRUs rollsRUs = new RollsRUs(config);
 
   public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
@@ -96,16 +93,17 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
   }
 
   public void setUpOpController() {
-    // Controll intake
-    operatorController.povRight().whileTrue(rollsRUs.runOutput());
-    operatorController.povLeft().whileTrue(rollsRUs.runIntake());
+    // Intake Control
+    operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
+    operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.povUp().whileTrue(frankenArm.runFoward());
-    operatorController.povDown().whileTrue(frankenArm.runBack());
+    operatorController.x().onTrue(frankenArm.goUp());
+    operatorController.b().onTrue(frankenArm.goDown());
   }
 
   private void setUpTelemetry() {

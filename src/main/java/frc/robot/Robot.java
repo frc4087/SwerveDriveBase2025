@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
 
-
 public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
+  //private final FrankenArm m_frankenArm;
 
   public Robot() {
-    Timer.delay(5);
     m_robotContainer = new RobotContainer();
+    Timer.delay(5);
     CameraServer.startAutomaticCapture();
   }
 
@@ -40,8 +40,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_robotContainer.auto().runInit();
     m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Brake);
+    m_robotContainer.auto().runInit();
   }
 
   @Override
