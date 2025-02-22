@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9520512820485846,
-        "y": 6.759935897440073
+        "x": 1.02375,
+        "y": 6.677
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9737820512820505,
-        "y": 6.625769230769265
+        "x": 1.6183121317130218,
+        "y": 5.767120088543155
       },
       "isLocked": false,
       "linkedName": "Top Intake"
@@ -20,8 +20,8 @@
         "y": 5.284102564102564
       },
       "prevControl": {
-        "x": 2.8613461538461538,
-        "y": 5.604038461538462
+        "x": 2.4434612405247913,
+        "y": 5.556604166513285
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Intake To Reef",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.00000000000001
