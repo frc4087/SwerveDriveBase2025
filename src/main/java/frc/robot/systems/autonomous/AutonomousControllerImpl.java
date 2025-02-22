@@ -3,6 +3,7 @@ package frc.robot.systems.autonomous;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
+import frc.robot.subsystems.RollsRUs;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,13 +27,7 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
-    private FrankenArm frankenArm;
-
-    private AutonomousControllerImpl(
-        Config config, 
-        CommandSwerveDrivetrain driveSystem,
-        FrankenArm frankenArm
-    ) {
+    private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
         var controller = new PPHolonomicDriveController(
             readPidConstants(config, "translation"),
             readPidConstants(config, "rotation")
@@ -51,21 +47,19 @@ public class AutonomousControllerImpl implements AutonomousController {
             controller,
             config.generatedConfig,
             requiresFlip,
-            driveSystem
+            driveSystem,
+            intake
         );
+
+        // Register Commands Here
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        this.frankenArm = frankenArm;
     }
 
-    public static synchronized AutonomousControllerImpl initialize(
-        Config config,
-        CommandSwerveDrivetrain driveSystem,
-        FrankenArm frankenArm
-    ) {
-        return new AutonomousControllerImpl(config, driveSystem, frankenArm);
+    public static synchronized AutonomousControllerImpl initialize(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
+        controller = new AutonomousControllerImpl(config, driveSystem, arm, intake);
+        return controller;
     }
 
     public static synchronized AutonomousControllerImpl instance() {
@@ -90,11 +84,7 @@ public class AutonomousControllerImpl implements AutonomousController {
     }
 
     @Override
-    public void runPeriodic() {
-        Commands.run(() -> {
-            frankenArm.periodicConfig();
-        }, frankenArm).schedule();
-    }
+    public void runPeriodic() {}
 
     @Override
     public void runExit() {
