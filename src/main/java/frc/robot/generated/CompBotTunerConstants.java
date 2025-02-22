@@ -176,14 +176,6 @@ public class CompBotTunerConstants {
     private static final Distance kBackRightXPos = Inches.of(-12);
     private static final Distance kBackRightYPos = Inches.of(-12);
 
-    //Snap to Heading Constants
-
-    public static final double ROTATE_TO_TARGET_FF = 0.01;
-
-    public static final double ROTATION_DEADBAND_THRESHOLD = 0.04;
-
-    //Snap to Heading Constants
-
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(
             kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset,

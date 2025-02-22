@@ -1,10 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotation;
-
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Config;
@@ -38,7 +33,7 @@ public class RotateBotCommand extends Command {
     public void execute() {
         double current = drivetrain.getState().Pose.getRotation().getRadians();
         double next = headingController.calculate(current, targetRads);
-        drivetrain.drive(0, 0, next);
+        // drivetrain.drive(0, 0, next);
     }
 
     @Override

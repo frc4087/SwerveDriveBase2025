@@ -10,12 +10,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
@@ -25,7 +23,6 @@ import frc.robot.systems.autonomous.AutonomousControllerImpl;
 public class RobotContainer {
 
   public final Config config = new Config();
-  //private final RobotContainer m_robotContainer;
 
   private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -39,11 +36,6 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
-
-
-  // private Integer fieldDirectionInDegrees;
-
-  // private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController driverController = new CommandXboxController(0);
 
@@ -71,13 +63,6 @@ public class RobotContainer {
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
-
-    NamedCommands.registerCommand("goToZero", frankenArm.goZero());
-    NamedCommands.registerCommand("goToNine", frankenArm.goNine());
-
-    NamedCommands.registerCommand("runIntake", rollsRUs.runIntake());
-    NamedCommands.registerCommand("runOutput", rollsRUs.runOutput());
-
   }
 
   private void setUpDriverController() {
@@ -109,27 +94,16 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-    // new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
-    // .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-    // .schedule();
-    
-    // driverController.povUp().onTrue(RotateBotCommand.(0.0, false));
-    // driverController.povRight().onTrue(RotateBotCommand.onTrue(90.0, false));
-    // driverController.povDown().onTrue(RotateBotCommand.onTrue(180.0, false));
-    // driverController.povLeft().onTrue(RotateBotCommand.onTrue(270.0, false));
   }
 
   public void setUpOpController() {
-
     // Intake Control
     operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.x().onTrue(frankenArm.goZero());
-    operatorController.b().onTrue(frankenArm.goNine());
-
+    operatorController.x().onTrue(frankenArm.goUp());
+    operatorController.b().onTrue(frankenArm.goDown());
   }
 
   private void setUpTelemetry() {
