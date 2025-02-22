@@ -4,17 +4,16 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.Timer;
+
 import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
 
-  private final RobotContainer m_robotContainer;
-  //private final FrankenArm m_frankenArm;
+  public final RobotContainer m_robotContainer;
 
   public Robot() {
     m_robotContainer = new RobotContainer();

@@ -4,19 +4,28 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.DriveToPoseCommand;
+import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
+import frc.robot.subsystems.SwerveDriveSpecs;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -24,7 +33,8 @@ public class RobotContainer {
 
   public final Config config = new Config();
 
-  private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxSpeed = config.TunerConstants.getKSpeedAt12Volts().in(MetersPerSecond); // kSpeedAt12Volts desired
+                                                                                            // top speed
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                     // max angular velocity
 
@@ -43,12 +53,12 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
       config,
-      config.TunerConstants.getDrivetrainConstants(), 
-      config.TunerConstants.getFrontLeftModule(), 
+      config.TunerConstants.getDrivetrainConstants(),
+      config.TunerConstants.getFrontLeftModule(),
       config.TunerConstants.getFrontRightModule(),
       config.TunerConstants.getBackLeftModule(),
       config.TunerConstants.getBackRightModule()
-  );
+    );
 
   public final FrankenArm frankenArm = new FrankenArm(config);
 
@@ -60,40 +70,86 @@ public class RobotContainer {
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
 
   public RobotContainer() {
+    DriverStation.silenceJoystickConnectionWarning(true);
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
   }
 
   private void setUpDriverController() {
-    drivetrain.configNeutralMode(NeutralModeValue.Brake);
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
     drivetrain.setDefaultCommand(
         // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive
-                                                                                                 // forward with
-                                                                                                 // negative Y
-                                                                                                 // (forward)
+            // forward with
+            // negative Y
+            // (forward)
             .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
-                                                                              // negative X (left)
-        ));
+        // negative X (left)
+        )
+    );
 
-    driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    driverController.b().whileTrue(drivetrain.applyRequest(() -> point
+    driverController.povDown().whileTrue(drivetrain.applyRequest(() -> brake));
+    driverController.povLeft().whileTrue(drivetrain.applyRequest(() -> point
         .withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
-
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-    driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    driverController.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    // Bottom
+    driverController.a().onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withFieldRelativeAngle(0.0)
+    );
+
+    // Bottom Left
+    driverController.x().and(driverController.rightBumper().negate()).onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withFieldRelativeAngle(-60.0)
+    );
+
+    // Bottom Right
+    driverController.b().and(driverController.rightBumper().negate()).onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withFieldRelativeAngle(60.0)
+    );
+
+    // Top
+    driverController.y().onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withFieldRelativeAngle(180.0)
+    );
+    
+    // Top Left
+    driverController.x().and(driverController.rightTrigger()).onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withFieldRelativeAngle(-120.0)
+    );
+
+    // Top Right
+    driverController.b().and(driverController.rightTrigger()).onTrue(
+      new RotateBotCommand(drivetrain, config)
+        .withFieldRelativeAngle(120.0)
+    );
+    
+  }
+
+  /**
+   * Returns a field pose that is offset by a given amount from a given input
+   * field pose in the direction of the pose. The field coordinate system is
+   * assumed right-handed with Z up.
+   * 
+   * @param poseIn Input pose.
+   * @param offset Offset (m) relative to the input pose direction (positive
+   *               offset is "forward").
+   * @return Output pose.
+   */
+  private static Pose2d offsetFieldPose(Pose2d poseIn, double offset) {
+    double resultX = poseIn.getX() + offset * poseIn.getRotation().getCos();
+    double resultY = poseIn.getY() + offset * poseIn.getRotation().getSin();
+    return new Pose2d(resultX, resultY, poseIn.getRotation());
   }
 
   public void setUpOpController() {
@@ -101,55 +157,13 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
-    // Arm Controll
+    // Arm Control
     operatorController.x().onTrue(frankenArm.goUp());
     operatorController.b().onTrue(frankenArm.goDown());
   }
 
   private void setUpTelemetry() {
     drivetrain.registerTelemetry(logger::telemeterize);
-    // Add a button to run the example auto to SmartDashboard, this will also be in
-    // the auto chooser built above
-    // SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
-
-    // // Add a button to run pathfinding commands to SmartDashboard
-    // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-    //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
-    //     new PathConstraints(
-    //         4.0, 4.0,
-    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //     0));
-    // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-    //     new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-    //     new PathConstraints(
-    //         4.0, 4.0,
-    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //     0));
-
-    // // Add a button to SmartDashboard that will create and follow an on-the-fly path
-    // // This example will simply move the robot 2m in the +X field direction
-    // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-    //   Pose2d currentPose = drivetrain.getPose();
-
-    //   // The rotation component in these poses represents the direction of travel
-    //   Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-    //   Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
-
-    //   List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-    //   PathPlannerPath path = new PathPlannerPath(
-    //       waypoints,
-    //       new PathConstraints(
-    //           4.0, 4.0,
-    //           Units.degreesToRadians(360), Units.degreesToRadians(540)),
-    //       null, // Ideal starting state can be null for on-the-fly paths
-    //       new GoalEndState(0.0, currentPose.getRotation()));
-
-    //   // Prevent this path from being flipped on the red alliance, since the given
-    //   // positions are already correct
-    //   path.preventFlipping = true;
-
-    //   AutoBuilder.followPath(path).schedule();
-
   }
 
   public AutonomousController auto() {
