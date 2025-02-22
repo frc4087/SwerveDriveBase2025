@@ -29,15 +29,9 @@ public class RotateBotCommand extends Command {
         this.headingController.setTolerance(this.rotationalTolerance);
     }
 
-    public RotateBotCommand withRobotRelativeCurrentRads(double targetRads) {
-        this.turnType = "robot relative";
-        this.targetRads = MathUtil.angleModulus(targetRads + drivetrain.getRotationRads());
-        return this;
-    }
-
-    public RotateBotCommand withRobotRelativeStartRads(double targetRads) {
+    public RotateBotCommand withFieldRelativeAngle(double targetDegrees) {
         this.turnType = "field relative";
-        this.targetRads = MathUtil.angleModulus(targetRads);
+        this.targetRads = MathUtil.angleModulus(Radians.convertFrom(targetDegrees, Degree));
         return this;
     }
 
