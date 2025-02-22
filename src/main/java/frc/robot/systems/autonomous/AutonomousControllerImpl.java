@@ -1,13 +1,10 @@
 package frc.robot.systems.autonomous;
 
-import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PathFollowingController;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
@@ -26,8 +23,6 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private static AutonomousControllerImpl controller;
 
-    private Map<String, PathPlannerAuto> autos;
-
     private final SendableChooser<Command> autoChooser;
 
     private FrankenArm frankenArm;
@@ -37,6 +32,11 @@ public class AutonomousControllerImpl implements AutonomousController {
         CommandSwerveDrivetrain driveSystem,
         FrankenArm frankenArm
     ) {
+        var controller = new PPHolonomicDriveController(
+            readPidConstants(config, "translation"),
+            readPidConstants(config, "rotation")
+        );
+
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -48,12 +48,11 @@ public class AutonomousControllerImpl implements AutonomousController {
             driveSystem::resetPose,
             driveSystem::getRobotRelativeChassisSpeeds,
             driveSystem::driveRobotRelative,
-            createPathFollowingController(),
+            controller,
             config.generatedConfig,
             requiresFlip,
             driveSystem
         );
-        loadAutos();
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -61,21 +60,12 @@ public class AutonomousControllerImpl implements AutonomousController {
         this.frankenArm = frankenArm;
     }
 
-    private void loadAutos() {
-        autos = Map.of(
-            "Config", new PathPlannerAuto("Config"),
-            "Test Auto", new PathPlannerAuto("Test Auto"),
-            "Simple Coral Auto", new PathPlannerAuto("Simple Coral Auto")
-        );
-    }
-
     public static synchronized AutonomousControllerImpl initialize(
         Config config,
         CommandSwerveDrivetrain driveSystem,
         FrankenArm frankenArm
     ) {
-        controller = new AutonomousControllerImpl(config, driveSystem, frankenArm);
-        return controller;
+        return new AutonomousControllerImpl(config, driveSystem, frankenArm);
     }
 
     public static synchronized AutonomousControllerImpl instance() {
@@ -83,6 +73,14 @@ public class AutonomousControllerImpl implements AutonomousController {
             throw new IllegalStateException("AutoController not initialized");
         }
         return controller;
+    }
+
+    private PIDConstants readPidConstants(Config config, String type) {
+        return new PIDConstants(
+            config.readDoubleProperty(String.format("pfc.pid.%s.kp", type)),
+            config.readDoubleProperty(String.format("pfc.pid.%s.ki", type)),
+            config.readDoubleProperty(String.format("pfc.pid.%s.kd", type))
+        );
     }
 
     @Override
@@ -101,12 +99,5 @@ public class AutonomousControllerImpl implements AutonomousController {
     @Override
     public void runExit() {
         Commands.print("No autonomous exit configured").schedule();
-    }
-
-    private PathFollowingController createPathFollowingController() {
-        return new PPHolonomicDriveController(
-            new PIDConstants(5, 0, 0),
-            new PIDConstants(5, 0, 0)
-        );
     }
 }
