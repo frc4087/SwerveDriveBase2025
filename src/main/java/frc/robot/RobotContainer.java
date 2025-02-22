@@ -54,12 +54,10 @@ public class RobotContainer {
       config.TunerConstants.getBackRightModule()
   );
 
-  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
-
   public final FrankenArm frankenArm = new FrankenArm(config);
-
   public final RollsRUs rollsRUs = new RollsRUs(config);
 
+  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
 
   Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
