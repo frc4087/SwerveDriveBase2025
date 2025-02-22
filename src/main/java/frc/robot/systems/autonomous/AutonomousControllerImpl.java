@@ -1,13 +1,10 @@
 package frc.robot.systems.autonomous;
 
-import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PathFollowingController;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
@@ -25,11 +22,14 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private static AutonomousControllerImpl controller;
 
-    private Map<String, PathPlannerAuto> autos;
-
     private final SendableChooser<Command> autoChooser;
 
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem) {
+        var controller = new PPHolonomicDriveController(
+            readPidConstants(config, "translation"),
+            readPidConstants(config, "rotation")
+        );
+
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -41,23 +41,14 @@ public class AutonomousControllerImpl implements AutonomousController {
             driveSystem::resetPose,
             driveSystem::getRobotRelativeChassisSpeeds,
             driveSystem::driveRobotRelative,
-            createPathFollowingController(),
+            controller,
             config.generatedConfig,
             requiresFlip,
             driveSystem
         );
-        loadAutos();
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
-    }
-
-    private void loadAutos() {
-        autos = Map.of(
-            "Config", new PathPlannerAuto("Config"),
-            "Test Auto", new PathPlannerAuto("Test Auto"),
-            "Simple Coral Auto", new PathPlannerAuto("Simple Coral Auto")
-        );
     }
 
     public static synchronized AutonomousControllerImpl initialize(Config config, CommandSwerveDrivetrain driveSystem) {
@@ -72,6 +63,14 @@ public class AutonomousControllerImpl implements AutonomousController {
         return controller;
     }
 
+    private PIDConstants readPidConstants(Config config, String type) {
+        return new PIDConstants(
+            config.readDoubleProperty(String.format("pfc.pid.%s.kp", type)),
+            config.readDoubleProperty(String.format("pfc.pid.%s.ki", type)),
+            config.readDoubleProperty(String.format("pfc.pid.%s.kd", type))
+        );
+    }
+
     @Override
     public void runInit() {
         CommandScheduler.getInstance().cancelAll();
@@ -84,12 +83,5 @@ public class AutonomousControllerImpl implements AutonomousController {
     @Override
     public void runExit() {
         Commands.print("No autonomous exit configured").schedule();
-    }
-
-    private PathFollowingController createPathFollowingController() {
-        return new PPHolonomicDriveController(
-            new PIDConstants(5, 0, 0),
-            new PIDConstants(5, 0, 0)
-        );
     }
 }
