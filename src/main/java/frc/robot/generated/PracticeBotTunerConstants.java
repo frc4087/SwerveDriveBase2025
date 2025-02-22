@@ -22,7 +22,7 @@ public class PracticeBotTunerConstants {
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.5)
+        .withKP(5.).withKI(0).withKD(0.)
         .withKS(0.1).withKV(2.66).withKA(0)
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
@@ -80,7 +80,7 @@ public class PracticeBotTunerConstants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(2);
+    private static final Distance kWheelRadius = Inches.of(1.95);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
@@ -166,14 +166,6 @@ public class PracticeBotTunerConstants {
 
     private static final Distance kBackRightXPos = Inches.of(-11.375);
     private static final Distance kBackRightYPos = Inches.of(-11.375);
-
-    //Snap to Heading Constants
-
-    public static final double ROTATE_TO_TARGET_FF = 0.01;
-
-    public static final double ROTATION_DEADBAND_THRESHOLD = 0.04;
-    
-    //Snap to Heading Constants
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(

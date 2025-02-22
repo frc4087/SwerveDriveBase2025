@@ -6,7 +6,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
@@ -22,45 +27,56 @@ import frc.robot.Config;
  */
 public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor;
-  private final Double fwdSpeed;
-  private final Double backwardSpeed;
-  private final Double fwdStall;
-  private final Double backwardStall;
+
+  private final Double upSetpoint;
+  private final Double downSetpoint;
+
+  final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0);
 
   public FrankenArm(Config config) {
-        var armMotorPort = config.readIntegerProperty("ports.arm.motor");
-        armMotor = new TalonFX(armMotorPort);
+    var armMotorPort = config.readIntegerProperty("ports.arm.motor");
+    armMotor = new TalonFX(armMotorPort);
+    var limitConfigs = new CurrentLimitsConfigs();
 
-        var limitConfigs = new CurrentLimitsConfigs();
+    var talonFXConfigs = new TalonFXConfiguration();
+    talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    talonFXConfigs.Slot0.kS = 0.0;
+    talonFXConfigs.Slot0.kG = 0.25;
+    talonFXConfigs.Slot0.kV = 0.0;
+    talonFXConfigs.Slot0.kP = .5;
+    talonFXConfigs.Slot0.kI = 0.0;
+    talonFXConfigs.Slot0.kD = 0.0;
 
-        limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");
-        limitConfigs.StatorCurrentLimitEnable = true;
+    talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
+    talonFXConfigs.MotionMagic.MotionMagicAcceleration = 160.0;
+    talonFXConfigs.MotionMagic.MotionMagicJerk = 1600.0;
 
-        limitConfigs.SupplyCurrentLimit = config.readIntegerProperty("frankenarm.motor.supplyCurrent.limit.amps");
-        limitConfigs.SupplyCurrentLimitEnable = true;
+    limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");
+    limitConfigs.StatorCurrentLimitEnable = true;
 
-        armMotor.getConfigurator().apply(limitConfigs);
+    limitConfigs.SupplyCurrentLimit = config.readIntegerProperty("frankenarm.motor.supplyCurrent.limit.amps");
+    limitConfigs.SupplyCurrentLimitEnable = true;
 
-        fwdSpeed = config.readDoubleProperty("frankenarm.motor.forwards.speed");
-        backwardSpeed = config.readDoubleProperty("frankenarm.motor.backwards.speed");
+    armMotor.getConfigurator().apply(limitConfigs);
+    armMotor.getConfigurator().apply(talonFXConfigs, 0.050);
 
-        fwdStall = config.readDoubleProperty("frankenarm.motor.forwards.speed.stall");
-        backwardStall = config.readDoubleProperty("frankenarm.motor.backwards.speed.stall");
+    upSetpoint = config.readDoubleProperty("frankenarm.motor.up.setpoint");
+    downSetpoint = config.readDoubleProperty("frankenarm.motor.down.setpoint");
   }
 
-  public Command runFoward() {
-    return this.runEnd(() -> armMotor.set(fwdSpeed), this::stallfwd);
+  public Command goUp() {
+    return this.run(() -> {
+      armMotor.setControl(new PositionVoltage(0)
+          .withSlot(0)
+          .withPosition(upSetpoint));
+    });
   }
 
-  public Command runBack() {
-    return this.runEnd(() -> armMotor.set(backwardSpeed), this::stallback);
-  }
-
-  private void stallfwd() {
-    armMotor.set(fwdStall);
-  }
-
-  private void stallback() {
-    armMotor.set(backwardStall);
+  public Command goDown() {
+    return this.run(() -> {
+      armMotor.setControl(new PositionVoltage(0)
+          .withSlot(0)
+          .withPosition(downSetpoint));
+    });
   }
 }

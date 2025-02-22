@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -57,11 +58,11 @@ public class RobotContainer {
       config.TunerConstants.getBackLeftModule(),
       config.TunerConstants.getBackRightModule());
 
-  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain);
-
   public final FrankenArm frankenArm = new FrankenArm(config);
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
+
+  public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
 
   Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
   public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
@@ -73,6 +74,7 @@ public class RobotContainer {
   }
 
   private void setUpDriverController() {
+    drivetrain.configNeutralMode(NeutralModeValue.Brake);
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
     drivetrain.setDefaultCommand(
@@ -184,7 +186,6 @@ public class RobotContainer {
     // new DriveToPoseCommand(drivetrain, pose22, speedFac));
     // driverController.povUpLeft().onTrue(
     // new DriveToPoseCommand(drivetrain, pose20, speedFac));
-
   }
 
   /**
@@ -209,8 +210,8 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
     // Arm Controll
-    operatorController.x().whileTrue(frankenArm.runFoward());
-    operatorController.b().whileTrue(frankenArm.runBack());
+    operatorController.x().onTrue(frankenArm.goUp());
+    operatorController.b().onTrue(frankenArm.goDown());
   }
 
   private void setUpTelemetry() {

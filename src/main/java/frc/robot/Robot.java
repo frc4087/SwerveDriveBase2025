@@ -6,13 +6,19 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.Timer;
+
+import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
 
   public final RobotContainer m_robotContainer;
 
   public Robot() {
-   m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer();
+    Timer.delay(5);
+    CameraServer.startAutomaticCapture();
   }
 
   @Override
@@ -21,7 +27,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Coast);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -31,18 +39,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Brake);
     m_robotContainer.auto().runInit();
-    // m_robotContainer.strikeAPose
-    //   .snappy(Radians.convertFrom(90, Degree), true)
-    //   .schedule();
-
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
-    
-    // new RotateBotCommand(m_robotContainer.drivetrain, m_robotContainer.config)
-    //   .withRobotRelativeCurrentRads(Radians.convertFrom(90, Degree))
-    //   .schedule();
   }
 
   @Override
@@ -56,7 +54,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Brake);
+  }
 
   @Override
   public void teleopPeriodic() {}
