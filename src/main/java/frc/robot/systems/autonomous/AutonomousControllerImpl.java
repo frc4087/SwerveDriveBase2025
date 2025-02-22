@@ -53,8 +53,8 @@ public class AutonomousControllerImpl implements AutonomousController {
         );
 
         // Register Commands Here
-        NamedCommands.registerCommand("moveArmUp", arm.goUp());
-        NamedCommands.registerCommand("moveArmDown", arm.goDown());
+        NamedCommands.registerCommand("moveArmUp", arm.snapUp());
+        NamedCommands.registerCommand("moveArmDown", arm.snapDown());
     
         NamedCommands.registerCommand("runIntake", intake.runIntake());
         NamedCommands.registerCommand("runOutput", intake.runOutput());

@@ -28,8 +28,10 @@ import frc.robot.Config;
 public class FrankenArm extends SubsystemBase {
   public TalonFX armMotor;
 
-  private final Double upSetpoint;
-  private final Double downSetpoint;
+  private final Double upRotations;
+  private final Double downRotations;
+
+  private final Double moveSpeed;
 
   final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0);
 
@@ -60,23 +62,29 @@ public class FrankenArm extends SubsystemBase {
     armMotor.getConfigurator().apply(limitConfigs);
     armMotor.getConfigurator().apply(talonFXConfigs, 0.050);
 
-    upSetpoint = config.readDoubleProperty("frankenarm.motor.up.setpoint");
-    downSetpoint = config.readDoubleProperty("frankenarm.motor.down.setpoint");
+    upRotations = config.readDoubleProperty("frankenarm.motor.up.rotations");
+    downRotations = config.readDoubleProperty("frankenarm.motor.down.rotations");
+
+    moveSpeed = config.readDoubleProperty("frankenarm.motor.speed");
   }
 
-  public Command goUp() {
+  public Command runContinuous() {
+    return this.runEnd(() -> armMotor.set(moveSpeed), () -> armMotor.set(0));
+  }
+
+  public Command snapUp() {
     return this.run(() -> {
       armMotor.setControl(new PositionVoltage(0)
           .withSlot(0)
-          .withPosition(upSetpoint));
+          .withPosition(armMotor.getPosition().getValueAsDouble() + upRotations));
     });
   }
 
-  public Command goDown() {
+  public Command snapDown() {
     return this.run(() -> {
       armMotor.setControl(new PositionVoltage(0)
           .withSlot(0)
-          .withPosition(downSetpoint));
+          .withPosition(armMotor.getPosition().getValueAsDouble() + downRotations));
     });
   }
 }

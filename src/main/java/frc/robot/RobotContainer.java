@@ -101,9 +101,11 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
 
-    // Arm Controll
-    operatorController.x().onTrue(frankenArm.goUp());
-    operatorController.b().onTrue(frankenArm.goDown());
+    operatorController.leftTrigger().whileTrue(frankenArm.runContinuous());
+
+    // Arm Control
+    operatorController.x().onTrue(frankenArm.snapUp());
+    operatorController.b().onTrue(frankenArm.snapDown());
   }
 
   private void setUpTelemetry() {
