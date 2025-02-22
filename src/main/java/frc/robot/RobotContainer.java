@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -39,7 +40,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
 
-  private Integer fieldDirectionInDegrees;
+  // private Integer fieldDirectionInDegrees;
 
   // private final SendableChooser<Command> autoChooser;
 
@@ -75,7 +76,11 @@ public class RobotContainer {
     setUpOpController();
     setUpTelemetry();
 
-    // fieldDirectionInDegrees = config.readIntegerProperty("robotContainer.fieldDirection");
+    NamedCommands.registerCommand("goToZero", frankenArm.goZero());
+    NamedCommands.registerCommand("goToNine", frankenArm.goNine());
+
+    NamedCommands.registerCommand("runIntake", rollsRUs.runIntake());
+    NamedCommands.registerCommand("runOutput", rollsRUs.runOutput());
 
   }
 
@@ -119,6 +124,7 @@ public class RobotContainer {
   }
 
   public void setUpOpController() {
+
     // Intake Control
     operatorController.leftBumper().whileTrue(rollsRUs.runOutput());
     operatorController.rightBumper().whileTrue(rollsRUs.runIntake());
@@ -126,6 +132,7 @@ public class RobotContainer {
     // Arm Controll
     operatorController.x().onTrue(frankenArm.goZero());
     operatorController.b().onTrue(frankenArm.goNine());
+
   }
 
   private void setUpTelemetry() {
