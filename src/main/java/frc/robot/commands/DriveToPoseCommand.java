@@ -39,17 +39,17 @@ public class DriveToPoseCommand extends Command {
         addRequirements(drive);
 
         _poseEnd = pose;
+        _speedFactor = speedFactor;
 
         SwerveDriveSpecs specs = SwerveDriveSpecs.getInstance();
-        _speeds = new ChassisSpeeds(specs.kMaxLinearVelMps, specs.kMaxLinearVelMps, specs.kMaxAngularVelRps)
-                .times(speedFactor);
 
         // build controller
         // TODO: Consider using profiles for X and Y
-        Pose2d tolerance = new Pose2d(0.01, 0.01, Rotation2d.fromDegrees(0.1));
-        PIDController pidX = new PIDController(15.0, 1.0, 0.0);
-        PIDController pidY = new PIDController(15.0, 1.0, 0.0);
-        ProfiledPIDController pidR = new ProfiledPIDController(15.0, 1.0, 0.0,
+        Pose2d tolerance = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(3.0));
+
+        PIDController pidX = new PIDController(25.0, 0.0, 0.3);
+        PIDController pidY = new PIDController(25.0, 0.0, 0.3);
+        ProfiledPIDController pidR = new ProfiledPIDController(10.0, 0.0, 0.3,
                 new TrapezoidProfile.Constraints(specs.kMaxAngularVelRps, specs.kMaxAngularAccRpss));
         pidR.enableContinuousInput(-Math.PI, +Math.PI);
 
@@ -68,8 +68,9 @@ public class DriveToPoseCommand extends Command {
     public void execute() {
         Pose2d poseNow = _drive.getPose();
         ChassisSpeeds speeds = _holoPid.calculate(poseNow, _poseEnd,
-                _speeds.vxMetersPerSecond, _poseEnd.getRotation());
-        //// reportExecute(speeds);
+                0.0, _poseEnd.getRotation());
+                speeds = speeds.times(_speedFactor);
+        /////reportExecute(speeds);
         _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
                 .withSpeeds(speeds)
                 .withDesaturateWheelSpeeds(true));
@@ -112,13 +113,13 @@ public class DriveToPoseCommand extends Command {
         Pose2d poseNow = _drive.getPose();
         Pose2d poseErr = _poseEnd.relativeTo(poseNow);
 
-        System.out.printf("DriveToPoseCommand.done: poseEnd[%6.2f %6.2f %6.1f], poseErr[%6.2f %6.2f %6.1f]\n",
-                _poseEnd.getX(), _poseEnd.getY(), _poseEnd.getRotation().getDegrees(),
-                poseErr.getX(), poseErr.getY(), poseErr.getRotation().getDegrees());
+        System.out.printf("DriveToPoseCommand.done: poseErr[%6.2f %6.2f %6.1f], poseEnd[%6.2f %6.2f %6.1f]\n",
+                poseErr.getX(), poseErr.getY(), poseErr.getRotation().getDegrees(),
+                _poseEnd.getX(), _poseEnd.getY(), _poseEnd.getRotation().getDegrees());
     }
 
     private final CommandSwerveDrivetrain _drive;
     private final Pose2d _poseEnd;
-    private final ChassisSpeeds _speeds;
+    private final double _speedFactor;
     private HolonomicDriveController _holoPid;
 }
