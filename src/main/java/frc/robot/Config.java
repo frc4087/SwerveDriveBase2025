@@ -104,6 +104,14 @@ public class Config {
         return false;
     }
 
+    //Snap to Heading Constants
+
+    public static final double ROTATE_TO_TARGET_FF = 0.01;
+
+    public static final double ROTATION_DEADBAND_THRESHOLD = 0.04;
+    
+    //Snap to Heading Constants
+
     static class TunerConstants {
         private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> frontLeftModule;
         private SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> frontRightModule;
