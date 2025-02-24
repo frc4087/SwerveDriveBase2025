@@ -9,23 +9,16 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
-import frc.robot.subsystems.SwerveDriveSpecs;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -98,58 +91,42 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // Bottom
-    driverController.a().onTrue(
+    // Back Reef Side (From driver perpective)
+    driverController.a().whileTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(180.0)
     );
 
-    // Bottom Left
-    driverController.x().and(driverController.rightBumper().negate()).onTrue(
+    // Back Left
+    driverController.x().and(driverController.rightBumper().negate()).whileTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(120.0)
     );
 
-    // Bottom Right
-    driverController.b().and(driverController.rightBumper().negate()).onTrue(
+    // Back Right
+    driverController.b().and(driverController.rightBumper().negate()).whileTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(-120.0)
     );
 
-    // Top
-    driverController.y().onTrue(
+    // Front
+    driverController.y().whileTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(0.0)
     );
     
-    // Top Left
-    driverController.x().and(driverController.rightBumper()).onTrue(
+    // Front Left
+    driverController.x().and(driverController.rightBumper()).whileTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(60.0)
     );
 
-    // Top Right
-    driverController.b().and(driverController.rightBumper()).onTrue(
+    // Front Right
+    driverController.b().and(driverController.rightBumper()).whileTrue(
       new RotateBotCommand(drivetrain, config)
         .withFieldRelativeAngle(-60.0)
     );
     
-  }
-
-  /**
-   * Returns a field pose that is offset by a given amount from a given input
-   * field pose in the direction of the pose. The field coordinate system is
-   * assumed right-handed with Z up.
-   * 
-   * @param poseIn Input pose.
-   * @param offset Offset (m) relative to the input pose direction (positive
-   *               offset is "forward").
-   * @return Output pose.
-   */
-  private static Pose2d offsetFieldPose(Pose2d poseIn, double offset) {
-    double resultX = poseIn.getX() + offset * poseIn.getRotation().getCos();
-    double resultY = poseIn.getY() + offset * poseIn.getRotation().getSin();
-    return new Pose2d(resultX, resultY, poseIn.getRotation());
   }
 
   public void setUpOpController() {
@@ -157,7 +134,7 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(rollsRUs.runIntake());
     operatorController.rightBumper().whileTrue(rollsRUs.runOutput());
 
-    // Arm Controll
+    // Arm Control
     operatorController.x().onTrue(frankenArm.goUp());
     operatorController.b().onTrue(frankenArm.goDown());
   }

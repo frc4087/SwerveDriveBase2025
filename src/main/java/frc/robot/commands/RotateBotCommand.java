@@ -10,11 +10,11 @@ import frc.robot.Config;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RotateBotCommand extends Command {
+
     private final PIDController headingController;
     private CommandSwerveDrivetrain drivetrain;
     private double targetRads = 0;
     private double rotationalTolerance;
-    private String turnType = "(undefined)";
 
     public RotateBotCommand(CommandSwerveDrivetrain drivetrain, Config config) {
         super();
@@ -30,17 +30,8 @@ public class RotateBotCommand extends Command {
     }
 
     public RotateBotCommand withFieldRelativeAngle(double targetDegrees) {
-        this.turnType = "field relative";
         this.targetRads = MathUtil.angleModulus(Radians.convertFrom(targetDegrees, Degree));
         return this;
-    }
-
-    @Override
-    public void initialize() {
-        System.out.println(
-                String.format("RotateBotCommand: type[%s], now[%6.2f], target[%6.2f]",
-                        this.turnType, Math.toDegrees(drivetrain.getRotationRads()),
-                        Math.toDegrees(targetRads)));
     }
 
     @Override
@@ -48,25 +39,11 @@ public class RotateBotCommand extends Command {
         double ccwRad = drivetrain.getRotationRads();
         double next = this.headingController.calculate(ccwRad, targetRads);
 
-        // System.out.println(String.format("    now[%6.2f] error[%6.2f]",
-        //         Math.toDegrees(ccwRad), Math.toDegrees(this.headingController.getError())));
-
         drivetrain.spinWithSpeedRad(next);
     }
 
     @Override
     public boolean isFinished() {
-        boolean isDone = this.headingController.atSetpoint();
-        if (isDone) {
-            double ccwRad = drivetrain.getRotationRads();
-            System.out.println(String.format("    Done!!! now[%6.2f] error[%6.2f]",
-                    Math.toDegrees(ccwRad), Math.toDegrees(this.headingController.getError())));
-        }
-        return isDone;
-
-        // var delta = Math.abs(targetRads - drivetrain.getRotationRads());
-        // System.out.println(String.format("Stopped? %s", delta <
-        // rotationalTolerance));
-        // return delta < rotationalTolerance;
+        return this.headingController.atSetpoint();
     }
 }
