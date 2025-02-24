@@ -25,6 +25,7 @@ import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
+import frc.robot.subsystems.SirLiftsALot;
 import frc.robot.subsystems.SwerveDriveSpecs;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
@@ -63,6 +64,8 @@ public class RobotContainer {
   public final FrankenArm frankenArm = new FrankenArm(config);
 
   public final RollsRUs rollsRUs = new RollsRUs(config);
+
+  public final SirLiftsALot sirLiftsALot = new SirLiftsALot(config);
 
   public final AutonomousController autonomousController = AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
 
@@ -162,6 +165,10 @@ public class RobotContainer {
     // Arm Control
     operatorController.x().onTrue(frankenArm.snapUp());
     operatorController.b().onTrue(frankenArm.snapDown());
+
+    // 
+    operatorController.povUp().whileTrue(sirLiftsALot.climberGo());
+    operatorController.povDown().whileTrue(sirLiftsALot.climberStop());
   }
 
   private void setUpTelemetry() {

@@ -8,7 +8,8 @@ import frc.robot.Config;
 
 public class SirLiftsALot extends SubsystemBase {
     private TalonFX climbMotor;
-    private Integer climbSpeed;
+    private Integer climbUpSpeed;
+    private Integer climbDownSpeed;
 
     public SirLiftsALot(Config config) {
         var climbMotorPort = config.readIntegerProperty("ports.climb.motor");
@@ -24,11 +25,16 @@ public class SirLiftsALot extends SubsystemBase {
 
         climbMotor.getConfigurator().apply(limitConfigs);
 
-        climbSpeed = config.readIntegerProperty("sirLiftsALot.motor.climb.speed");
+        climbUpSpeed = config.readIntegerProperty("sirLiftsALot.motor.climb.up.speed");
+        climbDownSpeed = config.readIntegerProperty("sirLiftsALot.motor.climb.down.speed");
     }
 
-    public Command runClimber() {
-        return this.runEnd(() -> climbMotor.set(climbSpeed), this::stop);
+    public Command climberGo() {
+        return this.runEnd(() -> climbMotor.set(climbUpSpeed), this::stop);
+    }
+
+    public Command climberStop() {
+        return this.runEnd(() -> climbMotor.set(climbDownSpeed), this::stop);
     }
 
     private void stop() {
