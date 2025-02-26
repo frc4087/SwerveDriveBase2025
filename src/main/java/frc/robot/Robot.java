@@ -40,22 +40,22 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Brake);
-    m_robotContainer.auto().runInit();
+    ////m_robotContainer.auto().runInit();
   }
 
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.auto().runPeriodic();
+    ////m_robotContainer.auto().runPeriodic();
   }
 
   @Override
   public void autonomousExit() {
-    m_robotContainer.auto().runExit();
+    ////m_robotContainer.auto().runExit();
   }
 
   @Override
   public void teleopInit() {
-    m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Brake);
+    ////m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override

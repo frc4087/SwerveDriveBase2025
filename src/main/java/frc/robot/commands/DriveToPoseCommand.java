@@ -11,7 +11,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.SwerveDriveSpecs;
+import frc.robot.subsystems.DriveSpecs;
+import frc.robot.subsystems.PPSwerveSubsystem;
 
 /**
  * Commands the robot to drive from its current pose to a new pose at a given
@@ -33,15 +34,13 @@ public class DriveToPoseCommand extends Command {
      * @param speedFactor Speed factor relative to max [0, +1]. Sign is ignored.
      * @param pose        New pose.
      */
-    public DriveToPoseCommand(CommandSwerveDrivetrain drive, Pose2d pose,
+    public DriveToPoseCommand(PPSwerveSubsystem drive, Pose2d pose,
             double speedFactor) {
         _drive = drive;
         addRequirements(drive);
 
         _poseEnd = pose;
         _speedFactor = speedFactor;
-
-        SwerveDriveSpecs specs = SwerveDriveSpecs.getInstance();
 
         // build controller
         // TODO: Consider using profiles for X and Y
@@ -50,7 +49,8 @@ public class DriveToPoseCommand extends Command {
         PIDController pidX = new PIDController(25.0, 0.0, 0.3);
         PIDController pidY = new PIDController(25.0, 0.0, 0.3);
         ProfiledPIDController pidR = new ProfiledPIDController(10.0, 0.0, 0.3,
-                new TrapezoidProfile.Constraints(specs.kMaxAngularVelRps, specs.kMaxAngularAccRpss));
+                new TrapezoidProfile.Constraints(_drive.getSpecs().kMaxAngularVelRps,
+                        _drive.getSpecs().kMaxAngularAccRpss));
         pidR.enableContinuousInput(-Math.PI, +Math.PI);
 
         _holoPid = new HolonomicDriveController(pidX, pidY, pidR);
@@ -69,17 +69,14 @@ public class DriveToPoseCommand extends Command {
         Pose2d poseNow = _drive.getPose();
         ChassisSpeeds speeds = _holoPid.calculate(poseNow, _poseEnd,
                 0.0, _poseEnd.getRotation());
-                speeds = speeds.times(_speedFactor);
-        /////reportExecute(speeds);
-        _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
-                .withSpeeds(speeds)
-                .withDesaturateWheelSpeeds(true));
+        speeds.times(_speedFactor);
+        ///// reportExecute(speeds);
+        _drive.setDriveSpeeds(speeds);
     }
 
     @Override
     public void end(boolean interrupted) {
-        _drive.setControl(new SwerveRequest.ApplyRobotSpeeds()
-                .withSpeeds(new ChassisSpeeds(0, 0, 0))); // stop
+        _drive.stop();
     }
 
     @Override
@@ -118,8 +115,8 @@ public class DriveToPoseCommand extends Command {
                 _poseEnd.getX(), _poseEnd.getY(), _poseEnd.getRotation().getDegrees());
     }
 
-    private final CommandSwerveDrivetrain _drive;
+    private final PPSwerveSubsystem _drive;
     private final Pose2d _poseEnd;
     private final double _speedFactor;
-    private HolonomicDriveController _holoPid;
+    private final HolonomicDriveController _holoPid;
 }
