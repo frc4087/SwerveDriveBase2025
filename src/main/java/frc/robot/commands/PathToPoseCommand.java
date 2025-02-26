@@ -1,12 +1,7 @@
 package frc.robot.commands;
 
-import java.util.List;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -38,23 +33,18 @@ public class PathToPoseCommand extends Command {
 
     @Override
     public void initialize() {
-        PathPlannerPath path = newPathFromCurrentPose();
-        
-        if (path.numPoints() < 2) {
-            // start and end poses are equal: nothing to do, avoid PP error
-            cancel();
-        } else {
-            _pathCommand = AutoBuilder.followPath(path);
-            _pathCommand.initialize();
-        }
-
-        /////reportInit();
+        DriveSpecs specs = _drive.getSpecs();
+        PathConstraints ppSpecs = new PathConstraints(specs.kMaxLinearVelMps(),
+                specs.kMaxLinearAccMpss(), specs.kMaxAngularVelRps(), specs.kMaxAngularAccRpss());
+        _pathCommand = AutoBuilder.pathfindToPose(_poseEnd, ppSpecs);
+        _pathCommand.initialize();
+        reportInit();
     }
 
     @Override
     public void execute() {
         _pathCommand.execute();
-        /////reportExecute(_drive.getTrueSpeeds());
+        ///// reportExecute(_drive.getTrueSpeeds());
     }
 
     @Override
@@ -70,22 +60,6 @@ public class PathToPoseCommand extends Command {
             reportDone();
         }
         return isDone;
-    }
-
-    // personal
-
-    private PathPlannerPath newPathFromCurrentPose() {
-        Pose2d poseNow = _drive.getPose();
-        DriveSpecs specs = _drive.getSpecs();
-        PathConstraints ppSpecs = new PathConstraints(specs.kMaxLinearVelMps(),
-                specs.kMaxLinearAccMpss(), specs.kMaxAngularVelRps(), specs.kMaxAngularAccRpss());
-
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(poseNow, _poseEnd);
-        PathPlannerPath path = new PathPlannerPath(waypoints, ppSpecs,
-                null, new GoalEndState(0.0, _poseEnd.getRotation()));
-        path.preventFlipping = true;
-
-        return path;
     }
 
     private void reportInit() {

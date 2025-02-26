@@ -49,8 +49,8 @@ public class PPSwerveSubsystem extends SubsystemBase implements PPDrivable {
                 _specs.kTotalMassK(), moi, moduleConfig, _drive.getModuleLocations());
 
         /// build path controller
-        PIDConstants pidXY = new PIDConstants(5.0, 0.0, 0.2);
-        PIDConstants pidR = new PIDConstants(5.0, 0.0, 0.2);
+        PIDConstants pidXY = new PIDConstants(10.0, 0.0, 0.1);
+        PIDConstants pidR = new PIDConstants(5.0, 0.0, 0.1);
         PathFollowingController controller = new PPHolonomicDriveController(pidXY, pidR);
 
         /// config PP command factory
