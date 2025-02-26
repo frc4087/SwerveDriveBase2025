@@ -77,8 +77,8 @@ public class PathToPoseCommand extends Command {
     private PathPlannerPath newPathFromCurrentPose() {
         Pose2d poseNow = _drive.getPose();
         DriveSpecs specs = _drive.getSpecs();
-        PathConstraints ppSpecs = new PathConstraints(specs.kMaxLinearVelMps,
-                specs.kMaxLinearAccMpss, specs.kMaxAngularVelRps, specs.kMaxAngularAccRpss);
+        PathConstraints ppSpecs = new PathConstraints(specs.kMaxLinearVelMps(),
+                specs.kMaxLinearAccMpss(), specs.kMaxAngularVelRps(), specs.kMaxAngularAccRpss());
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(poseNow, _poseEnd);
         PathPlannerPath path = new PathPlannerPath(waypoints, ppSpecs,

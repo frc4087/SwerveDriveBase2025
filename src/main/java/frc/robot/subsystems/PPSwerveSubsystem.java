@@ -30,27 +30,27 @@ public class PPSwerveSubsystem extends SubsystemBase implements PPDrivable {
         _subsystems.add(_drive);
         _subsystems.add(this);
 
-        _speedsMax = new ChassisSpeeds(_specs.kMaxLinearVelMps,
-                _specs.kMaxLinearVelMps,
-                _specs.kMaxAngularVelRps);
+        _speedsMax = new ChassisSpeeds(_specs.kMaxLinearVelMps(),
+                _specs.kMaxLinearVelMps(),
+                _specs.kMaxAngularVelRps());
 
         // connect PP to drivetrain
         /// resolve PP robot config
         double moi = DriveSpecs.getMomentOfInertia(
-                _specs.kTotalMassK,
-                _specs.kWheelBaseM,
-                _specs.kTrackWidthM); // est
+                _specs.kTotalMassK(),
+                _specs.kWheelBaseM(),
+                _specs.kTrackWidthM()); // est
         double wheelCof = 0.9; // guess
         double gearRatio = 6.75; // Kraken X60, L2 ratio
         ModuleConfig moduleConfig = new ModuleConfig(Units.inchesToMeters(2.0),
-                _specs.kMaxLinearVelMps, wheelCof, DCMotor.getKrakenX60(1), gearRatio, 60.0, 1);
+                _specs.kMaxLinearVelMps(), wheelCof, DCMotor.getKrakenX60(1), gearRatio, 60.0, 1);
 
         RobotConfig robotConfig = new RobotConfig(
-                _specs.kTotalMassK, moi, moduleConfig, _drive.getModuleLocations());
+                _specs.kTotalMassK(), moi, moduleConfig, _drive.getModuleLocations());
 
         /// build path controller
-        PIDConstants pidXY = new PIDConstants(7.0, 0.0, 0.3);
-        PIDConstants pidR = new PIDConstants(5.0, 0.0, 0.3);
+        PIDConstants pidXY = new PIDConstants(5.0, 0.0, 0.2);
+        PIDConstants pidR = new PIDConstants(5.0, 0.0, 0.2);
         PathFollowingController controller = new PPHolonomicDriveController(pidXY, pidR);
 
         /// config PP command factory
@@ -150,8 +150,8 @@ public class PPSwerveSubsystem extends SubsystemBase implements PPDrivable {
         double kMaxLinearVelMps = 0.85 * Units.feetToMeters(15.5); // est
         double kMaxLinearAccMpss = 2.0; // guess
 
-        return new DriveSpecs(kTrackWidthM, kWheelBaseM, kTotalMassK, Units.inchesToMeters(12.0),
-                Units.inchesToMeters(12.0), Units.inchesToMeters(12.0), Units.inchesToMeters(12.0),
+        return new DriveSpecs(kTrackWidthM, kWheelBaseM, kTotalMassK, Units.inchesToMeters(18.0),
+                Units.inchesToMeters(18.0), Units.inchesToMeters(18.0), Units.inchesToMeters(18.0),
                 kMaxLinearVelMps, kMaxLinearAccMpss, DriveSpecs.getMaxAngularVel(kMaxLinearVelMps, radius),
                 DriveSpecs.getMaxAngularAcc(true, kTotalMassK, kWheelBaseM, kTrackWidthM, kMaxLinearAccMpss));
     }

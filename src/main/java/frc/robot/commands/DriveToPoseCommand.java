@@ -49,8 +49,8 @@ public class DriveToPoseCommand extends Command {
         PIDController pidX = new PIDController(25.0, 0.0, 0.3);
         PIDController pidY = new PIDController(25.0, 0.0, 0.3);
         ProfiledPIDController pidR = new ProfiledPIDController(10.0, 0.0, 0.3,
-                new TrapezoidProfile.Constraints(_drive.getSpecs().kMaxAngularVelRps,
-                        _drive.getSpecs().kMaxAngularAccRpss));
+                new TrapezoidProfile.Constraints(_drive.getSpecs().kMaxAngularVelRps(),
+                        _drive.getSpecs().kMaxAngularAccRpss()));
         pidR.enableContinuousInput(-Math.PI, +Math.PI);
 
         _holoPid = new HolonomicDriveController(pidX, pidY, pidR);

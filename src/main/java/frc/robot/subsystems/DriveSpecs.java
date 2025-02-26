@@ -1,68 +1,33 @@
 package frc.robot.subsystems;
 
 /**
- * Drivetrain physical and dynamic specs required for drivetrain interfaces and
+ * Drivetrain physical and dynamic specs required for interfaces and
  * controllers.
  * <p>
  * TODO: Consolidate with other config schemes.
+ * 
+ * @param kTrackWidthM       Distance between left and right wheel centerss
+ *                           (>0).
+ * @param kWheelBaseM        Distance between front and back wheel centers
+ *                           (>=0).
+ * @param kTotalMassK        Total mass (>0).
+ * @param kFrontOffsetM      Offset from reference center to front bumper edge,
+ *                           along X-axis (>=0).
+ * @param kBackOffsetM       Offset from reference center to back bumper edge,
+ *                           along X-axis (<=0).
+ * @param kLeftOffsetM       Offset from reference center to left bumper edge,
+ *                           along Y-axis (>=0).
+ * @param kRightOffsetM      Offset from reference center to right bumper edge,
+ *                           along Y-axis (<=0).
+ * @param kMaxLinearVelMps   Max linear velocity (>0).
+ * @param kMaxLinearAccMpss  Max linear acceleration (>0).
+ * @param kMaxAngularVelRps  Max angular velocity (>0).
+ * @param kMaxAngularAccRpss Max angular acceleration (>0).
  */
-public class DriveSpecs {
-    /**
-     * Creates an instance.
-     * 
-     * @param kTrackWidthM       Distance between left and right wheel centerss
-     *                           (>0).
-     * @param kWheelBaseM        Distance between front and back wheel centers
-     *                           (>=0).
-     * @param kTotalMassK        Total mass (>0).
-     * @param kFrontOffsetM      Offset from reference center to front edge, along
-     *                           X-axis (>=0).
-     * @param kBackOffsetMOffset Offset from reference center to back edge, along
-     *                           X-axis (<=0).
-     * @param kLeftOffsetM       Offset from reference center to left edge, along
-     *                           Y-axis (>=0).
-     * @param kRightOffsetM      Offset from reference center to right edge, along
-     *                           Y-axis (<=0).
-     * @param kMaxLinearVelMps   Max linear velocity (>0).
-     * @param kMaxLinearAccMpss  Max linear acceleration (>0).
-     * @param kMaxAngularVelRps  Max angular velocity (>0).
-     * @param kMaxAngularAccRpss Max angular acceleration (>0).
-     */
-    public DriveSpecs(double kTrackWidthM, double kWheelBaseM, double kTotalMassK,
-            double kFrontOffsetM, double kBackOffsetM, double kLeftOffsetM, double kRightOffsetM,
-            double kMaxLinearVelMps, double kMaxLinearAccMpss, double kMaxAngularVelRps,
-            double kMaxAngularAccRpss) {
-
-        this.kTrackWidthM = kTrackWidthM;
-        this.kWheelBaseM = kWheelBaseM;
-        this.kTotalMassK = kTotalMassK;
-
-        this.kFrontOffsetM = kFrontOffsetM;
-        this.kBackOffsetM = kBackOffsetM;
-        this.kLeftOffsetM = kLeftOffsetM;
-        this.kRightOffsetM = kRightOffsetM;
-
-        this.kMaxLinearVelMps = kMaxLinearVelMps;
-        this.kMaxLinearAccMpss = kMaxLinearAccMpss;
-
-        this.kMaxAngularVelRps = kMaxAngularVelRps;
-        this.kMaxAngularAccRpss = kMaxAngularAccRpss;
-    }
-
-    public final double kTrackWidthM;
-    public final double kWheelBaseM;
-    public final double kTotalMassK;
-
-    public final double kFrontOffsetM;
-    public final double kBackOffsetM;
-    public final double kLeftOffsetM;
-    public final double kRightOffsetM;
-
-    public final double kMaxLinearVelMps;
-    public final double kMaxLinearAccMpss;
-
-    public final double kMaxAngularVelRps;
-    public final double kMaxAngularAccRpss;
+public record DriveSpecs(double kTrackWidthM, double kWheelBaseM, double kTotalMassK,
+        double kFrontOffsetM, double kBackOffsetM, double kLeftOffsetM, double kRightOffsetM,
+        double kMaxLinearVelMps, double kMaxLinearAccMpss, double kMaxAngularVelRps,
+        double kMaxAngularAccRpss) {
 
     // class
 

@@ -135,26 +135,26 @@ public class RobotContainer {
                 DriveSpecs specs = PPSwerveSubsystem.PRACTICE_SPECS;
 
                 Pose2d poseStart = offsetFieldPose(new Pose2d(Units.inchesToMeters(0.00), Units.inchesToMeters(158.50),
-                                Rotation2d.fromDegrees(0.0)), specs.kBackOffsetM); // back on blue center
+                                Rotation2d.fromDegrees(0.0)), specs.kBackOffsetM()); // back on blue center
                 drivetrain.resetPose(poseStart);
 
                 Pose2d pose12 = offsetFieldPose(new Pose2d(Units.inchesToMeters(33.51), Units.inchesToMeters(25.80),
-                                Rotation2d.fromDegrees(+54)), specs.kBackOffsetM);
+                                Rotation2d.fromDegrees(+54)), specs.kBackOffsetM());
                 Pose2d pose13 = offsetFieldPose(new Pose2d(Units.inchesToMeters(33.51), Units.inchesToMeters(291.20),
-                                Rotation2d.fromDegrees(-54)), specs.kBackOffsetM);
+                                Rotation2d.fromDegrees(-54)), specs.kBackOffsetM());
 
                 Pose2d pose18 = offsetFieldPose(new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50),
-                                Rotation2d.fromDegrees(0.0)), -specs.kFrontOffsetM);
+                                Rotation2d.fromDegrees(0.0)), -specs.kFrontOffsetM());
                 Pose2d pose17 = offsetFieldPose(new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(130.17),
-                                Rotation2d.fromDegrees(+60.0)), -specs.kFrontOffsetM);
+                                Rotation2d.fromDegrees(+60.0)), -specs.kFrontOffsetM());
                 Pose2d pose19 = offsetFieldPose(new Pose2d(Units.inchesToMeters(160.39), Units.inchesToMeters(186.83),
-                                Rotation2d.fromDegrees(-60.0)), -specs.kFrontOffsetM);
+                                Rotation2d.fromDegrees(-60.0)), -specs.kFrontOffsetM());
                 Pose2d pose21 = offsetFieldPose(new Pose2d(Units.inchesToMeters(209.49), Units.inchesToMeters(158.50),
-                                Rotation2d.fromDegrees(180.0)), -specs.kFrontOffsetM);
+                                Rotation2d.fromDegrees(180.0)), -specs.kFrontOffsetM());
                 Pose2d pose22 = offsetFieldPose(new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(130.17),
-                                Rotation2d.fromDegrees(+120.0)), -specs.kFrontOffsetM);
+                                Rotation2d.fromDegrees(+120.0)), -specs.kFrontOffsetM());
                 Pose2d pose20 = offsetFieldPose(new Pose2d(Units.inchesToMeters(193.10), Units.inchesToMeters(186.83),
-                                Rotation2d.fromDegrees(-120.0)), -specs.kFrontOffsetM);
+                                Rotation2d.fromDegrees(-120.0)), -specs.kFrontOffsetM());
 
                 // pose reset commands
                 driverController.povLeft().onTrue(new InstantCommand(() -> drivetrain.resetPose(pose13), drivetrain));
