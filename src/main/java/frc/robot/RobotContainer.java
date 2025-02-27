@@ -12,11 +12,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+// com.pathplanner.lib.auto
+import com.pathplanner.lib.auto.AutoBuilder;
+//import com.pathplanner.lib.path;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -74,6 +79,13 @@ public class RobotContainer {
     setUpDriverController();
     setUpOpController();
     setUpTelemetry();
+
+    //NamedCommands.registerCommand("moveArmUp", frankenArm.goUp());
+    //NamedCommands.registerCommand("moveArmDown", frankenArm.goDown());
+    
+    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+    NamedCommands.registerCommand("runIntake", rollsRUs.runIntake());
+    //NamedCommands.registerCommand("runOutput", rollsRUs.runOutput());
   }
 
   private void setUpDriverController() {

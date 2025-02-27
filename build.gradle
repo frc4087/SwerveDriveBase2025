@@ -3,6 +3,11 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2025.2.1"
 }
 
+repositories {
+    mavenCentral()
+    maven { url 'https://devsite.ctr-electronics.com/maven/release/' }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -69,10 +74,14 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
+    //implementation 'com.ctre.phoenix6:phoenixpro:25.3.1'
+    implementation 'com.pathplanner.lib:PathplannerLib-java:2025.2.4'
 	testImplementation(platform('org.junit:junit-bom:5.11.4'))
 	testImplementation('org.junit.jupiter:junit-jupiter')
 	testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
+
+
 
 test {
     useJUnitPlatform()
