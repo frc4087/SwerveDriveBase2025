@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7794077236187915,
-        "y": 6.04849312652637
+        "x": 1.7757564679278208,
+        "y": 6.046663473523985
       },
       "isLocked": false,
       "linkedName": "Top Intake"
@@ -20,8 +20,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 2.5613310072972215,
-        "y": 4.816722894690848
+        "x": 2.4975094770528514,
+        "y": 4.779116472222991
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "MoveArmDown",
+      "waypointRelativePos": 0.2987593052109181,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.45775641025641,
-        "y": 4.417179487179487
+        "x": 2.8275,
+        "y": 5.06825
       },
       "isLocked": false,
       "linkedName": "Reef L"
@@ -20,8 +20,8 @@
         "y": 6.677
       },
       "prevControl": {
-        "x": 2.231250000002697,
-        "y": 6.05776923077017
+        "x": 1.553072666674428,
+        "y": 5.9687816564060725
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "MoveArmUp",
+      "waypointRelativePos": 0.4952853598014843,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
