@@ -43,7 +43,7 @@ public class FrankenArm extends SubsystemBase {
     talonFXConfigs.Slot0.kS = 0.0;
     talonFXConfigs.Slot0.kG = 0.25;
     talonFXConfigs.Slot0.kV = 0.0;
-    talonFXConfigs.Slot0.kP = 4;
+    talonFXConfigs.Slot0.kP = 1.875;
     talonFXConfigs.Slot0.kI = 0.0;
     talonFXConfigs.Slot0.kD = 0.0;
 
