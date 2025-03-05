@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9778205128205126,
-        "y": 5.072608974358975
+        "x": 2.8671794871794867,
+        "y": 4.287371794871795
       },
       "isLocked": false,
       "linkedName": "Reef L"
     },
     {
       "anchor": {
-        "x": 1.02375,
-        "y": 6.677
+        "x": 2.293717948717948,
+        "y": 4.840320512820513
       },
       "prevControl": {
-        "x": 1.553072666674428,
-        "y": 5.9687816564060725
+        "x": 2.5104487179487176,
+        "y": 4.582307692307692
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Intake"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -34,20 +34,8 @@
   "eventMarkers": [
     {
       "name": "RunOutput",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 0.25,
-      "command": null
-    },
-    {
-      "name": "MoveArmUp",
-      "waypointRelativePos": 0.4952853598014843,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "RunIntake",
-      "waypointRelativePos": 0.6,
-      "endWaypointRelativePos": 1.0,
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.4,
       "command": null
     }
   ],
@@ -61,10 +49,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Reef To Intake",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

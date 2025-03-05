@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7798717948717937,
-        "y": 5.284102564102564
+        "x": 3.852115384615384,
+        "y": 5.16025641025641
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.761815708994506,
-        "y": 5.357685843201794
+        "x": 2.8340592987380964,
+        "y": 5.23383968935564
       },
       "isLocked": false,
       "linkedName": "Reef TL"
@@ -33,6 +33,12 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "RunOutput",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.25,
+      "command": null
+    },
+    {
       "name": "MoveArmUp",
       "waypointRelativePos": 0.49528535980149746,
       "endWaypointRelativePos": null,
@@ -40,7 +46,7 @@
     },
     {
       "name": "RunIntake",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.65,
       "endWaypointRelativePos": 1.0,
       "command": null
     }

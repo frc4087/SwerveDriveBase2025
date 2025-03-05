@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 4.0
+        "x": 3.1503205128205125,
+        "y": 4.004358974358975
       },
       "prevControl": {
-        "x": 2.4975094770528514,
-        "y": 4.779116472222991
+        "x": 2.647829989873364,
+        "y": 4.783475446581965
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,6 +33,12 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "RunIntake",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.25,
+      "command": null
+    },
+    {
       "name": "MoveArmDown",
       "waypointRelativePos": 0.6,
       "endWaypointRelativePos": null,
@@ -40,7 +46,7 @@
     },
     {
       "name": "RunOutput",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.95,
       "endWaypointRelativePos": 1.0,
       "command": null
     }

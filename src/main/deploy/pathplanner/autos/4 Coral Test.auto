@@ -45,6 +45,12 @@
           "data": {
             "pathName": "Top Intake to Reef L"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "End Path"
+          }
         }
       ]
     }
