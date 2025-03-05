@@ -35,12 +35,11 @@ public class AutonomousControllerImpl implements AutonomousController {
         );
 
         // Register Triggers Here
-        new EventTrigger("Run Intake").whileTrue(intake.runIntake());
-        new EventTrigger("Run Output").whileTrue(intake.runOutput());
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
+        new EventTrigger("RunOutput").whileTrue(intake.runOutput());
 
-        // Register Triggers Here
-        new EventTrigger("Arm Up").whileTrue(arm.goUp());
-        new EventTrigger("Arm Down").whileTrue(arm.goDown());
+        new EventTrigger("MoveArmUp").onTrue(arm.goUp());
+        new EventTrigger("MoveArmDown").onTrue(arm.goDown());
 
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
@@ -56,9 +55,7 @@ public class AutonomousControllerImpl implements AutonomousController {
             controller,
             config.generatedConfig,
             requiresFlip,
-            driveSystem,
-            arm,
-            intake
+            driveSystem
         );
     
         autoChooser = AutoBuilder.buildAutoChooser();

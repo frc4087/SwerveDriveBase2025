@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
@@ -25,6 +27,8 @@ public class RollsRUs extends SubsystemBase {
         limitConfigs.SupplyCurrentLimitEnable = true;
 
         intakeMotor.getConfigurator().apply(limitConfigs);
+
+        intakeMotor.setNeutralMode(NeutralModeValue.Brake);
 
         intakeSpeed = config.readDoubleProperty("rollsRUs.motor.intake.speed");
         outputSpeed = config.readDoubleProperty("rollsRUs.motor.output.speed");
