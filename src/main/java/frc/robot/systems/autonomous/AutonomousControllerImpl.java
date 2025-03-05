@@ -3,9 +3,9 @@ package frc.robot.systems.autonomous;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
@@ -28,10 +28,19 @@ public class AutonomousControllerImpl implements AutonomousController {
     private final SendableChooser<Command> autoChooser;
 
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
+        
         var controller = new PPHolonomicDriveController(
             readPidConstants(config, "translation"),
             readPidConstants(config, "rotation")
         );
+
+        // Register Triggers Here
+        new EventTrigger("Run Intake").whileTrue(intake.runIntake());
+        new EventTrigger("Run Output").whileTrue(intake.runOutput());
+
+        // Register Triggers Here
+        new EventTrigger("Arm Up").whileTrue(arm.goUp());
+        new EventTrigger("Arm Down").whileTrue(arm.goDown());
 
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
@@ -51,13 +60,6 @@ public class AutonomousControllerImpl implements AutonomousController {
             arm,
             intake
         );
-
-        // Register Commands Here
-        NamedCommands.registerCommand("moveArmUp", arm.goUp());
-        NamedCommands.registerCommand("moveArmDown", arm.goDown());
-    
-        NamedCommands.registerCommand("runIntake", intake.runIntake());
-        NamedCommands.registerCommand("runOutput", intake.runOutput());
     
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
