@@ -38,14 +38,14 @@ public class FrankenArm extends SubsystemBase {
 		armMotor = new TalonFX(armMotorPort);
 		var limitConfigs = new CurrentLimitsConfigs();
 
-		var talonFXConfigs = new TalonFXConfiguration();
-		talonFXConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-		talonFXConfigs.Slot0.kS = 0.0;
-		talonFXConfigs.Slot0.kG = 0.25;
-		talonFXConfigs.Slot0.kV = 0.0;
-		talonFXConfigs.Slot0.kP = .5;
-		talonFXConfigs.Slot0.kI = 0.0;
-		talonFXConfigs.Slot0.kD = 0.0;
+    var talonFXConfigs = new TalonFXConfiguration();
+    talonFXConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    talonFXConfigs.Slot0.kS = 0.0;
+    talonFXConfigs.Slot0.kG = 0.25;
+    talonFXConfigs.Slot0.kV = 0.0;
+    talonFXConfigs.Slot0.kP = 4;
+    talonFXConfigs.Slot0.kI = 0.0;
+    talonFXConfigs.Slot0.kD = 0.0;
 
 		talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
 		talonFXConfigs.MotionMagic.MotionMagicAcceleration = 160.0;
