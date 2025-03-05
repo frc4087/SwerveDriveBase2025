@@ -34,8 +34,14 @@
   "eventMarkers": [
     {
       "name": "MoveArmUp",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "RunIntake",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": 1.0,
       "command": null
     }
   ],

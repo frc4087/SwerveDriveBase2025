@@ -27,8 +27,12 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
+    private FrankenArm arm;
+
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
         
+        this.arm = arm;
+
         var controller = new PPHolonomicDriveController(
             readPidConstants(config, "translation"),
             readPidConstants(config, "rotation")
@@ -38,8 +42,8 @@ public class AutonomousControllerImpl implements AutonomousController {
         new EventTrigger("RunIntake").whileTrue(intake.runIntake());
         new EventTrigger("RunOutput").whileTrue(intake.runOutput());
 
-        new EventTrigger("MoveArmUp").onTrue(arm.goUp());
-        new EventTrigger("MoveArmDown").onTrue(arm.goDown());
+        new EventTrigger("MoveArmUp").onTrue(arm.snapUp());
+        new EventTrigger("MoveArmDown").onTrue(arm.snapDown());
 
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
@@ -84,6 +88,7 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     @Override
     public void runInit() {
+        arm.armMotor.setPosition(0.0);
         CommandScheduler.getInstance().cancelAll();
         autoChooser.getSelected().schedule();
     }

@@ -34,8 +34,14 @@
   "eventMarkers": [
     {
       "name": "MoveArmDown",
-      "waypointRelativePos": 0.2987593052109181,
+      "waypointRelativePos": 0.6,
       "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "RunOutput",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": 1.0,
       "command": null
     }
   ],
