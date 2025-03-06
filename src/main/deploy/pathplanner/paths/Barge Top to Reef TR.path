@@ -40,7 +40,7 @@
     },
     {
       "name": "RunOutput",
-      "waypointRelativePos": 0.98,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }

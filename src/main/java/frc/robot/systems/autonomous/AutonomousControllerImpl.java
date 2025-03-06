@@ -47,8 +47,8 @@ public class AutonomousControllerImpl implements AutonomousController {
         new EventTrigger("MoveArmDown").onTrue(arm.snapDown());
 
         // Register Commands Here
-        NamedCommands.registerCommand("runIntake", intake.runIntake());
-        NamedCommands.registerCommand("runOutput", intake.runOutput());
+        //NamedCommands.registerCommand("RunIntake", intake.runIntake());
+        //NamedCommands.registerCommand("RunOutput", intake.runOutput());
         
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
