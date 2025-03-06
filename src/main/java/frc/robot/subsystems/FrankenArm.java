@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +32,8 @@ public class FrankenArm extends SubsystemBase {
 	private final Double upSetpoint;
 	private final Double downSetpoint;
 
+	private final Double resetSpeed;
+
 	final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0);
 
 	public FrankenArm(Config config) {
@@ -38,18 +41,18 @@ public class FrankenArm extends SubsystemBase {
 		armMotor = new TalonFX(armMotorPort);
 		var limitConfigs = new CurrentLimitsConfigs();
 
-    var talonFXConfigs = new TalonFXConfiguration();
-    talonFXConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    talonFXConfigs.Slot0.kS = 0.0;
-    talonFXConfigs.Slot0.kG = 0.25;
-    talonFXConfigs.Slot0.kV = 0.0;
-    talonFXConfigs.Slot0.kP = 4;
-    talonFXConfigs.Slot0.kI = 0.0;
-    talonFXConfigs.Slot0.kD = 0.0;
-
-		talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
-		talonFXConfigs.MotionMagic.MotionMagicAcceleration = 160.0;
-		talonFXConfigs.MotionMagic.MotionMagicJerk = 1600.0;
+		var talonFXConfigs = new TalonFXConfiguration();
+		talonFXConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+		talonFXConfigs.Slot0.kS = 0.0;
+		talonFXConfigs.Slot0.kG = 0.25;
+		talonFXConfigs.Slot0.kV = 0.0;
+		talonFXConfigs.Slot0.kP = 1.875;
+		talonFXConfigs.Slot0.kI = 0.0;
+		talonFXConfigs.Slot0.kD = 0.0;
+		
+		talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 160.0;
+		talonFXConfigs.MotionMagic.MotionMagicAcceleration = 240.0;
+		talonFXConfigs.MotionMagic.MotionMagicJerk = 3200.0;
 
 		limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");
 		limitConfigs.StatorCurrentLimitEnable = true;
@@ -60,23 +63,38 @@ public class FrankenArm extends SubsystemBase {
 		armMotor.getConfigurator().apply(limitConfigs);
 		armMotor.getConfigurator().apply(talonFXConfigs, 0.050);
 
+		armMotor.setNeutralMode(NeutralModeValue.Brake);
+		armMotor.setPosition(0.0);
+
 		upSetpoint = config.readDoubleProperty("frankenarm.motor.up.setpoint");
 		downSetpoint = config.readDoubleProperty("frankenarm.motor.down.setpoint");
+
+		resetSpeed = config.readDoubleProperty("frankenarm.motor.reset.speed");
 	}
 
-	public Command goUp() {
+	public Command snapUp() {
 		return this.run(() -> {
-			armMotor.setControl(new PositionVoltage(0)
+			armMotor.setControl(m_motmag
 				.withSlot(0)
-				.withPosition(upSetpoint));
+				.withPosition(upSetpoint)
+			);
 		});
 	}
 
-	public Command goDown() {
+	public Command snapDown() {
 		return this.run(() -> {
-			armMotor.setControl(new PositionVoltage(0)
+			armMotor.setControl(m_motmag
 				.withSlot(0)
 				.withPosition(downSetpoint));
 		});
+	}
+
+	public Command runUp() {
+		return this.runEnd(() -> armMotor.set(resetSpeed), this::stopReset);
+	}
+
+	private void stopReset() {
+		armMotor.set(0.0);
+		armMotor.setPosition(0.0);
 	}
 }

@@ -14,11 +14,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
+import frc.robot.subsystems.SirLiftsALot;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -56,6 +58,8 @@ public class RobotContainer {
 
 	public final RollsRUs rollsRUs = new RollsRUs(config);
 
+	public final SirLiftsALot sirLiftsALot = new SirLiftsALot(config);
+
 	public final AutonomousController autonomousController = 
 		AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
 
@@ -63,7 +67,9 @@ public class RobotContainer {
 	public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
 
 	public RobotContainer() {
+
 		DriverStation.silenceJoystickConnectionWarning(true);
+
 		setUpDriverController();
 		setUpOpController();
 		setUpTelemetry();
@@ -129,8 +135,15 @@ public class RobotContainer {
 		operatorController.rightBumper().whileTrue(rollsRUs.runOutput());
 
 		// Arm Control
-		operatorController.x().onTrue(frankenArm.goUp());
-		operatorController.b().onTrue(frankenArm.goDown());
+		operatorController.x().onTrue(frankenArm.snapUp());
+		operatorController.b().onTrue(frankenArm.snapDown());
+
+		// Arm Reset
+		operatorController.leftTrigger().whileTrue(frankenArm.runUp());
+
+		// Climber
+		operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
+		operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
 	}
 
 	private void setUpTelemetry() {

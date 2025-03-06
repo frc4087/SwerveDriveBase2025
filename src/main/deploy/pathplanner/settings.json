@@ -3,9 +3,10 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
+    "Barge ",
     "Intake To Reef",
-    "Reef To Intake",
-    "Tests"
+    "Other",
+    "Reef To Intake"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
@@ -16,12 +17,12 @@
   "robotMass": 74.088,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.049,
-  "driveGearing": 6.746,
+  "driveWheelRadius": 0.05,
+  "driveGearing": 6.75,
   "maxDriveSpeed": 4.75,
   "driveMotorType": "krakenX60",
   "driveCurrentLimit": 60.0,
-  "wheelCOF": 0.9,
+  "wheelCOF": 0.5,
   "flModuleX": 0.288925,
   "flModuleY": 0.288925,
   "frModuleX": 0.288925,

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.214423076923076,
-        "y": 5.2221794871794875
+        "x": 5.1731410256410255,
+        "y": 5.129294871794871
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.70925,
-        "y": 6.0335
+        "x": 4.46102564102564,
+        "y": 6.646410256410256
       },
       "isLocked": false,
       "linkedName": "Reef TR"
     },
     {
       "anchor": {
-        "x": 1.02375,
-        "y": 6.677
+        "x": 1.0525392137505607,
+        "y": 6.69458137418957
       },
       "prevControl": {
-        "x": 2.1742500000000002,
-        "y": 6.784249999999999
+        "x": 2.6109366496479964,
+        "y": 6.601696758804954
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,20 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "RunOutput",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.2,
+      "command": null
+    },
+    {
       "name": "MoveArmUp",
       "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "RunIntake",
+      "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
       "command": null
     }

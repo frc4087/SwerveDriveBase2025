@@ -27,8 +27,12 @@ public class SirLiftsALot extends SubsystemBase {
         climbSpeed = config.readIntegerProperty("sirLiftsALot.motor.climb.speed");
     }
 
-    public Command runClimber() {
+    public Command runClimberForward() {
         return this.runEnd(() -> climbMotor.set(climbSpeed), this::stop);
+    }
+
+    public Command runClimberBackward() {
+        return this.runEnd(() -> climbMotor.set(-climbSpeed), this::stop);
     }
 
     private void stop() {

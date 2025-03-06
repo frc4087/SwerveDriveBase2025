@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 4.0
+        "x": 3.1503205128205125,
+        "y": 4.004358974358975
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
-        "y": 4.0
+        "x": 2.8671794871794867,
+        "y": 4.287371794871795
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef L"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.0
+        "x": 2.293717948717948,
+        "y": 4.840320512820513
       },
       "prevControl": {
-        "x": 1.0,
-        "y": 4.0
+        "x": 2.5104487179487176,
+        "y": 4.582307692307692
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "RunOutput",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.4,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -45,7 +52,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Tests",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

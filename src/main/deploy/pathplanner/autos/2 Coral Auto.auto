@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Forward"
+            "pathName": "Barge Top to Reef TR"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Backward"
+            "pathName": "Reef TR to Top Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Turn"
+            "pathName": "Top Intake to Reef TL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Circle"
+            "pathName": "Auto End"
           }
         }
       ]

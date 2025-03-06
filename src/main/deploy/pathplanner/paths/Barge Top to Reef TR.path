@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.214423076923076,
-        "y": 5.2221794871794875
+        "x": 5.1731410256410255,
+        "y": 5.129294871794871
       },
       "prevControl": {
-        "x": 5.7257393609390155,
-        "y": 5.796303639476764
+        "x": 5.684457309656965,
+        "y": 5.703419024092147
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,13 @@
   "eventMarkers": [
     {
       "name": "MoveArmDown",
-      "waypointRelativePos": 0.4,
+      "waypointRelativePos": 0.6,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "RunOutput",
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -52,7 +58,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Barge ",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

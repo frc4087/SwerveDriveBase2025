@@ -6,6 +6,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Config;
@@ -27,12 +28,28 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
+    private FrankenArm arm;
+
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
+        
+        this.arm = arm;
+
         var controller = new PPHolonomicDriveController(
             readPidConstants(config, "translation"),
             readPidConstants(config, "rotation")
         );
 
+        // Register Triggers Here
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
+        new EventTrigger("RunOutput").whileTrue(intake.runOutput());
+
+        new EventTrigger("MoveArmUp").onTrue(arm.snapUp());
+        new EventTrigger("MoveArmDown").onTrue(arm.snapDown());
+
+        // Register Commands Here
+        //NamedCommands.registerCommand("RunIntake", intake.runIntake());
+        //NamedCommands.registerCommand("RunOutput", intake.runOutput());
+        
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.
@@ -47,17 +64,8 @@ public class AutonomousControllerImpl implements AutonomousController {
             controller,
             config.generatedConfig,
             requiresFlip,
-            driveSystem,
-            arm,
-            intake
+            driveSystem
         );
-
-        // Register Commands Here
-        NamedCommands.registerCommand("moveArmUp", arm.goUp());
-        NamedCommands.registerCommand("moveArmDown", arm.goDown());
-    
-        NamedCommands.registerCommand("runIntake", intake.runIntake());
-        NamedCommands.registerCommand("runOutput", intake.runOutput());
     
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -85,6 +93,7 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     @Override
     public void runInit() {
+        arm.armMotor.setPosition(0.0);
         CommandScheduler.getInstance().cancelAll();
         autoChooser.getSelected().schedule();
     }
