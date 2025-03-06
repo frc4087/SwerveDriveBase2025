@@ -49,10 +49,10 @@ public class FrankenArm extends SubsystemBase {
 		talonFXConfigs.Slot0.kP = 1.875;
 		talonFXConfigs.Slot0.kI = 0.0;
 		talonFXConfigs.Slot0.kD = 0.0;
-
-		talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 1.0;
-		talonFXConfigs.MotionMagic.MotionMagicAcceleration = 5.0;
-		talonFXConfigs.MotionMagic.MotionMagicJerk = 20.0;
+		
+		talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 160.0;
+		talonFXConfigs.MotionMagic.MotionMagicAcceleration = 240.0;
+		talonFXConfigs.MotionMagic.MotionMagicJerk = 3200.0;
 
 		limitConfigs.StatorCurrentLimit = config.readIntegerProperty("frankenarm.motor.statorCurrent.limit.amps");
 		limitConfigs.StatorCurrentLimitEnable = true;
@@ -74,15 +74,16 @@ public class FrankenArm extends SubsystemBase {
 
 	public Command snapUp() {
 		return this.run(() -> {
-			armMotor.setControl(new PositionVoltage(0)
+			armMotor.setControl(m_motmag
 				.withSlot(0)
-				.withPosition(upSetpoint));
+				.withPosition(upSetpoint)
+			);
 		});
 	}
 
 	public Command snapDown() {
 		return this.run(() -> {
-			armMotor.setControl(new PositionVoltage(0)
+			armMotor.setControl(m_motmag
 				.withSlot(0)
 				.withPosition(downSetpoint));
 		});

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.02375,
-        "y": 6.677
+        "x": 0.9417307692307688,
+        "y": 6.656730769230769
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7757564679278208,
-        "y": 6.046663473523985
+        "x": 1.6937372371585897,
+        "y": 6.026394242754755
       },
       "isLocked": false,
       "linkedName": "Top Intake"
     },
     {
       "anchor": {
-        "x": 3.1503205128205125,
-        "y": 4.004358974358975
+        "x": 3.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.647829989873364,
-        "y": 4.783475446581965
+        "x": 2.4975094770528514,
+        "y": 4.779116472222991
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,21 +33,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunIntake",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 0.25,
-      "command": null
-    },
-    {
       "name": "MoveArmDown",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.2987593052109181,
       "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "RunOutput",
-      "waypointRelativePos": 0.95,
-      "endWaypointRelativePos": 1.0,
       "command": null
     }
   ],

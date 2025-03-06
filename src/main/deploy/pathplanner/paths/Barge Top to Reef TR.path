@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.142179487179487,
-        "y": 5.149935897435898
+        "x": 5.1731410256410255,
+        "y": 5.129294871794871
       },
       "prevControl": {
-        "x": 5.653495771195426,
-        "y": 5.724060049733175
+        "x": 5.684457309656965,
+        "y": 5.703419024092147
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,14 +34,14 @@
   "eventMarkers": [
     {
       "name": "MoveArmDown",
-      "waypointRelativePos": 0.4,
+      "waypointRelativePos": 0.6,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "RunOutput",
-      "waypointRelativePos": 0.95,
-      "endWaypointRelativePos": 1.0,
+      "waypointRelativePos": 0.98,
+      "endWaypointRelativePos": null,
       "command": null
     }
   ],
