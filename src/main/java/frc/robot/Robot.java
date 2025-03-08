@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Coast);
+        //m_robotContainer.drivetrain.configNeutralMode(NeutralModeValue.Coast);
 	}
 
     @Override

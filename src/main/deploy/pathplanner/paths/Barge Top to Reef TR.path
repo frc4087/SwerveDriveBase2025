@@ -37,12 +37,6 @@
       "waypointRelativePos": 0.6,
       "endWaypointRelativePos": null,
       "command": null
-    },
-    {
-      "name": "RunOutput",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
     }
   ],
   "globalConstraints": {
