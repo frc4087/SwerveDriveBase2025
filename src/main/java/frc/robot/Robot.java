@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.WebServer;
 
 public class Robot extends TimedRobot {
 
@@ -20,10 +24,25 @@ public class Robot extends TimedRobot {
         Timer.delay(5);
         CameraServer.startAutomaticCapture();
     }
-
+    @Override
+    public void robotInit() {
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+        
+    }
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+
+        // Read battery voltage
+        double voltage = RobotController.getBatteryVoltage();
+        // Send voltage to SmartDashboard
+        SmartDashboard.putNumber("Battery Voltage", voltage);
+
+         // Retrieve arm position
+        double armPosition = m_robotContainer.frankenArm.armMotor.getPosition().getValueAsDouble();
+        // Send arm position to SmartDashboard
+        SmartDashboard.putNumber("Arm Position", armPosition);
+
     }
 
     @Override
