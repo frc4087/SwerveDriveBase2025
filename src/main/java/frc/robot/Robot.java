@@ -16,7 +16,9 @@ public class Robot extends TimedRobot {
   public final RobotContainer m_robotContainer;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
+    boolean useLimeLight = true;
+
+    m_robotContainer = new RobotContainer(useLimeLight);
     Timer.delay(5);
     CameraServer.startAutomaticCapture();
   }

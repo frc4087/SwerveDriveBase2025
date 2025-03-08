@@ -20,15 +20,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.PathToPoseCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.DriveSpecs;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.PPSwerveSubsystem;
 import frc.robot.subsystems.RollsRUs;
-import frc.robot.systems.autonomous.AutonomousController;
-import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
 public class RobotContainer {
 
@@ -74,10 +71,14 @@ public class RobotContainer {
         Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
         public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
 
-        public RobotContainer() {
+        public RobotContainer(boolean useLimeLight) {
                 setUpDriverController();
                 setUpOpController();
                 setUpTelemetry();
+
+                if (useLimeLight) {
+                        this.drivetrain.useLLPoseSubsystem();
+                }
         }
 
         private void setUpDriverController() {
@@ -135,13 +136,13 @@ public class RobotContainer {
                 DriveSpecs specs = PPSwerveSubsystem.PRACTICE_SPECS;
 
                 Pose2d poseStart = offsetFieldPose(new Pose2d(Units.inchesToMeters(0.00), Units.inchesToMeters(158.50),
-                                Rotation2d.fromDegrees(0.0)), specs.kBackOffsetM()); // back on blue center
+                                Rotation2d.fromDegrees(0.0)), specs.kBackOffsetM()); // back edge on blue line center
                 drivetrain.resetPose(poseStart);
 
                 Pose2d pose12 = offsetFieldPose(new Pose2d(Units.inchesToMeters(33.51), Units.inchesToMeters(25.80),
-                                Rotation2d.fromDegrees(+54)), specs.kBackOffsetM());
+                                Rotation2d.fromDegrees(-126)), -specs.kFrontOffsetM());
                 Pose2d pose13 = offsetFieldPose(new Pose2d(Units.inchesToMeters(33.51), Units.inchesToMeters(291.20),
-                                Rotation2d.fromDegrees(-54)), specs.kBackOffsetM());
+                                Rotation2d.fromDegrees(+126)), -specs.kFrontOffsetM());
 
                 Pose2d pose18 = offsetFieldPose(new Pose2d(Units.inchesToMeters(144.00), Units.inchesToMeters(158.50),
                                 Rotation2d.fromDegrees(0.0)), -specs.kFrontOffsetM());

@@ -1,0 +1,24 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "limelight": {
+        "double[]##v_/limelight/botpose_orb_wpiblue": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "dsClient": false,
+    "listenAddress": "10.40.87.2",
+    "mode": "Server",
+    "serverTeam": "10.40.87.11"
+  }
+}

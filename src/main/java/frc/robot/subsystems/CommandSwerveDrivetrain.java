@@ -36,6 +36,7 @@ import frc.robot.generated.PracticeBotTunerConstants.TunerSwerveDrivetrain;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    private LLPoseSubsystem _llPoseSubsystem = null; // null if none
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -203,9 +204,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private void initialize(Config config) {
         discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
 
+        // start sim
         if (Utils.isSimulation()) {
             startSimThread();
         }
+    }
+
+    /**
+     * Called by by the host during setup to include LimeLight pose augmentation.
+     * @return Reference to this.
+     */
+    public CommandSwerveDrivetrain useLLPoseSubsystem() {
+        if (_llPoseSubsystem == null) {
+            _llPoseSubsystem = new LLPoseSubsystem(this);
+        }
+        return this;
     }
 
     /**
@@ -243,6 +256,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+        if (_llPoseSubsystem != null) {
+            _llPoseSubsystem.periodic();
+        }
+
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply
@@ -303,11 +320,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void spinWithSpeedRad(double radSpeed) {
         ChassisSpeeds speeds = new ChassisSpeeds(0, 0, radSpeed);
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
-            .withSpeeds(speeds)
-            .withDesaturateWheelSpeeds(true)
-        );
+                .withSpeeds(speeds)
+                .withDesaturateWheelSpeeds(true));
     }
-    
+
     /**
      * TODO: update after optimization
      * 
@@ -319,10 +335,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds, DriveFeedforwards driveFeedforwards) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, this.discretizationDelta);
         this.setControl(new SwerveRequest.ApplyRobotSpeeds()
-            .withSpeeds(targetSpeeds)
-            .withWheelForceFeedforwardsX(driveFeedforwards.robotRelativeForcesX())
-            .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
-            .withDesaturateWheelSpeeds(true)
-        );
+                .withSpeeds(targetSpeeds)
+                .withWheelForceFeedforwardsX(driveFeedforwards.robotRelativeForcesX())
+                .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
+                .withDesaturateWheelSpeeds(true));
     }
 }

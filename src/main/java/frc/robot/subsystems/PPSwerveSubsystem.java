@@ -24,17 +24,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Wraps a target drive system to provide PPDrivable support.
  */
 public class PPSwerveSubsystem extends SubsystemBase implements PPDrivable {
+    /**
+     * Creates an instance.
+     * @param specs Swerve drive specs.
+     * @param drive Target drivetrain.
+     * @param isLimeLight If true, uses LimeLight pose estimation.
+     */
     public PPSwerveSubsystem(DriveSpecs specs, CommandSwerveDrivetrain drive) {
         _specs = specs;
         _drive = drive;
-        _subsystems.add(_drive);
-        _subsystems.add(this);
+        _subsystems.add(_drive); // (first)
 
+        // connect PP to drivetrain
         _speedsMax = new ChassisSpeeds(_specs.kMaxLinearVelMps(),
                 _specs.kMaxLinearVelMps(),
                 _specs.kMaxAngularVelRps());
 
-        // connect PP to drivetrain
         /// resolve PP robot config
         double moi = DriveSpecs.getMomentOfInertia(
                 _specs.kTotalMassK(),
@@ -63,6 +68,9 @@ public class PPSwerveSubsystem extends SubsystemBase implements PPDrivable {
                 robotConfig,
                 PPSwerveSubsystem::isPathFlipped,
                 this.getSubsystems().toArray(new Subsystem[0]));
+
+        // add this subsystem (last)
+        _subsystems.add(this);
     }
 
     public DriveSpecs getSpecs() {

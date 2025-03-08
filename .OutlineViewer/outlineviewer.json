@@ -1,0 +1,17 @@
+{
+  "Connections": {
+    "open": true
+  },
+  "NetworkTables Settings": {
+    "dsClient": false,
+    "listenAddress": "10.40.87.5",
+    "mode": "Client (NT4)",
+    "serverTeam": "10.40.87.11"
+  },
+  "Retained Values": {
+    "open": false
+  },
+  "Transitory Values": {
+    "open": false
+  }
+}
