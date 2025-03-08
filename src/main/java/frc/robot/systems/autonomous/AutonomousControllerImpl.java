@@ -3,6 +3,7 @@ package frc.robot.systems.autonomous;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.EventTrigger;
@@ -46,8 +47,8 @@ public class AutonomousControllerImpl implements AutonomousController {
         new EventTrigger("MoveArmDown").onTrue(arm.snapDown());
 
         // Register Commands Here
-        //NamedCommands.registerCommand("RunIntake", intake.runIntake());
-        //NamedCommands.registerCommand("RunOutput", intake.runOutput());
+        NamedCommands.registerCommand("RunIntakeTimed", intake.runIntakeTimed(0.5));
+        NamedCommands.registerCommand("RunOutputTimed", intake.runOutputTimed(0.3));
         
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance

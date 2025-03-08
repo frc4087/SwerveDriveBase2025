@@ -33,20 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunOutput",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.2,
-      "command": null
-    },
-    {
       "name": "MoveArmUp",
       "waypointRelativePos": 0.5,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "RunIntake",
-      "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
       "command": null
     }
