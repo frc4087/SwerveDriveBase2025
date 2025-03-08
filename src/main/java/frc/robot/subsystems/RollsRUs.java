@@ -43,6 +43,14 @@ public class RollsRUs extends SubsystemBase {
         return this.runEnd(() -> intakeMotor.set(outputSpeed), this::stop);
     }
 
+    public Command runIntakeTimed(double seconds) {
+        return this.runEnd(() -> intakeMotor.set(intakeSpeed), this::stop).withTimeout(seconds);
+    }
+
+    public Command runOutputTimed(double seconds) {
+        return this.runEnd(() -> intakeMotor.set(outputSpeed), this::stop).withTimeout(seconds);
+    }
+
     private void stop() {
         intakeMotor.set(0);
     }
