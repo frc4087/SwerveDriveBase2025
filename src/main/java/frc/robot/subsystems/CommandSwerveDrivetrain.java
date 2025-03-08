@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -20,6 +21,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -200,7 +203,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     private void initialize(Config config) {
-        discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
+        //discretizationDelta = config.readDoubleProperty("drivetrain.chassis.speed.discretization.delta.seconds");
+
+        discretizationDelta = 1. / this.getOdometryFrequency();
 
         if (Utils.isSimulation()) {
             startSimThread();
@@ -311,6 +316,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
     }
     
+    public void driveWithSpeeds(double vx, double vy, double radSpeed) {
+        ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, radSpeed);
+        this.setControl(new SwerveRequest.ApplyRobotSpeeds()
+            .withSpeeds(speeds)
+            .withDesaturateWheelSpeeds(true)
+        );
+    }
+
     /**
      * TODO: update after optimization
      * 
@@ -327,5 +340,57 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
             .withDesaturateWheelSpeeds(true)
         );
+    }
+
+    public Command driveDistance(double distanceMeters){
+        return new DriveDistanceCommand(this, distanceMeters);
+    }
+
+    private static class DriveDistanceCommand extends Command {
+
+        private CommandSwerveDrivetrain drivetrain;
+        private double distance;
+        private Distance startingDistance;
+
+        public DriveDistanceCommand(CommandSwerveDrivetrain drivetrain, double distance) {
+            super();
+            this.addRequirements(drivetrain);
+            this.drivetrain = drivetrain;
+            this.distance = distance;
+        }
+
+        @Override
+        public void initialize() {
+            this.startingDistance = this.drivetrain.getState().Pose.getMeasureX();
+        }
+
+        @Override
+        public void execute() {
+            this.drivetrain.driveWithSpeeds(1, 0, 0);
+        }
+
+        @Override
+        public boolean isFinished() {
+            var currentX = this.drivetrain.getPose().getMeasureX();
+            System.out.println(String.format(
+                "Starting: %s", this.startingDistance
+            ));
+            System.out.println(String.format(
+                "Current: %s", currentX
+            ));
+            System.out.println(String.format(
+                "Distance: %s", currentX.minus(this.startingDistance).abs(Meters)
+            ));
+            System.out.println(String.format(
+                "distance: %s", distance
+            )); 
+            return currentX.minus(this.startingDistance).abs(Meters) >= this.distance;
+        }
+
+        
+        @Override
+        public void end(boolean interrupted) {
+            this.drivetrain.driveWithSpeeds(0, 0, 0);
+        }
     }
 }

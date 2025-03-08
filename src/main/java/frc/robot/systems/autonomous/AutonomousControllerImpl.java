@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import java.util.TimerTask;
+import java.util.Timer;
 
 /**
  * Initial implementation of the Autonomous mode behavior
@@ -28,10 +30,14 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
+    private CommandSwerveDrivetrain drivetrain;
+
     private FrankenArm arm;
 
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
         
+        this.drivetrain = driveSystem;
+
         this.arm = arm;
 
         var controller = new PPHolonomicDriveController(
@@ -93,8 +99,27 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     @Override
     public void runInit() {
+
+        //System.out.println("init called");
+
+        //Timer timer = new Timer();
+
+        
+
+        /*timer.schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("stop called");
+                    drivetrain.driveWithSpeeds(0, 0, 0);
+                }
+            },
+            3000
+        );*/
+
         arm.armMotor.setPosition(0.0);
         CommandScheduler.getInstance().cancelAll();
+        //drivetrain.driveDistance(4).schedule();
         autoChooser.getSelected().schedule();
     }
 
