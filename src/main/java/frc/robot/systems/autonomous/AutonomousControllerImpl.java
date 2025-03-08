@@ -3,6 +3,7 @@ package frc.robot.systems.autonomous;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.EventTrigger;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import java.util.TimerTask;
+import java.util.Timer;
 
 /**
  * Initial implementation of the Autonomous mode behavior
@@ -27,10 +30,14 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     private final SendableChooser<Command> autoChooser;
 
+    private CommandSwerveDrivetrain drivetrain;
+
     private FrankenArm arm;
 
     private AutonomousControllerImpl(Config config, CommandSwerveDrivetrain driveSystem, FrankenArm arm, RollsRUs intake) {
         
+        this.drivetrain = driveSystem;
+
         this.arm = arm;
 
         var controller = new PPHolonomicDriveController(
@@ -46,8 +53,8 @@ public class AutonomousControllerImpl implements AutonomousController {
         new EventTrigger("MoveArmDown").onTrue(arm.snapDown());
 
         // Register Commands Here
-        //NamedCommands.registerCommand("RunIntake", intake.runIntake());
-        //NamedCommands.registerCommand("RunOutput", intake.runOutput());
+        NamedCommands.registerCommand("RunIntakeTimed", intake.runIntakeTimed(0.5));
+        NamedCommands.registerCommand("RunOutputTimed", intake.runOutputTimed(0.3));
         
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
@@ -92,8 +99,27 @@ public class AutonomousControllerImpl implements AutonomousController {
 
     @Override
     public void runInit() {
+
+        //System.out.println("init called");
+
+        //Timer timer = new Timer();
+
+        
+
+        /*timer.schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("stop called");
+                    drivetrain.driveWithSpeeds(0, 0, 0);
+                }
+            },
+            3000
+        );*/
+
         arm.armMotor.setPosition(0.0);
         CommandScheduler.getInstance().cancelAll();
+        //drivetrain.driveDistance(4).schedule();
         autoChooser.getSelected().schedule();
     }
 
