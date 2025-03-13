@@ -141,8 +141,8 @@ public class RobotContainer {
 		operatorController.leftTrigger().whileTrue(frankenArm.runUp());
 
 		// Climber
-		operatorController.povDown().whileTrue(sirLiftsALot.runClimberForward());
-		operatorController.povUp().whileTrue(sirLiftsALot.runClimberBackward());
+		operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
+		operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
 	}
 
 	private void setUpTelemetry() {

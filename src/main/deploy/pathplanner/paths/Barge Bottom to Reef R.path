@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.82075,
-        "y": 4.0
+        "x": 7.575,
+        "y": 5.05
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.648250000000001,
-        "y": 5.06825
+        "x": 6.805499999999999,
+        "y": 4.7757499999999995
       },
       "isLocked": false,
-      "linkedName": "Reef L"
+      "linkedName": "Barge Bottom"
     },
     {
       "anchor": {
-        "x": 1.0525392137505607,
-        "y": 6.69458137418957
+        "x": 5.825,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 1.5818618804249889,
-        "y": 5.986363030595643
+        "x": 6.4155,
+        "y": 4.2395
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Intake"
+      "linkedName": "Reef L"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "MoveArmUp",
-      "waypointRelativePos": 0.4952853598014843,
+      "name": "MoveArmDown",
+      "waypointRelativePos": 0.19751861042183366,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -48,11 +48,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 125.00000000000001
+    "velocity": 0.0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Reef To Intake",
+  "folder": "Barge ",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
