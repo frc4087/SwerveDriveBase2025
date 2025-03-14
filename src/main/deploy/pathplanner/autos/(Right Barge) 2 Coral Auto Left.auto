@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Barge Bottom to Reef TR"
+            "pathName": "Red Barge Bottom to Reef BR"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef TR to Top Intake"
+            "pathName": "Reef BR to Bottom Intake"
           }
         },
         {
@@ -31,19 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Intake to Reef TL"
+            "pathName": "Bottom Intake to Reef BR"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "RunOutputTimed"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Auto End"
           }
         }
       ]

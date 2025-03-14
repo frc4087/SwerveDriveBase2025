@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.575,
-        "y": 5.05
+        "x": 7.55625,
+        "y": 5.10725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.710897435897436,
-        "y": 5.7485256410256405
+        "x": 6.78675,
+        "y": 4.833
       },
       "isLocked": false,
       "linkedName": "Barge Bottom"
     },
     {
       "anchor": {
-        "x": 5.1731410256410255,
-        "y": 5.129294871794871
+        "x": 5.825,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 5.926538461538461,
-        "y": 5.480192307692307
+        "x": 6.4155,
+        "y": 4.2395
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef TR"
+      "linkedName": "Reef L"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "MoveArmDown",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.19751861042183366,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -48,8 +48,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -119.99999999999999
+    "velocity": 0.0,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Barge ",

@@ -7,43 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Barge Top to Reef TR"
+            "pathName": "Red Barge Middle to Reef BR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef TR to Top Intake"
+            "pathName": "Reef BR to Bottom Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunIntakeTimed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Intake to Reef TL"
+            "pathName": "Bottom Intake to Reef BR"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Reef TL to Top Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Intake to Reef TL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef TL to Top Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Intake to Reef L"
+            "name": "RunOutputTimed"
           }
         }
       ]

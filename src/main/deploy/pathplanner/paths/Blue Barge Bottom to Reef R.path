@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.553,
-        "y": 4.644
+        "x": 7.55625,
+        "y": 5.10725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2537051282051275,
-        "y": 5.160025641025641
+        "x": 6.78675,
+        "y": 4.832999999999999
       },
       "isLocked": false,
-      "linkedName": "Reef TL"
+      "linkedName": "Barge Bottom"
     },
     {
       "anchor": {
-        "x": 2.396923076928237,
-        "y": 5.635
+        "x": 5.825,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 3.1916025641077237,
-        "y": 5.366666666666667
+        "x": 6.4155,
+        "y": 4.2395
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef L"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "MoveArmDown",
+      "waypointRelativePos": 0.19751861042183366,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -41,14 +48,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Other",
+  "folder": "Barge ",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
