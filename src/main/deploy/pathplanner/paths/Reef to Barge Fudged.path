@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 4.0
+        "x": 3.6757500000000003,
+        "y": 4.512499999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
-        "y": 4.0
+        "x": 3.5977499999999996,
+        "y": 5.282749999999998
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef TL"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.0
+        "x": 0.7995000000000003,
+        "y": 7.086499999999998
       },
       "prevControl": {
-        "x": 1.0,
-        "y": 4.0
+        "x": 1.9402500000000003,
+        "y": 7.066999999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Intake Fudge"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "MoveArmUp",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -41,14 +48,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 130.0
   },
   "reversed": false,
-  "folder": "Other",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -97,7 +98,7 @@ public class RobotContainer {
 		// The following commands rotate the robot to face the reef
 
 		// Back
-		driverController.a().onTrue(
+		/*driverController.a().onTrue(
 			new RotateBotCommand(drivetrain, config)
 				.withFieldRelativeAngle(180.0));
 
@@ -124,8 +125,23 @@ public class RobotContainer {
 		// Front Right
 		driverController.b().and(driverController.rightBumper()).onTrue(
 			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(-60.0));
+				.withFieldRelativeAngle(-60.0));*/
 
+        /*driverController.leftTrigger().onTrue(
+            new Command() {
+                public void initialize() {
+                    MaxSpeed *= 0.5;
+                }
+            }
+        );
+
+        driverController.leftTrigger().onFalse(
+            new Command() {
+                public void initialize() {
+                    MaxSpeed *= 2.0;
+                }
+            }
+        );*/
 	}
 
 	public void setUpOpController() {
