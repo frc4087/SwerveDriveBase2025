@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Config;
 import frc.robot.generated.PracticeBotTunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.LimelightHelpers;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -262,6 +263,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        updateVisionOdometry();
     }
 
     private void startSimThread() {
@@ -327,5 +330,39 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withWheelForceFeedforwardsY(driveFeedforwards.robotRelativeForcesY())
             .withDesaturateWheelSpeeds(true)
         );
+    }
+
+    private void updateVisionOdometry() {
+        LimelightHelpers.SetRobotOrientation(
+            "limelight-fl", 
+            this.getPose().getRotation().getDegrees(), 
+            0, 0, 0, 0, 0
+        );
+
+        LimelightHelpers.SetRobotOrientation(
+            "limelight-fr", 
+            this.getPose().getRotation().getDegrees(), 
+            0, 0, 0, 0, 0
+        );
+
+        LimelightHelpers.SetRobotOrientation(
+            "limelight-b", 
+            this.getPose().getRotation().getDegrees(), 
+            0, 0, 0, 0, 0
+        );
+
+        LimelightHelpers.PoseEstimate[] poseEstimates = {
+            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-fl"),
+            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-fr"),
+            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-b")
+        };
+
+        if(Math.toDegrees(this.getState().Speeds.omegaRadiansPerSecond) > 720) {
+            for(int i = 0; i < poseEstimates.length; i++) {
+                if(poseEstimates[i].tagCount != 0) {
+                    this.addVisionMeasurement(poseEstimates[i].pose, poseEstimates[i].timestampSeconds);
+                } 
+            }
+        }
     }
 }
