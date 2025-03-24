@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
+import frc.robot.subsystems.KlimbKardashian;
 import frc.robot.subsystems.RollsRUs;
 import frc.robot.subsystems.SirLiftsALot;
 import frc.robot.systems.autonomous.AutonomousController;
@@ -61,6 +62,8 @@ public class RobotContainer {
 	public final RollsRUs rollsRUs = new RollsRUs(config);
 
 	public final SirLiftsALot sirLiftsALot = new SirLiftsALot(config);
+
+	public final KlimbKardashian klimbKardashian = new KlimbKardashian(config);
 
 	public final AutonomousController autonomousController = 
 		AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
@@ -155,7 +158,7 @@ public class RobotContainer {
             ))
             .onFalse(rumble(0.0));
 
-		operatorController.rightBumper().whileTrue(rollsRUs.runOutput());
+		operatorController.leftBumper().whileTrue(rollsRUs.runIntake());
 
 		// Arm Control
 		operatorController.x().onTrue(frankenArm.snapUp());
@@ -165,8 +168,11 @@ public class RobotContainer {
 		operatorController.leftTrigger().whileTrue(frankenArm.runUp());
 
 		// Climber
-		operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
-		operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
+		//operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
+		//operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
+
+		operatorController.povUp().whileTrue(klimbKardashian.climbIn());
+		operatorController.povDown().whileTrue(klimbKardashian.climbOut());
 	}
 
 	private void setUpTelemetry() {

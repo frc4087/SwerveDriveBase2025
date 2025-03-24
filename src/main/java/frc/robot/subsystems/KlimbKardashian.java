@@ -55,14 +55,6 @@ public class KlimbKardashian extends SubsystemBase {
 		outSetpoint = config.readDoubleProperty("klimbKardashian.motor.down.setpoint");
     }
 
-    public Command runHug() {
-        return this.runEnd(() -> climbMotor.set(hugSpeed), this::stop);
-    }
- 
-    private void stop() {
-        climbMotor.set(0);
-    }
-
     public Command climbIn() {
 		return this.run(() -> {
 			climbMotor.setControl(m_motmag
