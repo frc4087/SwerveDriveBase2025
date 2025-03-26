@@ -24,6 +24,7 @@ import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.KlimbKardashian;
 import frc.robot.subsystems.RollsRUs;
 import frc.robot.subsystems.SirLiftsALot;
+import frc.robot.subsystems.Tarzan;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -60,6 +61,8 @@ public class RobotContainer {
 	public final FrankenArm frankenArm = new FrankenArm(config);
 
 	public final RollsRUs rollsRUs = new RollsRUs(config);
+
+	public final Tarzan tarzan = new Tarzan(config);
 
 	public final SirLiftsALot sirLiftsALot = new SirLiftsALot(config);
 
@@ -168,11 +171,13 @@ public class RobotContainer {
 		operatorController.leftTrigger().whileTrue(frankenArm.runUp());
 
 		// Climber
-		//operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
-		//operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
+		operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
+		operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
 
-		operatorController.povUp().whileTrue(klimbKardashian.climbIn());
-		operatorController.povDown().whileTrue(klimbKardashian.climbOut());
+		operatorController.povLeft().whileTrue(tarzan.hug());
+
+		//operatorController.povUp().whileTrue(klimbKardashian.climbIn());
+		//operatorController.povDown().whileTrue(klimbKardashian.climbOut());
 	}
 
 	private void setUpTelemetry() {

@@ -12,8 +12,6 @@ import frc.robot.Config;
 
 public class KlimbKardashian extends SubsystemBase {
     private TalonFX climbMotor;
-    private TalonFX hugMotor;
-    private double hugSpeed;
 
     private final Double inSetpoint;
 	private final Double outSetpoint;
@@ -22,24 +20,21 @@ public class KlimbKardashian extends SubsystemBase {
 
     public KlimbKardashian(Config config) {
         var climbMotorPort = config.readIntegerProperty("ports.climb.motor");
-        var hugMotorPort = config.readIntegerProperty("ports.hug.motor");
         climbMotor = new TalonFX(climbMotorPort);
-        hugMotor = new TalonFX(hugMotorPort);
-        
+        var limitConfigs = new CurrentLimitsConfigs();
+
         var talonFXConfigs = new TalonFXConfiguration();
         talonFXConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 		talonFXConfigs.Slot0.kS = 0.0;
-		talonFXConfigs.Slot0.kG = 0.25;
+		talonFXConfigs.Slot0.kG = 0.0;
 		talonFXConfigs.Slot0.kV = 0.0;
-		talonFXConfigs.Slot0.kP = 1.875;
+		talonFXConfigs.Slot0.kP = 1.0;
 		talonFXConfigs.Slot0.kI = 0.0;
 		talonFXConfigs.Slot0.kD = 0.0;
 		
 		talonFXConfigs.MotionMagic.MotionMagicCruiseVelocity = 160.0;
 		talonFXConfigs.MotionMagic.MotionMagicAcceleration = 240.0;
 		talonFXConfigs.MotionMagic.MotionMagicJerk = 3200.0;
-
-        var limitConfigs = new CurrentLimitsConfigs();
 
         limitConfigs.StatorCurrentLimit = config.readIntegerProperty("klimbKardashian.motor.statorCurrent.limit.amps");
         limitConfigs.StatorCurrentLimitEnable = true;
@@ -48,9 +43,8 @@ public class KlimbKardashian extends SubsystemBase {
         limitConfigs.SupplyCurrentLimitEnable = true;
 
         climbMotor.getConfigurator().apply(limitConfigs);
-        hugMotor.getConfigurator().apply(limitConfigs);
+        climbMotor.getConfigurator().apply(talonFXConfigs, 0.050);
 
-        hugSpeed = config.readDoubleProperty("klimbKardashian.motor.hug.speed");
         inSetpoint = config.readDoubleProperty("klimbKardashian.motor.up.setpoint");
 		outSetpoint = config.readDoubleProperty("klimbKardashian.motor.down.setpoint");
     }
