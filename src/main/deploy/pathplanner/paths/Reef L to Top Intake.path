@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.82075,
-        "y": 4.0
+        "x": 3.159,
+        "y": 4.03475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.648250000000001,
-        "y": 5.06825
+        "x": 2.9865000000000004,
+        "y": 5.103
       },
       "isLocked": false,
       "linkedName": "Reef L"
     },
     {
       "anchor": {
-        "x": 0.7995,
-        "y": 6.920749999999999
+        "x": 1.0725,
+        "y": 6.9110000000000005
       },
       "prevControl": {
-        "x": 1.3288226666744283,
-        "y": 6.212531656406072
+        "x": 1.6018226666744282,
+        "y": 6.202781656406073
       },
       "nextControl": null,
       "isLocked": false,
@@ -55,7 +55,7 @@
   "folder": "Reef To Intake",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

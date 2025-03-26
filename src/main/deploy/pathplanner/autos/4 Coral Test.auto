@@ -11,21 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Reef TR to Top Intake"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Top Intake to Reef TL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef TL to Top Intake"
+            "name": "RunIntakeTimed"
           }
         },
         {
@@ -35,15 +35,57 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Reef TL to Top Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunIntakeTimed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Intake to Reef TL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef TL to Top Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunIntakeTimed"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Top Intake to Reef L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
           }
         }
       ]

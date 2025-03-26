@@ -354,13 +354,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         LimelightHelpers.PoseEstimate[] poseEstimates = {
             LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-fl"),
             LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-fr"),
-            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-b")
+            //LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-b")
         };
 
-        if(Math.toDegrees(this.getState().Speeds.omegaRadiansPerSecond) > 720) {
+        if(Math.toDegrees(this.getState().Speeds.omegaRadiansPerSecond) < 720) {
             for(int i = 0; i < poseEstimates.length; i++) {
-                if(poseEstimates[i].tagCount != 0) {
-                    this.addVisionMeasurement(poseEstimates[i].pose, poseEstimates[i].timestampSeconds);
+                if(poseEstimates[i] != null &&  poseEstimates[i].tagCount != 0) {
+                    this.addVisionMeasurement(poseEstimates[i].pose, Utils.fpgaToCurrentTime(poseEstimates[i].timestampSeconds));
                 } 
             }
         }
