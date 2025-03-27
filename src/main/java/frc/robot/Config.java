@@ -6,11 +6,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.generated.CompBotTunerConstants;
 import frc.robot.generated.PracticeBotTunerConstants;
+import frc.robot.subsystems.DriveSpecs;
 
 import org.json.simple.parser.ParseException;
 
@@ -31,6 +33,7 @@ public class Config {
         fileConfig = readFileConfig(fileLocation);
         inPracticeMode = readBooleanProperty("robot.practice.mode");
         if (inPracticeMode) {
+            _specs = PRACTICE_SPECS;
             this.TunerConstants = new TunerConstants()
                     .withFrontLeftModule(PracticeBotTunerConstants.FrontLeft)
                     .withFrontRightModule(PracticeBotTunerConstants.FrontRight)
@@ -39,6 +42,7 @@ public class Config {
                     .withDrivetrainConstants(PracticeBotTunerConstants.DrivetrainConstants)
                     .withKSpeedAt12Volts(PracticeBotTunerConstants.kSpeedAt12Volts);
         } else {
+            _specs = PRACTICE_SPECS;
             this.TunerConstants = new TunerConstants()
                     .withFrontLeftModule(CompBotTunerConstants.FrontLeft)
                     .withFrontRightModule(CompBotTunerConstants.FrontRight)
@@ -52,6 +56,15 @@ public class Config {
     public Config() {
         this(
                 new File(Filesystem.getDeployDirectory(), "robot.properties").getPath());
+    }
+
+    /**
+     * Gets the drivetrain specs.
+     * 
+     * @return Constant specs.
+     */
+    public DriveSpecs getSpecs() {
+        return _specs;
     }
 
     public Integer readIntegerProperty(String property) {
@@ -198,4 +211,27 @@ public class Config {
             return kSpeedAt12Volts;
         }
     }
+ 
+    ///////////////////////////////////////
+
+    private final DriveSpecs _specs;
+
+    // class
+
+    public static DriveSpecs PRACTICE_SPECS = newPracticeSpecs();
+
+    private static DriveSpecs newPracticeSpecs() {
+        double kTrackWidthM = Units.inchesToMeters(22.75);
+        double kWheelBaseM = Units.inchesToMeters(22.75);
+        double kTotalMassK = Units.lbsToKilograms(80); // guess
+        double radius = DriveSpecs.getChassisRadius(kTrackWidthM, kWheelBaseM);
+        double kMaxLinearVelMps = 0.85 * Units.feetToMeters(15.5); // est
+        double kMaxLinearAccMpss = 2.0; // guess
+
+        return new DriveSpecs(kTrackWidthM, kWheelBaseM, kTotalMassK, Units.inchesToMeters(18.0),
+                Units.inchesToMeters(18.0), Units.inchesToMeters(18.0), Units.inchesToMeters(18.0),
+                kMaxLinearVelMps, kMaxLinearAccMpss, DriveSpecs.getMaxAngularVel(kMaxLinearVelMps, radius),
+                DriveSpecs.getMaxAngularAcc(true, kTotalMassK, kWheelBaseM, kTrackWidthM, kMaxLinearAccMpss));
+    }
+
 }

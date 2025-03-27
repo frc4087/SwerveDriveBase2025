@@ -39,6 +39,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+    private final Config _config;
+
     private Double discretizationDelta;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -133,7 +135,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
-        this.initialize(config);
+        _config = config;
+
+        this.initialize(_config);
     }
 
     /**
@@ -157,7 +161,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double odometryUpdateFrequency,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
-        this.initialize(config);
+        _config = config;
+
+        this.initialize(_config);
     }
 
     /**
@@ -197,6 +203,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation,
                 modules);
         this.initialize(config);
+        _config = config;
     }
 
     private void initialize(Config config) {
@@ -205,6 +212,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+    }
+
+    /**
+     * Gets the drivetrain configuration.
+     * @return Constant config.
+     */
+    public Config getConfig() {
+        return _config;
     }
 
     /**
