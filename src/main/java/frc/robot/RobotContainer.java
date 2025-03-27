@@ -14,7 +14,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Pathfinder;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
@@ -39,9 +43,9 @@ public class RobotContainer {
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
 
-	private final CommandXboxController driverController = new CommandXboxController(0);
+	public final CommandXboxController driverController = new CommandXboxController(0);
 
-	private final CommandXboxController operatorController = new CommandXboxController(1);
+	public final CommandXboxController operatorController = new CommandXboxController(1);
 
 	public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
 		config,
@@ -60,6 +64,8 @@ public class RobotContainer {
 
 	public final AutonomousController autonomousController = 
 		AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
+
+    public final Pathfinder pathfinder = new Pathfinder();
 
 	Integer intakeMotorPort = config.readIntegerProperty("ports.intake.motor");
 	public TalonFX IntakeMotor = new TalonFX(intakeMotorPort);
@@ -93,58 +99,39 @@ public class RobotContainer {
 		// Reset the field-centric heading on left bumper press
 		driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-		// The following commands rotate the robot to face the reef
+        System.out.println("hi");
+        System.out.println("hi");
+        System.out.println("hi");
 
-		// Back
-		/*driverController.a().onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(180.0));
+		driverController.a()
+            .onTrue(pathfinder.getPathfindingCommand("Reef Front"));
 
-		// Back Left
-		driverController.x().and(driverController.rightBumper().negate()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(120.0));
+		driverController.x().and(driverController.rightBumper().negate())
+            .onTrue(pathfinder.getPathfindingCommand("Reef Front Left"));
 
-		// Back Right
-		driverController.b().and(driverController.rightBumper().negate()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(-120.0));
+		driverController.b().and(driverController.rightBumper().negate())
+            .onTrue(pathfinder.getPathfindingCommand("Reef Front Right"));
 
-		// Front
-		driverController.y().onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(0.0));
+		driverController.y()
+            .onTrue(pathfinder.getPathfindingCommand("Reef Back"));
 
-		// Front Left
-		driverController.x().and(driverController.rightBumper()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(60.0));
+		driverController.x().and(driverController.rightBumper())
+            .onTrue(pathfinder.getPathfindingCommand("Reef Back Left"));
 
-		// Front Right
-		driverController.b().and(driverController.rightBumper()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(-60.0));*/
-
-        /*driverController.leftTrigger().onTrue(
-            new Command() {
-                public void initialize() {
-                    MaxSpeed *= 0.5;
-                }
-            }
-        );
-
-        driverController.leftTrigger().onFalse(
-            new Command() {
-                public void initialize() {
-                    MaxSpeed *= 2.0;
-                }
-            }
-        );*/
+		driverController.b().and(driverController.rightBumper())
+            .onTrue(pathfinder.getPathfindingCommand("Reef Back Right"));
+        
 	}
 
 	public void setUpOpController() {
 		// Intake Control
-		operatorController.leftBumper().whileTrue(rollsRUs.runIntake());
+		operatorController.rightBumper()
+            .whileTrue(Commands.parallel(
+                rollsRUs.runOutput(), // Run the output command
+                rumble(0.1)
+            ))
+            .onFalse(rumble(0.0));
+
 		operatorController.rightBumper().whileTrue(rollsRUs.runOutput());
 
 		// Arm Control
@@ -157,6 +144,7 @@ public class RobotContainer {
 		// Climber
 		operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
 		operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
+
 	}
 
 	private void setUpTelemetry() {
@@ -165,6 +153,13 @@ public class RobotContainer {
 
 	public AutonomousController auto() {
 		return autonomousController;
+	}
+
+	public Command rumble(double rumble) {
+        return Commands.runOnce(() -> {
+            driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, rumble);
+		});
+
 	}
 }
 

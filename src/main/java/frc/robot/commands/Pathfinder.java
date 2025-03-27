@@ -1,30 +1,29 @@
 package frc.robot.commands;
 
+import java.io.ObjectInputFilter.Config;
+import java.util.HashMap;
 import java.util.Map;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Radians;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 
-import frc.robot.Config;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-
-public class PathfindToPose extends Command {
-
-    private final PIDController headingController;
+public class Pathfinder {
 
     private Pose2d targetPose;
     private PathConstraints constraints;
 
-    private Map<String, Integer> tagIndices = new HashMap<String, Integer>;;
+    private Map<String, Integer> tagIndices = new HashMap<String, Integer>();
 
     private void createTagMap() {
-        tagIndices.put("Left Intake", 13);
-        tagIndices.put("Right Intake", 12);
         tagIndices.put("Reef Front Right", 17);
         tagIndices.put("Reef Front", 18);
         tagIndices.put("Reef Front Left", 19);
@@ -33,26 +32,34 @@ public class PathfindToPose extends Command {
         tagIndices.put("Reef Back Right", 22);
     }
 
-    public PathfindToPose(CommandSwerveDrivetrain drivetrain) {
-        super();
-        this.addRequirements(drivetrain);
+    public Pathfinder() {
 
-        constraints = new PathConstraints(3.0, 4.0, units.degreesToRadians(540), Units.degreesToRadians(720));
+        constraints = new PathConstraints(
+            3.0, 
+            3.0,
+            Units.degreesToRadians(540), 
+            Units.degreesToRadians(720)
+        );
 
         createTagMap();
     }
 
-    public PathfindToPose withPoseName(String name) {
-        targetPose = new AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getTagPose(tagIndices.get(name));
+    public Pose2d getOffsetPose(String poseName) {
+
+        Pose2d tagPose = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
+            .getTagPose(tagIndices.get(poseName)).get().toPose2d();
+        
+        return tagPose.plus(
+            new Transform2d(
+                new Translation2d(2.0, 0.0).rotateBy(tagPose.getRotation()), tagPose.getRotation()
+            )
+        );
     }
 
-    @Override
-    public void execute() {
-        AutoBuilder.PathfindToPose(
-            targetPose,
-            constraints,
-            0.0,
-            0.0
-        ).execute();
+    public Command getPathfindingCommand(String poseName) {
+        targetPose = getOffsetPose(poseName);
+        System.out.println("coding is fun");
+        return AutoBuilder.pathfindToPose(targetPose, constraints);
     }
+
 }

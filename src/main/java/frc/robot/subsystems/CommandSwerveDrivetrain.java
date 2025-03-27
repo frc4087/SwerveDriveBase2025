@@ -359,9 +359,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         if(Math.toDegrees(this.getState().Speeds.omegaRadiansPerSecond) < 720) {
             for(int i = 0; i < poseEstimates.length; i++) {
-                if(poseEstimates[i] != null &&  poseEstimates[i].tagCount != 0) {
+                if(poseEstimates[i] != null && poseEstimates[i].tagCount != 0) {
                     this.addVisionMeasurement(poseEstimates[i].pose, Utils.fpgaToCurrentTime(poseEstimates[i].timestampSeconds));
-                } 
+                }
             }
         }
     }
