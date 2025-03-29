@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -46,6 +47,7 @@ public class KlimbKardashian extends SubsystemBase {
 
         climbMotor.getConfigurator().apply(limitConfigs);
         climbMotor.getConfigurator().apply(talonFXConfigs, 0.050);
+        climbMotor.setNeutralMode(NeutralModeValue.Brake);
 
         upSetpoint = config.readDoubleProperty("klimbKardashian.motor.up.setpoint");
 		downSetpoint = config.readDoubleProperty("klimbKardashian.motor.down.setpoint");

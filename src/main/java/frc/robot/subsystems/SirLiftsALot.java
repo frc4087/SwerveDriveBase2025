@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class SirLiftsALot extends SubsystemBase {
     private TalonFX climbMotor;
@@ -25,8 +26,11 @@ public class SirLiftsALot extends SubsystemBase {
         climbMotor.getConfigurator().apply(limitConfigs);
 
         climbSpeed = config.readDoubleProperty("sirLiftsALot.motor.climb.speed");
-    }
 
+        climbMotor.setNeutralMode(NeutralModeValue.Brake);
+        
+    }
+    
     public Command runClimberForward() {
         return this.runEnd(() -> climbMotor.set(climbSpeed), this::stop);
     }

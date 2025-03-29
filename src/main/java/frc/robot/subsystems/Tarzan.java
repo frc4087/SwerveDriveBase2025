@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Config;
@@ -23,6 +25,7 @@ public class Tarzan extends SubsystemBase {
         limitConfigs.SupplyCurrentLimitEnable = true;
     
         hugMotor.getConfigurator().apply(limitConfigs);
+        hugMotor.setNeutralMode(NeutralModeValue.Brake);
     
         hugSpeed = config.readDoubleProperty("tarzan.motor.hug.speed");
         }
