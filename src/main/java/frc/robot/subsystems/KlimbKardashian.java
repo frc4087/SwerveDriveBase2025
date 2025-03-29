@@ -13,8 +13,10 @@ import frc.robot.Config;
 public class KlimbKardashian extends SubsystemBase {
     private TalonFX climbMotor;
 
-    private final Double inSetpoint;
-	private final Double outSetpoint;
+    private final Double upSetpoint;
+	private final Double downSetpoint;
+
+    //private final Double resetSetpoint;
 
     final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0);
 
@@ -45,15 +47,16 @@ public class KlimbKardashian extends SubsystemBase {
         climbMotor.getConfigurator().apply(limitConfigs);
         climbMotor.getConfigurator().apply(talonFXConfigs, 0.050);
 
-        inSetpoint = config.readDoubleProperty("klimbKardashian.motor.up.setpoint");
-		outSetpoint = config.readDoubleProperty("klimbKardashian.motor.down.setpoint");
+        upSetpoint = config.readDoubleProperty("klimbKardashian.motor.up.setpoint");
+		downSetpoint = config.readDoubleProperty("klimbKardashian.motor.down.setpoint");
+        //resetSetpoint = config.readDoubleProperty("klimbKardashian.motor.reset.setpoint");
     }
 
     public Command climbIn() {
 		return this.run(() -> {
 			climbMotor.setControl(m_motmag
 				.withSlot(0)
-				.withPosition(inSetpoint)
+				.withPosition(upSetpoint)
 			);
 		});
 	}
@@ -62,8 +65,21 @@ public class KlimbKardashian extends SubsystemBase {
 		return this.run(() -> {
 			climbMotor.setControl(m_motmag
 				.withSlot(0)
-				.withPosition(outSetpoint));
+				.withPosition(downSetpoint));
 		});
 	}
+
+    /*public Command restClimb() {
+            return this.run(() -> {
+                climbMotor.setControl(m_motmag
+                    .withSlot(0)
+                    .withPosition(resetSetpoint));
+            });
+        }
+
+    private void stopReset() {
+		climbMotor.set(0.0);
+		climbMotor.setPosition(0.0);
+	}*/
 
 }

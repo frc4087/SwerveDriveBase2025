@@ -178,6 +178,9 @@ public class RobotContainer {
 
 		//operatorController.povUp().whileTrue(klimbKardashian.climbIn());
 		//operatorController.povDown().whileTrue(klimbKardashian.climbOut());
+
+		// Climber Reset 
+		//operatorController.povLeft().whileTrue(klimbKardashian.restClimb());
 	}
 
 	private void setUpTelemetry() {
