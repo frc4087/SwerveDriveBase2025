@@ -14,13 +14,17 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
+import frc.robot.subsystems.KlimbKardashian;
 import frc.robot.subsystems.RollsRUs;
 import frc.robot.subsystems.SirLiftsALot;
+import frc.robot.subsystems.Tarzan;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
 
@@ -41,9 +45,9 @@ public class RobotContainer {
 
 	private final Telemetry logger = new Telemetry(MaxSpeed);
 
-	private final CommandXboxController driverController = new CommandXboxController(0);
+	public final CommandXboxController driverController = new CommandXboxController(0);
 
-	private final CommandXboxController operatorController = new CommandXboxController(1);
+	public final CommandXboxController operatorController = new CommandXboxController(1);
 
 	public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(
 		config,
@@ -58,7 +62,11 @@ public class RobotContainer {
 
 	public final RollsRUs rollsRUs = new RollsRUs(config);
 
+	public final Tarzan tarzan = new Tarzan(config);
+
 	public final SirLiftsALot sirLiftsALot = new SirLiftsALot(config);
+
+	public final KlimbKardashian klimbKardashian = new KlimbKardashian(config);
 
 	public final AutonomousController autonomousController = 
 		AutonomousControllerImpl.initialize(config, drivetrain, frankenArm, rollsRUs);
@@ -146,8 +154,14 @@ public class RobotContainer {
 
 	public void setUpOpController() {
 		// Intake Control
+		operatorController.rightBumper()
+            .whileTrue(Commands.parallel(
+                rollsRUs.runOutput(), // Run the output command
+                rumble(0.1)
+            ))
+            .onFalse(rumble(0.0));
+
 		operatorController.leftBumper().whileTrue(rollsRUs.runIntake());
-		operatorController.rightBumper().whileTrue(rollsRUs.runOutput());
 
 		// Arm Control
 		operatorController.x().onTrue(frankenArm.snapUp());
@@ -159,6 +173,14 @@ public class RobotContainer {
 		// Climber
 		operatorController.povUp().whileTrue(sirLiftsALot.runClimberForward());
 		operatorController.povDown().whileTrue(sirLiftsALot.runClimberBackward());
+
+		operatorController.povLeft().whileTrue(tarzan.hug());
+
+		//operatorController.povUp().whileTrue(klimbKardashian.climbIn());
+		//operatorController.povDown().whileTrue(klimbKardashian.climbOut());
+
+		// Climber Reset 
+		//operatorController.povLeft().whileTrue(klimbKardashian.restClimb());
 	}
 
 	private void setUpTelemetry() {
@@ -167,6 +189,13 @@ public class RobotContainer {
 
 	public AutonomousController auto() {
 		return autonomousController;
+	}
+
+	public Command rumble(double rumble) {
+        return Commands.runOnce(() -> {
+            driverController.getHID().setRumble(GenericHID.RumbleType.kBothRumble, rumble);
+		});
+
 	}
 }
 

@@ -12,6 +12,7 @@ public class RollsRUs extends SubsystemBase {
     private TalonFX intakeMotor;
     private Double intakeSpeed;
     private Double outputSpeed;
+    private Double basicSpeed;
 
     public RollsRUs(Config config) {
 
@@ -32,7 +33,7 @@ public class RollsRUs extends SubsystemBase {
 
         intakeSpeed = config.readDoubleProperty("rollsRUs.motor.intake.speed");
         outputSpeed = config.readDoubleProperty("rollsRUs.motor.output.speed");
-
+        basicSpeed = config.readDoubleProperty("rollsRUs.motor.basic.speed");
     }
 
     public Command runIntake() {
@@ -52,6 +53,6 @@ public class RollsRUs extends SubsystemBase {
     }
 
     private void stop() {
-        intakeMotor.set(0);
+        intakeMotor.set((basicSpeed));
     }
 }
