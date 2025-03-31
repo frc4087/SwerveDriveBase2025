@@ -9,7 +9,10 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Config;
+import frc.robot.commands.WaitForRobotStopCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
@@ -50,6 +53,22 @@ public class AutonomousControllerImpl implements AutonomousController {
         NamedCommands.registerCommand("RunIntakeTimed", intake.runIntakeTimed(2.0));
         NamedCommands.registerCommand("RunOutputTimed", intake.runOutputTimed(0.3));
         
+        
+        var outputCmd = new SequentialCommandGroup(
+            new WaitCommand(.5),
+            new WaitForRobotStopCommand(driveSystem, config),
+            intake.runOutputTimed(0.3)
+        );
+
+        var intakeCmd = new SequentialCommandGroup(
+            new WaitCommand(.5),
+            new WaitForRobotStopCommand(driveSystem, config),
+            intake.runIntakeTimed(1.0)
+        );
+
+        NamedCommands.registerCommand("OutputFlow", outputCmd);
+        NamedCommands.registerCommand("IntakeFlow", intakeCmd);
+
         // Boolean supplier that controls when the path will be mirrored for the red
         // alliance
         // This will flip the path being followed to the red side of the field.

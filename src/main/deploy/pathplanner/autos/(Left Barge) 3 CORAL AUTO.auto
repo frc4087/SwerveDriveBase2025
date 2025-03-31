@@ -5,63 +5,98 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Blue Barge Top to Reef TR"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue Barge Top to Reef TR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutputFlow"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "RunOutputTimed"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef TR to Top Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeFlow"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Reef TR to Top Intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top Intake to Reef TL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutputFlow"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "RunIntakeTimed"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef to Barge Fudged"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeFlow"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Top Intake to Reef TL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RunOutputTimed"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Reef to Barge Fudged"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RunIntakeTimed"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Barge to Reef Fudged"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RunOutputTimed"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Barge to Reef Fudged"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutputFlow"
+                }
+              }
+            ]
           }
         }
       ]
