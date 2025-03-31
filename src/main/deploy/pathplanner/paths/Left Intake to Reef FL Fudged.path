@@ -2,18 +2,30 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {"x": 0.7995, "y": 1.1312500000000005},
+      "anchor": {
+        "x": 0.7995000000000003,
+        "y": 7.086499999999998
+      },
       "prevControl": null,
-      "nextControl": {"x": 2.1520320512820517, "y": 1.657224358974359},
+      "nextControl": {
+        "x": 1.7995000000000003,
+        "y": 7.086499999999998
+      },
       "isLocked": false,
-      "linkedName": "Top Intake (Flipped)"
+      "linkedName": "Left Intake Fudged"
     },
     {
-      "anchor": {"x": 3.6757500000000003, "y": 3.5395000000000003},
-      "prevControl": {"x": 2.9842756410256404, "y": 2.992512820512821},
+      "anchor": {
+        "x": 3.6757500000000003,
+        "y": 4.512499999999999
+      },
+      "prevControl": {
+        "x": 3.152766393442622,
+        "y": 5.5414446721311466
+      },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef TL (Flipped)"
+      "linkedName": "Reef FL Fudged"
     }
   ],
   "rotationTargets": [],
@@ -37,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "Intake To Reef",
+  "folder": "Intake To Reef Fudged",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": 125.00000000000001
   },
   "useDefaultConstraints": true
 }

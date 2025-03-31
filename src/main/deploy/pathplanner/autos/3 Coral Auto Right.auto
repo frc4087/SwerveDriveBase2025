@@ -5,57 +5,69 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.25
+            "pathName": "Right Start to Reef BR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top Intake to Reef TR"
+            "pathName": "Reef BR to Right Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunIntakeTimed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef TR to Top Intake"
+            "pathName": "Right Intake to Reef FR"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Intake to Reef TL"
+            "name": "RunOutputTimed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef TL to Top Intake"
+            "pathName": "Reef FR to Right Intake Fudged"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top Intake to Reef L"
+            "name": "RunIntakeTimed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef L to Top Intake"
+            "pathName": "Right Intake to Reef FR Fudged"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunOutputTimed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef FR End"
           }
         }
       ]

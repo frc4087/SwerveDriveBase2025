@@ -3,10 +3,12 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "Barge ",
+    "Start",
     "Intake To Reef",
+    "Intake To Reef Fudged",
     "Other",
-    "Reef To Intake"
+    "Reef To Intake",
+    "Reef To Intake Fudged"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

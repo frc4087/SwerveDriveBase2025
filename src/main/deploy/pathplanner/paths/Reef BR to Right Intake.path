@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1675,
-        "y": 2.8939999999999997
+        "x": 5.173,
+        "y": 2.923
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4655000000000005,
-        "y": 1.6557499999999992
+        "x": 4.4608846153846144,
+        "y": 1.4058846153846145
       },
       "isLocked": false,
       "linkedName": "Reef BR"
     },
     {
       "anchor": {
-        "x": 1.25775,
-        "y": 0.7489999999999998
+        "x": 0.7995,
+        "y": 1.1312500000000005
       },
       "prevControl": {
-        "x": 2.8161474358974323,
-        "y": 0.6561153846153839
+        "x": 2.357897435897436,
+        "y": 1.2241346153846164
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Intake"
+      "linkedName": "Right Intake"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -130.0
+    "rotation": -125.00000000000001
   },
   "reversed": false,
   "folder": "Reef To Intake",

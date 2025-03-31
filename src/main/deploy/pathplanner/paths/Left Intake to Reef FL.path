@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.82075,
-        "y": 4.0
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.648250000000001,
-        "y": 5.06825
-      },
-      "isLocked": false,
-      "linkedName": "Reef L"
-    },
-    {
-      "anchor": {
         "x": 0.7995,
         "y": 6.920749999999999
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.152032051282051,
+        "y": 6.394775641025641
+      },
+      "isLocked": false,
+      "linkedName": "Left Intake"
+    },
+    {
+      "anchor": {
+        "x": 3.6757500000000003,
+        "y": 4.512499999999999
+      },
       "prevControl": {
-        "x": 1.3288226666744283,
-        "y": 6.212531656406072
+        "x": 2.9842756410256404,
+        "y": 5.059487179487179
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Intake"
+      "linkedName": "Reef FL"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "MoveArmUp",
-      "waypointRelativePos": 0.4952853598014843,
+      "name": "MoveArmDown",
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "Reef To Intake",
+  "folder": "Intake To Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 125.00000000000001
   },
   "useDefaultConstraints": true
 }

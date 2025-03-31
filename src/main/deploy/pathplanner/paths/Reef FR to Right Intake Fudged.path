@@ -2,18 +2,30 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {"x": 0.7995000000000003, "y": 0.9655000000000014},
+      "anchor": {
+        "x": 3.6757500000000003,
+        "y": 3.5395000000000003
+      },
       "prevControl": null,
-      "nextControl": {"x": 1.7995000000000003, "y": 0.9655000000000014},
+      "nextControl": {
+        "x": 3.5977499999999996,
+        "y": 2.7692500000000013
+      },
       "isLocked": false,
-      "linkedName": "Top Intake Fudge (Flipped)"
+      "linkedName": "Reef FR Fudged"
     },
     {
-      "anchor": {"x": 3.6757500000000003, "y": 3.5395000000000003},
-      "prevControl": {"x": 3.152766393442622, "y": 2.510555327868853},
+      "anchor": {
+        "x": 0.7995000000000003,
+        "y": 0.9655000000000014
+      },
+      "prevControl": {
+        "x": 1.9402500000000003,
+        "y": 0.9850000000000003
+      },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef TL (Flipped)"
+      "linkedName": "Right Intake Fudged"
     }
   ],
   "rotationTargets": [],
@@ -21,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "MoveArmDown",
+      "name": "MoveArmUp",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
@@ -36,14 +48,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 59.99999999999999
+    "velocity": 0.0,
+    "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Reef To Intake Fudged",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -130.0
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }
