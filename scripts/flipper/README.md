@@ -11,12 +11,17 @@ This transformation, paired with the alliance flip already handed by PathPlanner
 the Red Alliance.
 
 ## Usage
+### Generation
 This command is easiest to use from this directory (`scripts/flipper`):
 ```bash
 cd scripts/flipper
 javac Flipper.java && java Flipper "My Auto Name"
 ```
-Note the quotes (`"`) are needed to handle spaces in the name.
+Note the quotes (`"`) are needed to handle spaces in the name. 
+
+### Path Planner
+In order for Path Planner to see the new auto, it needs to be restarted. If you make changes to the original auto, you need to regenerate and restart
+Path Planner to see those changes.
 
 ## Cleanup
 If you want to remove the generated files, run the following commands:
