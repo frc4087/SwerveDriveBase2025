@@ -7,37 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Barge Bottom to Reef BR"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RunOutputTimed"
+            "pathName": "Push 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef BR to Bottom Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RunIntakeTimed"
+            "pathName": "Push 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom Intake to Reef BR"
+            "pathName": "Push 2 to Center"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "RunOutputTimed"
+            "pathName": "Simple 1 Coral"
           }
         }
       ]

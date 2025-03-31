@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.546500000000001,
-        "y": 3.0694999999999997
+        "x": 1.1797500000000003,
+        "y": 7.028
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.747000000000001,
-        "y": 2.5625
+        "x": 2.152206108802187,
+        "y": 5.7870529532509405
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Intake"
     },
     {
       "anchor": {
-        "x": 5.1675,
-        "y": 2.8939999999999997
+        "x": 3.8240778688524584,
+        "y": 5.1698258196721305
       },
       "prevControl": {
-        "x": 5.82075,
-        "y": 2.5819999999999994
+        "x": 3.101520826543723,
+        "y": 5.467023536874566
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef BR"
+      "linkedName": "Reef FL"
     }
   ],
   "rotationTargets": [],
@@ -34,28 +34,28 @@
   "eventMarkers": [
     {
       "name": "MoveArmDown",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -150.0
   },
   "reversed": false,
-  "folder": "Barge ",
+  "folder": "Left Side Intake To Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 37.36666941276873
   },
   "useDefaultConstraints": true
 }

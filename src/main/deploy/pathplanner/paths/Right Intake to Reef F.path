@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.25775,
-        "y": 0.7489999999999998
+        "x": 1.2089999999999999,
+        "y": 1.0025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.27175,
-        "y": 1.1097499999999987
+        "x": 2.451821977331197,
+        "y": 2.1240342331054363
       },
       "isLocked": false,
-      "linkedName": "Bottom Intake"
+      "linkedName": "Right Intake"
     },
     {
       "anchor": {
-        "x": 3.6270000000000007,
-        "y": 3.5862499999999993
+        "x": 3.159,
+        "y": 4.03475
       },
       "prevControl": {
-        "x": 3.1102500000000015,
-        "y": 2.5527499999999987
+        "x": 2.9018109351080463,
+        "y": 3.8216952014944416
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef F"
     }
   ],
   "rotationTargets": [],
@@ -40,22 +40,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -89.54528113830685
   },
   "reversed": false,
-  "folder": "Intake To Reef",
+  "folder": "Right Side Intake To Reef",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -130.0
+    "rotation": -125.00000000000001
   },
   "useDefaultConstraints": true
 }

@@ -3,56 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.55625,
-        "y": 5.10725
+        "x": 7.25,
+        "y": 7.25225
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.78675,
-        "y": 4.833
+        "x": 7.25,
+        "y": 6.25225
       },
       "isLocked": false,
-      "linkedName": "Barge Bottom"
+      "linkedName": "Push Point 2"
     },
     {
       "anchor": {
-        "x": 3.159,
-        "y": 4.03475
+        "x": 7.575,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 3.7494999999999994,
-        "y": 4.274249999999999
+        "x": 7.575,
+        "y": 5.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef L"
+      "linkedName": "Middle Start"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "MoveArmDown",
-      "waypointRelativePos": 0.19751861042183366,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Barge ",
+  "folder": "Push Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
