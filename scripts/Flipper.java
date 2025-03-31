@@ -13,32 +13,28 @@ import java.util.regex.Pattern;
 import java.util.List;
 import java.util.ArrayList;
 
-public class PathExtractor {
-    private static double Y_MAX = 8.052; // Default maximum Y coordinate of the playing field
+public class Flipper {
+    private static final double Y_MAX = 8.052; // Maximum Y coordinate of the playing field
     
     public static void main(String[] args) {
-        String autoDir = "../src/main/deploy/pathplanner/autos";
-        String pathsDir = "../src/main/deploy/pathplanner/paths";
+        String autoDir = "src/main/deploy/pathplanner/autos";
+        String pathsDir = "src/main/deploy/pathplanner/paths";
         Set<String> existingPaths = new HashSet<>();
         // Use a list to maintain order
         java.util.List<String> pathNames = new java.util.ArrayList<>();
         String targetAutoName = null;
         
-        // Process command line args
-        if (args.length > 0) {
-            targetAutoName = args[0];
-            System.out.println("Looking for paths in auto: " + targetAutoName);
+        // Validate command line args - require the auto name
+        if (args.length < 1) {
+            System.err.println("Error: Auto name is required");
+            System.err.println("Usage: java Flipper <auto_name>");
+            System.err.println("  where <auto_name> is the name of the auto file to process");
+            return;
         }
         
-        // Set Y_MAX if provided
-        if (args.length >= 2) {
-            try {
-                Y_MAX = Double.parseDouble(args[1]);
-                System.out.println("Using Y_MAX: " + Y_MAX);
-            } catch (NumberFormatException e) {
-                System.out.println("Warning: Invalid Y_MAX value, using default: " + Y_MAX);
-            }
-        }
+        // Process command line args
+        targetAutoName = args[0];
+        System.out.println("Looking for paths in auto: " + targetAutoName);
         
         // First check that both directories exist
         File autoDirFile = new File(autoDir);
@@ -66,75 +62,50 @@ public class PathExtractor {
             }
         }
         
-        // Process auto files
-        File[] files = autoDirFile.listFiles((dir, name) -> name.toLowerCase().endsWith(".auto"));
-        if (files == null || files.length == 0) {
-            System.out.println("No .auto files found in: " + autoDir);
+        // Only process the specified auto file
+        File autoFile = new File(autoDir, targetAutoName + ".auto");
+        if (!autoFile.exists()) {
+            System.err.println("Auto file not found: " + autoFile.getPath());
             return;
         }
         
         // Simple regex to extract pathName when type is "path"
         Pattern pattern = Pattern.compile("\"type\"\\s*:\\s*\"path\"[^}]*\"data\"\\s*:\\s*\\{[^}]*\"pathName\"\\s*:\\s*\"([^\"]*)\"");
-        // Pattern to extract auto name from file - not used anymore
-        Pattern namePattern = Pattern.compile("\"name\"\\s*:\\s*\"([^\"]*)\"");
         
-        for (File file : files) {
-            try {
-                String content = new String(Files.readAllBytes(file.toPath()));
-                
-                // Check if we need to filter by auto name
-                if (targetAutoName != null) {
-                    // Check if file name matches the target auto name
-                    String fileName = file.getName();
-                    if (fileName.endsWith(".auto")) {
-                        fileName = fileName.substring(0, fileName.length() - 5);
-                    }
-                    
-                    if (!fileName.equals(targetAutoName)) {
-                        continue; // Skip files that don't match the target auto name
-                    }
+        try {
+            String content = new String(Files.readAllBytes(autoFile.toPath()));
+            Matcher matcher = pattern.matcher(content);
+            
+            while (matcher.find()) {
+                String pathName = matcher.group(1);
+                // Only add if it's not already in the list to keep first occurrence
+                if (!pathNames.contains(pathName)) {
+                    pathNames.add(pathName);
                 }
-                
-                Matcher matcher = pattern.matcher(content);
-                
-                while (matcher.find()) {
-                    String pathName = matcher.group(1);
-                    // Only add if it's not already in the list to keep first occurrence
-                    if (!pathNames.contains(pathName)) {
-                        pathNames.add(pathName);
-                    }
-                }
-            } catch (IOException e) {
-                System.err.println("Error reading file " + file.getName() + ": " + e.getMessage());
             }
+        } catch (IOException e) {
+            System.err.println("Error reading file " + autoFile.getName() + ": " + e.getMessage());
+            return;
         }
         
         if (pathNames.isEmpty()) {
-            if (targetAutoName != null) {
-                System.out.println("\nNo paths found for auto: " + targetAutoName);
-            } else {
-                System.out.println("\nNo paths found in any autos");
-            }
+            System.out.println("\nNo paths found for auto: " + targetAutoName);
             return;
         }
         
         System.out.println("\nTotal unique paths found: " + pathNames.size());
         System.out.println("All path names (in order of appearance):");
         
-        // Create output directory for extracted paths
-        String outputDir = "extracted-paths";
-        if (targetAutoName != null) {
-            outputDir = "extracted-" + targetAutoName.toLowerCase();
-        }
+        // Use the paths directory directly to write paths
+        String outputDir = pathsDir;
         
-        try {
-            Files.createDirectories(Paths.get(outputDir));
-        } catch (IOException e) {
-            System.err.println("Error creating output directory: " + e.getMessage());
+        // No need to create the directory as it should already exist
+        if (!new File(outputDir).exists()) {
+            System.err.println("Paths directory doesn't exist: " + outputDir);
             return;
         }
         
-        // Process each path
+        // Process each path from the specific auto
         for (String pathName : pathNames) {
             boolean pathExists = existingPaths.contains(pathName);
             System.out.println("- " + pathName + (pathExists ? "" : " [MISSING]"));
@@ -154,14 +125,7 @@ public class PathExtractor {
                     }
                     String content = contentBuilder.toString();
                     
-                    // Write the original path to the output directory
-                    String outputFileName = pathName + ".path";
-                    try (FileWriter writer = new FileWriter(outputDir + "/" + outputFileName)) {
-                        writer.write(content);
-                        System.out.println("  Wrote path: " + outputFileName);
-                    }
-                    
-                    // Create and write the flipped path
+                    // Create and write the flipped path - but don't copy the original
                     String flippedContent = flipPath(content);
                     if (flippedContent != null) {
                         String flippedFileName = pathName + " (Flipped).path";
@@ -174,6 +138,87 @@ public class PathExtractor {
                     System.err.println("  Error processing path file " + pathName + ": " + e.getMessage());
                 }
             }
+        }
+        
+        // Create flipped auto if we're targeting a specific auto
+        if (targetAutoName != null) {
+            createFlippedAuto(autoDir, targetAutoName, pathNames);
+        }
+    }
+    
+    /**
+     * Creates a flipped version of the auto file
+     * 
+     * @param autoDir Directory containing auto files
+     * @param autoName Name of the auto to flip
+     * @param pathNames List of path names found in the auto
+     */
+    private static void createFlippedAuto(String autoDir, String autoName, List<String> pathNames) {
+        File originalAutoFile = new File(autoDir, autoName + ".auto");
+        File flippedAutoFile = new File(autoDir, autoName + " (Flipped).auto");
+        
+        if (!originalAutoFile.exists()) {
+            System.err.println("Original auto file not found: " + originalAutoFile.getPath());
+            return;
+        }
+        
+        try {
+            // Read the original auto file
+            String content = new String(Files.readAllBytes(originalAutoFile.toPath()));
+            
+            // Create regex to only find path commands
+            Pattern pathCommandPattern = Pattern.compile(
+                "\\{\\s*\"type\"\\s*:\\s*\"path\"[^}]*\"pathName\"\\s*:\\s*\"([^\"]*)\"[^}]*\\}"
+            );
+            
+            Matcher pathCommandMatcher = pathCommandPattern.matcher(content);
+            StringBuffer contentBuffer = new StringBuffer();
+            
+            // Process each path command
+            while (pathCommandMatcher.find()) {
+                String pathCommand = pathCommandMatcher.group(0);
+                String pathName = pathCommandMatcher.group(1);
+                
+                // Only replace if this path is in our list
+                if (pathNames.contains(pathName)) {
+                    // Replace only the pathName part
+                    String updatedCommand = pathCommand.replaceAll(
+                        "\"pathName\"\\s*:\\s*\"" + Pattern.quote(pathName) + "\"",
+                        "\"pathName\": \"" + pathName + " (Flipped)\""
+                    );
+                    pathCommandMatcher.appendReplacement(contentBuffer, 
+                        updatedCommand.replace("$", "\\$"));
+                }
+            }
+            
+            pathCommandMatcher.appendTail(contentBuffer);
+            content = contentBuffer.toString();
+            
+            // Now update the auto name at the file level (not individual commands)
+            // This should just modify the auto name property at the start of the file
+            Pattern autoNamePattern = Pattern.compile("\"version\"\\s*:\\s*\"[^\"]*\"[^{]*\"name\"\\s*:\\s*\"([^\"]*)\"");
+            Matcher autoNameMatcher = autoNamePattern.matcher(content);
+            
+            if (autoNameMatcher.find()) {
+                // Extract the original name
+                String originalAutoName = autoNameMatcher.group(1);
+                String flippedAutoName = originalAutoName + " (Flipped)";
+                
+                // Replace just this instance
+                content = content.substring(0, autoNameMatcher.start(1)) +
+                          flippedAutoName + 
+                          content.substring(autoNameMatcher.end(1));
+            }
+            
+            // Write the flipped auto file
+            try (FileWriter writer = new FileWriter(flippedAutoFile)) {
+                writer.write(content);
+                System.out.println("Created flipped auto: " + flippedAutoFile.getName());
+            }
+            
+        } catch (IOException e) {
+            System.err.println("Error creating flipped auto: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
