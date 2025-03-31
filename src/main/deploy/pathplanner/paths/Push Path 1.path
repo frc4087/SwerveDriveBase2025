@@ -8,37 +8,30 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.59348997758582,
-        "y": 4.0
+        "x": 7.683,
+        "y": 4.83425
       },
       "isLocked": false,
       "linkedName": "Middle Start"
     },
     {
       "anchor": {
-        "x": 5.811513157894736,
-        "y": 4.0
+        "x": 7.575,
+        "y": 6.131
       },
       "prevControl": {
-        "x": 6.580319300268049,
-        "y": 4.0
+        "x": 8.06325,
+        "y": 5.22425
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Push Point 1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "MoveArmDown",
-      "waypointRelativePos": 0.6,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -52,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Start",
+  "folder": "Push Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
