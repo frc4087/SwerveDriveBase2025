@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {"x": 5.173, "y": 2.923},
+      "prevControl": null,
+      "nextControl": {"x": 4.4608846153846144, "y": 1.4058846153846147},
+      "isLocked": false,
+      "linkedName": "Reef TR"
+    },
+    {
+      "anchor": {"x": 0.7995, "y": 1.1312500000000005},
+      "prevControl": {"x": 2.357897435897436, "y": 1.2241346153846164},
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Top Intake"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "MoveArmUp",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.00000000000001
+  },
+  "reversed": false,
+  "folder": "Reef To Intake",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

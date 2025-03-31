@@ -17,8 +17,8 @@ public class Flipper {
     private static final double Y_MAX = 8.052; // Maximum Y coordinate of the playing field
     
     public static void main(String[] args) {
-        String autoDir = "src/main/deploy/pathplanner/autos";
-        String pathsDir = "src/main/deploy/pathplanner/paths";
+        String autoDir = "../../src/main/deploy/pathplanner/autos";
+        String pathsDir = "../../src/main/deploy/pathplanner/paths";
         Set<String> existingPaths = new HashSet<>();
         // Use a list to maintain order
         java.util.List<String> pathNames = new java.util.ArrayList<>();
@@ -224,35 +224,21 @@ public class Flipper {
     
     /**
      * Flips a path across the middle of the field by applying these transformations:
-     * 1. For each coordinate (x,y): New coordinates are (Y_MAX - x, Y_MAX - y)
-     * 2. For each rotation angle: New angle is (angle + 180) % 360
+     * 1. For each coordinate (x,y): New coordinates are (x, Y_MAX - y)
+     * 2. For each rotation angle theta: New angle is -theta.
      * 
      * @param pathContent The JSON string containing the path data
      * @return The transformed JSON string with flipped coordinates and rotations
      */
     private static String flipPath(String pathContent) {
         try {
-            // ---------- STEP 1: Flip all coordinates across the field center ----------
-            
-            // For any point (x,y) in the field, the flipped point is (Y_MAX - x, Y_MAX - y)
-            // This creates a mirror image across the center of the field
-            
-            // Apply the coordinate flip to anchor points (the main waypoints of the path)
+            // ---------- STEP 1: Flip all coordinates across the field center ----------            
             pathContent = flipCoordinates(pathContent, "anchor");
-            
-            // Apply the coordinate flip to control points (these control the curve shape)
             pathContent = flipCoordinates(pathContent, "prevControl");
             pathContent = flipCoordinates(pathContent, "nextControl");
             
-            // ---------- STEP 2: Flip all rotation angles ----------
-            
-            // For any angle in degrees, the flipped angle is (angle + 180) % 360
-            // This makes the robot face the opposite direction
-            
-            // Apply the rotation flip to the end state rotation
+            // ---------- STEP 2: Flip all rotation angles ----------            
             pathContent = flipRotation(pathContent, "goalEndState");
-            
-            // Apply the rotation flip to the starting state rotation
             pathContent = flipRotation(pathContent, "idealStartingState");
             
             return pathContent;
@@ -281,8 +267,9 @@ public class Flipper {
             double x = Double.parseDouble(matcher.group(1));
             double y = Double.parseDouble(matcher.group(2));
             
-            // Apply the transformation: new position = (Y_MAX - old position)
-            double newX = Y_MAX - x;
+            // Apply the transformation: x' = x
+            double newX = x;
+            // Apply the transformation: y' = Y_MAX - y
             double newY = Y_MAX - y;
             
             // Replace with the new coordinates
@@ -302,8 +289,8 @@ public class Flipper {
      * @return Updated JSON content with flipped rotation
      */
     private static String flipRotation(String content, String stateType) {
-        // Find patterns like: "stateType": {..."rotation": 90.0...}
-        Pattern pattern = Pattern.compile("\"" + stateType + "\"\\s*:\\s*\\{([^}]*)\"rotation\"\\s*:\\s*([0-9.]+)([^}]*)\\}");
+        // Find patterns like: "stateType": {..."rotation": 90.0...} or "rotation": -119.99999999999999
+        Pattern pattern = Pattern.compile("\"" + stateType + "\"\\s*:\\s*\\{([^}]*)\"rotation\"\\s*:\\s*(-?[0-9.]+)([^}]*)\\}");
         Matcher matcher = pattern.matcher(content);
         StringBuffer sb = new StringBuffer();
         
@@ -315,9 +302,8 @@ public class Flipper {
             // Extract and transform the rotation
             double rotation = Double.parseDouble(matcher.group(2));
             
-            // Apply the transformation: new rotation = (old rotation + 180) % 360
-            // This makes the robot face the opposite direction
-            double newRotation = (rotation + 180.0) % 360.0;
+            // Apply the transformation: theta' = -theta
+            double newRotation = -rotation;
             
             // Replace with the new rotation
             String replacement = "\"" + stateType + "\": {" + before + "\"rotation\": " + newRotation + after + "}";
