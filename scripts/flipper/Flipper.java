@@ -19,7 +19,6 @@ public class Flipper {
     public static void main(String[] args) {
         String autoDir = "../../src/main/deploy/pathplanner/autos";
         String pathsDir = "../../src/main/deploy/pathplanner/paths";
-        Set<String> existingPaths = new HashSet<>();
         // Use a list to maintain order
         java.util.List<String> pathNames = new java.util.ArrayList<>();
         String targetAutoName = null;
@@ -48,18 +47,6 @@ public class Flipper {
         if (!pathsDirFile.exists() || !pathsDirFile.isDirectory()) {
             System.err.println("Paths directory not found: " + pathsDir);
             return;
-        }
-        
-        // Load existing paths
-        File[] pathFiles = pathsDirFile.listFiles((dir, name) -> name.toLowerCase().endsWith(".path"));
-        if (pathFiles != null) {
-            for (File pathFile : pathFiles) {
-                String pathName = pathFile.getName();
-                if (pathName.toLowerCase().endsWith(".path")) {
-                    pathName = pathName.substring(0, pathName.length() - 5);
-                }
-                existingPaths.add(pathName);
-            }
         }
         
         // Only process the specified auto file
@@ -107,13 +94,11 @@ public class Flipper {
         
         // Process each path from the specific auto
         for (String pathName : pathNames) {
-            boolean pathExists = existingPaths.contains(pathName);
-            System.out.println("- " + pathName + (pathExists ? "" : " [MISSING]"));
+            // Read and process the path file
+            File pathFile = new File(pathsDir, pathName + ".path");
             
-            if (pathExists) {
-                // Read and process the path file
-                File pathFile = new File(pathsDir, pathName + ".path");
-                
+            if (pathFile.exists()) {
+                System.out.println("- " + pathName);
                 try {
                     // Read the path file
                     StringBuilder contentBuilder = new StringBuilder();
@@ -137,6 +122,8 @@ public class Flipper {
                 } catch (IOException e) {
                     System.err.println("  Error processing path file " + pathName + ": " + e.getMessage());
                 }
+            } else {
+                System.out.println("- " + pathName + " [MISSING]");
             }
         }
         
