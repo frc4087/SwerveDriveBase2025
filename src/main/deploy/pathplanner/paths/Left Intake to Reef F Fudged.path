@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6757500000000003,
-        "y": 3.5395000000000003
+        "x": 0.019500000000000017,
+        "y": 6.404
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3772203947368418,
-        "y": 3.0243421052631576
+        "x": 1.0194999999999994,
+        "y": 6.404
       },
       "isLocked": false,
-      "linkedName": "Reef FR"
+      "linkedName": "Left Intake Fudged"
     },
     {
       "anchor": {
-        "x": 2.597861842105263,
-        "y": 2.6490953947368414
+        "x": 2.58375,
+        "y": 3.0792499999999996
       },
       "prevControl": {
-        "x": 3.425328947368421,
-        "y": 2.6490953947368414
+        "x": 2.060766393442622,
+        "y": 4.108194672131148
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef F Fudged"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "MoveArmDown",
+      "waypointRelativePos": 0.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -45,10 +52,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Other",
+  "folder": "Intake To Reef Fudged",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 125.00000000000001
   },
   "useDefaultConstraints": true
 }

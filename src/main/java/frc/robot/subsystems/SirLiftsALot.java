@@ -36,7 +36,7 @@ public class SirLiftsALot extends SubsystemBase {
     }
 
     public Command runClimberBackward() {
-        return this.runEnd(() -> climbMotor.set(-(0.75 * climbSpeed)), this::stop);
+        return this.runEnd(() -> climbMotor.set(-climbSpeed), this::stop);
     }
  
     private void stop() {

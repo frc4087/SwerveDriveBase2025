@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.173,
-        "y": 5.129
+        "x": 5.11875,
+        "y": 5.077999999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4608846153846144,
-        "y": 6.646115384615385
+        "x": 4.406634615384615,
+        "y": 6.595115384615385
       },
       "isLocked": false,
       "linkedName": "Reef BL"
     },
     {
       "anchor": {
-        "x": 0.7995,
-        "y": 6.920749999999999
+        "x": 0.49725,
+        "y": 6.7745
       },
       "prevControl": {
-        "x": 2.357897435897436,
-        "y": 6.827865384615383
+        "x": 2.0556474358974355,
+        "y": 6.681615384615384
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,8 +40,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
