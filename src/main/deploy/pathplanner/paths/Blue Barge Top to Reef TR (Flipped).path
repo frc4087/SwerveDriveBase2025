@@ -6,14 +6,14 @@
       "prevControl": null,
       "nextControl": {"x": 6.779943315307926, "y": 1.377540434918287},
       "isLocked": false,
-      "linkedName": "BB Top"
+      "linkedName": "BB Top (Flipped)"
     },
     {
       "anchor": {"x": 5.173, "y": 2.923},
       "prevControl": {"x": 5.68431628401594, "y": 2.3488758477027236},
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef TR"
+      "linkedName": "Reef TR (Flipped)"
     }
   ],
   "rotationTargets": [],

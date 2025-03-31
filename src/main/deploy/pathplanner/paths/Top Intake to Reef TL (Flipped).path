@@ -6,14 +6,14 @@
       "prevControl": null,
       "nextControl": {"x": 2.1520320512820517, "y": 1.657224358974359},
       "isLocked": false,
-      "linkedName": "Top Intake"
+      "linkedName": "Top Intake (Flipped)"
     },
     {
       "anchor": {"x": 3.6757500000000003, "y": 3.5395000000000003},
       "prevControl": {"x": 2.9842756410256404, "y": 2.992512820512821},
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef TL"
+      "linkedName": "Reef TL (Flipped)"
     }
   ],
   "rotationTargets": [],

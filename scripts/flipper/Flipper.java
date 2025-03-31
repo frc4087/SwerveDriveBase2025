@@ -213,6 +213,7 @@ public class Flipper {
      * Flips a path across the middle of the field by applying these transformations:
      * 1. For each coordinate (x,y): New coordinates are (x, Y_MAX - y)
      * 2. For each rotation angle theta: New angle is -theta.
+     * 3. Appends "(Flipped)" to any linkedName attributes present
      * 
      * @param pathContent The JSON string containing the path data
      * @return The transformed JSON string with flipped coordinates and rotations
@@ -227,6 +228,9 @@ public class Flipper {
             // ---------- STEP 2: Flip all rotation angles ----------            
             pathContent = flipRotation(pathContent, "goalEndState");
             pathContent = flipRotation(pathContent, "idealStartingState");
+            
+            // ---------- STEP 3: Update linkedName attributes ----------            
+            pathContent = updateLinkedNames(pathContent);
             
             return pathContent;
         } catch (Exception e) {
@@ -294,6 +298,34 @@ public class Flipper {
             
             // Replace with the new rotation
             String replacement = "\"" + stateType + "\": {" + before + "\"rotation\": " + newRotation + after + "}";
+            matcher.appendReplacement(sb, replacement.replace("$", "\\$"));
+        }
+        
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+    
+    /**
+     * Updates any linkedName attributes by appending " (Flipped)" to them
+     * 
+     * @param content The JSON content
+     * @return Updated JSON content with modified linkedName attributes
+     */
+    private static String updateLinkedNames(String content) {
+        // Find patterns like: "linkedName": "Some Name"
+        Pattern pattern = Pattern.compile("\"linkedName\"\\s*:\\s*\"([^\"]*)\"");
+        Matcher matcher = pattern.matcher(content);
+        StringBuffer sb = new StringBuffer();
+        
+        while (matcher.find()) {
+            // Extract the original linkedName
+            String linkedName = matcher.group(1);
+            
+            // Append " (Flipped)" to the linkedName
+            String newLinkedName = linkedName + " (Flipped)";
+            
+            // Replace with the new linkedName
+            String replacement = "\"linkedName\": \"" + newLinkedName + "\"";
             matcher.appendReplacement(sb, replacement.replace("$", "\\$"));
         }
         

@@ -6,14 +6,14 @@
       "prevControl": null,
       "nextControl": {"x": 1.7995000000000003, "y": 0.9655000000000014},
       "isLocked": false,
-      "linkedName": "Top Intake Fudge"
+      "linkedName": "Top Intake Fudge (Flipped)"
     },
     {
       "anchor": {"x": 3.6757500000000003, "y": 3.5395000000000003},
       "prevControl": {"x": 3.152766393442622, "y": 2.510555327868853},
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef TL"
+      "linkedName": "Reef TL (Flipped)"
     }
   ],
   "rotationTargets": [],
