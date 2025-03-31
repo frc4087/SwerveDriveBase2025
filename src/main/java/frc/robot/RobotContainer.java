@@ -14,15 +14,15 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.RotateBotCommand;
+import frc.robot.commands.PathToPoseCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.RollsRUs;
 import frc.robot.subsystems.SirLiftsALot;
 import frc.robot.systems.autonomous.AutonomousController;
 import frc.robot.systems.autonomous.AutonomousControllerImpl;
+import frc.robot.util.FieldPoses;
 
 public class RobotContainer {
 
@@ -95,53 +95,27 @@ public class RobotContainer {
 		// Reset the field-centric heading on left bumper press
 		driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-		// The following commands rotate the robot to face the reef
+		// path to pose
+		FieldPoses poses = new FieldPoses(config.getSpecs());
 
-		// Back
-		/*driverController.a().onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(180.0));
+		driverController.rightBumper().and(driverController.x()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseReefFrontLeft, 1.0));
+		driverController.rightBumper().and(driverController.a()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseReefFrontCenter, 1.0));
+		driverController.rightBumper().and(driverController.b()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseReefFrontRight, 1.0));
 
-		// Back Left
-		driverController.x().and(driverController.rightBumper().negate()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(120.0));
+		driverController.rightTrigger().and(driverController.x()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseReefBackLeft, 1.0));
+		driverController.rightTrigger().and(driverController.y()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseReefBackCenter, 1.0));
+		driverController.rightTrigger().and(driverController.b()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseReefBackRight, 1.0));
 
-		// Back Right
-		driverController.b().and(driverController.rightBumper().negate()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(-120.0));
-
-		// Front
-		driverController.y().onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(0.0));
-
-		// Front Left
-		driverController.x().and(driverController.rightBumper()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(60.0));
-
-		// Front Right
-		driverController.b().and(driverController.rightBumper()).onTrue(
-			new RotateBotCommand(drivetrain, config)
-				.withFieldRelativeAngle(-60.0));*/
-
-        /*driverController.leftTrigger().onTrue(
-            new Command() {
-                public void initialize() {
-                    MaxSpeed *= 0.5;
-                }
-            }
-        );
-
-        driverController.leftTrigger().onFalse(
-            new Command() {
-                public void initialize() {
-                    MaxSpeed *= 2.0;
-                }
-            }
-        );*/
+		driverController.back().and(driverController.x()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseLoaderLeft, 1.0));
+		driverController.back().and(driverController.b()).whileTrue(
+				new PathToPoseCommand(drivetrain, poses.poseLoaderRight, 1.0));
 	}
 
 	public void setUpOpController() {
