@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Flipper {
     private static final double Y_MAX = 8.052; // Maximum Y coordinate of the playing field
@@ -34,6 +36,7 @@ public class Flipper {
         // Process command line args
         targetAutoName = args[0];
         System.out.println("Looking for paths in auto: " + targetAutoName);
+        System.out.println("Will create mirrored version with Left/Right flipped.");
         
         // First check that both directories exist
         File autoDirFile = new File(autoDir);
@@ -110,13 +113,14 @@ public class Flipper {
                     }
                     String content = contentBuilder.toString();
                     
-                    // Create and write the flipped path - but don't copy the original
-                    String flippedContent = flipPath(content);
-                    if (flippedContent != null) {
-                        String flippedFileName = pathName + " (Flipped).path";
-                        try (FileWriter flippedWriter = new FileWriter(outputDir + "/" + flippedFileName)) {
-                            flippedWriter.write(flippedContent);
-                            System.out.println("  Wrote flipped path: " + flippedFileName);
+                    // Create and write the mirrored path - but don't copy the original
+                    String mirroredContent = mirrorPath(content);
+                    if (mirroredContent != null) {
+                        String mirroredPathName = mirrorPathName(pathName);
+                        String mirroredFileName = mirroredPathName + ".path";
+                        try (FileWriter mirroredWriter = new FileWriter(outputDir + "/" + mirroredFileName)) {
+                            mirroredWriter.write(mirroredContent);
+                            System.out.println("  Wrote mirrored path: " + mirroredFileName);
                         }
                     }
                 } catch (IOException e) {
@@ -127,22 +131,25 @@ public class Flipper {
             }
         }
         
-        // Create flipped auto if we're targeting a specific auto
+        // Create mirrored auto if we're targeting a specific auto
         if (targetAutoName != null) {
-            createFlippedAuto(autoDir, targetAutoName, pathNames);
+            createMirroredAuto(autoDir, targetAutoName, pathNames);
         }
     }
     
     /**
-     * Creates a flipped version of the auto file
+     * Creates a mirrored version of the auto file with left/right flipped
      * 
      * @param autoDir Directory containing auto files
-     * @param autoName Name of the auto to flip
+     * @param autoName Name of the auto to mirror
      * @param pathNames List of path names found in the auto
      */
-    private static void createFlippedAuto(String autoDir, String autoName, List<String> pathNames) {
+    private static void createMirroredAuto(String autoDir, String autoName, List<String> pathNames) {
         File originalAutoFile = new File(autoDir, autoName + ".auto");
-        File flippedAutoFile = new File(autoDir, autoName + " (Flipped).auto");
+        
+        // Create mirrored auto name by replacing Left/Right and position markers
+        String mirroredAutoName = mirrorAutoName(autoName);
+        File mirroredAutoFile = new File(autoDir, mirroredAutoName + ".auto");
         
         if (!originalAutoFile.exists()) {
             System.err.println("Original auto file not found: " + originalAutoFile.getPath());
@@ -168,10 +175,11 @@ public class Flipper {
                 
                 // Only replace if this path is in our list
                 if (pathNames.contains(pathName)) {
-                    // Replace only the pathName part
+                    // Replace only the pathName part with its mirrored version
+                    String mirroredPathName = mirrorPathName(pathName);
                     String updatedCommand = pathCommand.replaceAll(
                         "\"pathName\"\\s*:\\s*\"" + Pattern.quote(pathName) + "\"",
-                        "\"pathName\": \"" + pathName + " (Flipped)\""
+                        "\"pathName\": \"" + mirroredPathName + "\""
                     );
                     pathCommandMatcher.appendReplacement(contentBuffer, 
                         updatedCommand.replace("$", "\\$"));
@@ -189,65 +197,131 @@ public class Flipper {
             if (autoNameMatcher.find()) {
                 // Extract the original name
                 String originalAutoName = autoNameMatcher.group(1);
-                String flippedAutoName = originalAutoName + " (Flipped)";
+                String mirroredName = mirrorAutoName(originalAutoName);
                 
                 // Replace just this instance
                 content = content.substring(0, autoNameMatcher.start(1)) +
-                          flippedAutoName + 
+                          mirroredName + 
                           content.substring(autoNameMatcher.end(1));
             }
             
-            // Write the flipped auto file
-            try (FileWriter writer = new FileWriter(flippedAutoFile)) {
+            // Write the mirrored auto file
+            try (FileWriter writer = new FileWriter(mirroredAutoFile)) {
                 writer.write(content);
-                System.out.println("Created flipped auto: " + flippedAutoFile.getName());
+                System.out.println("Created mirrored auto: " + mirroredAutoFile.getName());
             }
             
         } catch (IOException e) {
-            System.err.println("Error creating flipped auto: " + e.getMessage());
+            System.err.println("Error creating mirrored auto: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
     /**
-     * Flips a path across the middle of the field by applying these transformations:
+     * Mirrors the name of a path by replacing Left/Right and position markers
+     * 
+     * @param pathName The original path name
+     * @return The mirrored path name
+     */
+    private static String mirrorPathName(String pathName) {
+        // Remove any "(Flipped)" suffix if present
+        pathName = pathName.replace(" (Flipped)", "");
+        
+        // Create a temporary string with markers to avoid conflicts
+        String tempString = pathName;
+        
+        // First handle the position markers (FL, FR, BL, BR) with unique temp markers
+        tempString = tempString.replace("FL", "%%FL_TEMP%%");
+        tempString = tempString.replace("FR", "%%FR_TEMP%%");
+        tempString = tempString.replace("BL", "%%BL_TEMP%%");
+        tempString = tempString.replace("BR", "%%BR_TEMP%%");
+        
+        // Now replace with the flipped versions
+        tempString = tempString.replace("%%FL_TEMP%%", "FR");
+        tempString = tempString.replace("%%FR_TEMP%%", "FL");
+        tempString = tempString.replace("%%BL_TEMP%%", "BR");
+        tempString = tempString.replace("%%BR_TEMP%%", "BL");
+        
+        // Now handle Left/Right with a similar approach
+        String result = tempString.replace("Left", "%%LEFT_TEMP%%")
+                                 .replace("Right", "Left")
+                                 .replace("%%LEFT_TEMP%%", "Right");
+        
+        return result;
+    }
+    
+    /**
+     * Mirrors the name of an auto by replacing Left/Right and position markers
+     * 
+     * @param autoName The original auto name
+     * @return The mirrored auto name
+     */
+    private static String mirrorAutoName(String autoName) {
+        // Remove any "(Flipped)" suffix if present
+        autoName = autoName.replace(" (Flipped)", "");
+        
+        // Create a temporary string with markers to avoid conflicts
+        String tempString = autoName;
+        
+        // First handle the position markers (FL, FR, BL, BR) with unique temp markers
+        tempString = tempString.replace("FL", "%%FL_TEMP%%");
+        tempString = tempString.replace("FR", "%%FR_TEMP%%");
+        tempString = tempString.replace("BL", "%%BL_TEMP%%");
+        tempString = tempString.replace("BR", "%%BR_TEMP%%");
+        
+        // Now replace with the flipped versions
+        tempString = tempString.replace("%%FL_TEMP%%", "FR");
+        tempString = tempString.replace("%%FR_TEMP%%", "FL");
+        tempString = tempString.replace("%%BL_TEMP%%", "BR");
+        tempString = tempString.replace("%%BR_TEMP%%", "BL");
+        
+        // Now handle Left/Right with a similar approach
+        String result = tempString.replace("Left", "%%LEFT_TEMP%%")
+                                 .replace("Right", "Left")
+                                 .replace("%%LEFT_TEMP%%", "Right");
+        
+        return result;
+    }
+    
+    /**
+     * Mirrors a path across the middle of the field by applying these transformations:
      * 1. For each coordinate (x,y): New coordinates are (x, Y_MAX - y)
      * 2. For each rotation angle theta: New angle is -theta.
-     * 3. Appends "(Flipped)" to any linkedName attributes present
+     * 3. Mirror linkedName in waypoints by replacing Left/Right
      * 
      * @param pathContent The JSON string containing the path data
-     * @return The transformed JSON string with flipped coordinates and rotations
+     * @return The transformed JSON string with mirrored coordinates and rotations
      */
-    private static String flipPath(String pathContent) {
+    private static String mirrorPath(String pathContent) {
         try {
-            // ---------- STEP 1: Flip all coordinates across the field center ----------            
-            pathContent = flipCoordinates(pathContent, "anchor");
-            pathContent = flipCoordinates(pathContent, "prevControl");
-            pathContent = flipCoordinates(pathContent, "nextControl");
+            // ---------- STEP 1: Mirror all coordinates across the field center ----------            
+            pathContent = mirrorCoordinates(pathContent, "anchor");
+            pathContent = mirrorCoordinates(pathContent, "prevControl");
+            pathContent = mirrorCoordinates(pathContent, "nextControl");
             
-            // ---------- STEP 2: Flip all rotation angles ----------            
-            pathContent = flipRotation(pathContent, "goalEndState");
-            pathContent = flipRotation(pathContent, "idealStartingState");
+            // ---------- STEP 2: Mirror all rotation angles ----------            
+            pathContent = mirrorRotation(pathContent, "goalEndState");
+            pathContent = mirrorRotation(pathContent, "idealStartingState");
             
-            // ---------- STEP 3: Update linkedName attributes ----------            
-            pathContent = updateLinkedNames(pathContent);
+            // ---------- STEP 3: Mirror linkedName in waypoints ----------
+            pathContent = mirrorLinkedNames(pathContent);
             
             return pathContent;
         } catch (Exception e) {
-            System.err.println("Error flipping path: " + e.getMessage());
+            System.err.println("Error mirroring path: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
     
     /**
-     * Flips the x and y coordinates for a specific point type
+     * Mirrors the x and y coordinates for a specific point type
      * 
      * @param content The JSON content
-     * @param pointType The type of point to flip (anchor, prevControl, nextControl)
-     * @return Updated JSON content with flipped coordinates
+     * @param pointType The type of point to mirror (anchor, prevControl, nextControl)
+     * @return Updated JSON content with mirrored coordinates
      */
-    private static String flipCoordinates(String content, String pointType) {
+    private static String mirrorCoordinates(String content, String pointType) {
         // Find patterns like: "pointType": {"x": 1.2, "y": 3.4}
         Pattern pattern = Pattern.compile("\"" + pointType + "\"\\s*:\\s*\\{\\s*\"x\"\\s*:\\s*([0-9.]+)\\s*,\\s*\"y\"\\s*:\\s*([0-9.]+)\\s*\\}");
         Matcher matcher = pattern.matcher(content);
@@ -273,13 +347,13 @@ public class Flipper {
     }
     
     /**
-     * Flips the rotation angle for a specific state
+     * Mirrors the rotation angle for a specific state
      * 
      * @param content The JSON content
-     * @param stateType The type of state to flip (goalEndState, idealStartingState)
-     * @return Updated JSON content with flipped rotation
+     * @param stateType The type of state to mirror (goalEndState, idealStartingState)
+     * @return Updated JSON content with mirrored rotation
      */
-    private static String flipRotation(String content, String stateType) {
+    private static String mirrorRotation(String content, String stateType) {
         // Find patterns like: "stateType": {..."rotation": 90.0...} or "rotation": -119.99999999999999
         Pattern pattern = Pattern.compile("\"" + stateType + "\"\\s*:\\s*\\{([^}]*)\"rotation\"\\s*:\\s*(-?[0-9.]+)([^}]*)\\}");
         Matcher matcher = pattern.matcher(content);
@@ -306,13 +380,13 @@ public class Flipper {
     }
     
     /**
-     * Updates any linkedName attributes by appending " (Flipped)" to them
+     * Mirrors the linkedName values in the waypoints by replacing Left/Right and position markers
      * 
      * @param content The JSON content
-     * @return Updated JSON content with modified linkedName attributes
+     * @return Updated JSON content with mirrored linkedNames
      */
-    private static String updateLinkedNames(String content) {
-        // Find patterns like: "linkedName": "Some Name"
+    private static String mirrorLinkedNames(String content) {
+        // Find patterns like: "linkedName": "Left Intake Fudged"
         Pattern pattern = Pattern.compile("\"linkedName\"\\s*:\\s*\"([^\"]*)\"");
         Matcher matcher = pattern.matcher(content);
         StringBuffer sb = new StringBuffer();
@@ -321,11 +395,16 @@ public class Flipper {
             // Extract the original linkedName
             String linkedName = matcher.group(1);
             
-            // Append " (Flipped)" to the linkedName
-            String newLinkedName = linkedName + " (Flipped)";
+            // Skip if it's null or empty
+            if (linkedName == null || linkedName.isEmpty()) {
+                continue;
+            }
             
-            // Replace with the new linkedName
-            String replacement = "\"linkedName\": \"" + newLinkedName + "\"";
+            // Mirror the linkedName using the same logic as mirrorPathName
+            String mirroredLinkedName = mirrorPathName(linkedName);
+            
+            // Replace with the mirrored linkedName
+            String replacement = "\"linkedName\": \"" + mirroredLinkedName + "\"";
             matcher.appendReplacement(sb, replacement.replace("$", "\\$"));
         }
         

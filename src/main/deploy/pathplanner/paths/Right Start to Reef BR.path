@@ -2,27 +2,15 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {
-        "x": 7.575,
-        "y": 0.8019999999999996
-      },
+      "anchor": {"x": 7.575, "y": 0.8019999999999996},
       "prevControl": null,
-      "nextControl": {
-        "x": 6.779943315307926,
-        "y": 1.377540434918287
-      },
+      "nextControl": {"x": 6.779943315307926, "y": 1.377540434918287},
       "isLocked": false,
       "linkedName": "Right Start"
     },
     {
-      "anchor": {
-        "x": 5.173,
-        "y": 2.923
-      },
-      "prevControl": {
-        "x": 5.68431628401594,
-        "y": 2.3488758477027236
-      },
+      "anchor": {"x": 5.11875, "y": 2.974},
+      "prevControl": {"x": 5.63006628401594, "y": 2.3998758477027238},
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Reef BR"
@@ -55,7 +43,7 @@
   "folder": "Start",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -180.0
   },
   "useDefaultConstraints": true
 }

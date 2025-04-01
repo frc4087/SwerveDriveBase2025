@@ -2,27 +2,15 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {
-        "x": 0.7995,
-        "y": 1.1312500000000005
-      },
+      "anchor": {"x": 0.49725, "y": 1.2774999999999999},
       "prevControl": null,
-      "nextControl": {
-        "x": 2.152032051282051,
-        "y": 1.657224358974359
-      },
+      "nextControl": {"x": 1.8497820512820513, "y": 1.8034743589743583},
       "isLocked": false,
       "linkedName": "Right Intake"
     },
     {
-      "anchor": {
-        "x": 3.6757500000000003,
-        "y": 3.5395000000000003
-      },
-      "prevControl": {
-        "x": 2.9842756410256404,
-        "y": 2.992512820512821
-      },
+      "anchor": {"x": 3.6757500000000003, "y": 3.5395000000000003},
+      "prevControl": {"x": 2.9842756410256404, "y": 2.992512820512821},
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Reef FR"

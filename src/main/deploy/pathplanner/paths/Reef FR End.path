@@ -2,27 +2,15 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {
-        "x": 3.6757500000000003,
-        "y": 3.5395000000000003
-      },
+      "anchor": {"x": 2.58375, "y": 4.97275},
       "prevControl": null,
-      "nextControl": {
-        "x": 3.3772203947368418,
-        "y": 3.0243421052631576
-      },
+      "nextControl": {"x": 2.2844551282051277, "y": 4.456724358974359},
       "isLocked": false,
-      "linkedName": "Reef FR"
+      "linkedName": "Reef F Fudged"
     },
     {
-      "anchor": {
-        "x": 2.597861842105263,
-        "y": 2.6490953947368414
-      },
-      "prevControl": {
-        "x": 3.425328947368421,
-        "y": 2.6490953947368414
-      },
+      "anchor": {"x": 2.1255, "y": 3.04225},
+      "prevControl": {"x": 2.457, "y": 3.84175},
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
@@ -42,13 +30,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -0.0
   },
   "reversed": false,
   "folder": "Other",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -0.0
   },
   "useDefaultConstraints": true
 }
