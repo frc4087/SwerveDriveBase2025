@@ -2,15 +2,27 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {"x": 2.58375, "y": 4.97275},
+      "anchor": {
+        "x": 2.58375,
+        "y": 4.97275
+      },
       "prevControl": null,
-      "nextControl": {"x": 2.2844551282051277, "y": 4.456724358974359},
+      "nextControl": {
+        "x": 2.2844551282051277,
+        "y": 4.456724358974359
+      },
       "isLocked": false,
-      "linkedName": "Reef F Fudged"
+      "linkedName": "Reef F Right Fudged"
     },
     {
-      "anchor": {"x": 2.1255, "y": 3.04225},
-      "prevControl": {"x": 2.457, "y": 3.84175},
+      "anchor": {
+        "x": 2.1255,
+        "y": 3.04225
+      },
+      "prevControl": {
+        "x": 2.457,
+        "y": 3.84175
+      },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
