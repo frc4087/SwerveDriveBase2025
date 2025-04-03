@@ -2,27 +2,15 @@
   "version": "2025.0",
   "waypoints": [
     {
-      "anchor": {
-        "x": 0.7995000000000003,
-        "y": 0.9655000000000014
-      },
+      "anchor": {"x": 0.019500000000000017, "y": 1.6479999999999997},
       "prevControl": null,
-      "nextControl": {
-        "x": 1.7994999999999997,
-        "y": 0.9655000000000014
-      },
+      "nextControl": {"x": 1.0194999999999994, "y": 1.6479999999999997},
       "isLocked": false,
       "linkedName": "Right Intake Fudged"
     },
     {
-      "anchor": {
-        "x": 2.58375,
-        "y": 4.97275
-      },
-      "prevControl": {
-        "x": 2.0607663934426226,
-        "y": 3.9438053278688514
-      },
+      "anchor": {"x": 2.58375, "y": 4.97275},
+      "prevControl": {"x": 2.060766393442622, "y": 3.9438053278688514},
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Reef F Right Fudged"

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.019500000000000017,
-        "y": 6.404
+        "x": 0.8,
+        "y": 7.034
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0194999999999994,
-        "y": 6.404
+        "x": 1.7999999999999994,
+        "y": 7.034
       },
       "isLocked": false,
       "linkedName": "Left Intake Fudged"
