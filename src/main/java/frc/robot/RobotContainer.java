@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -19,7 +18,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.RotateBotCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FrankenArm;
 import frc.robot.subsystems.KlimbKardashian;
@@ -43,8 +41,6 @@ public class RobotContainer {
 	
 	private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 	private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-	private final Telemetry logger = new Telemetry(MaxSpeed);
 
 	public final CommandXboxController driverController = new CommandXboxController(0);
 
@@ -81,8 +77,6 @@ public class RobotContainer {
 
 		setUpDriverController();
 		setUpOpController();
-		setUpTelemetry();
-
 	}
 
 	private void setUpDriverController() {
@@ -183,10 +177,6 @@ public class RobotContainer {
 
 		// Climber Reset 
 		//operatorController.povLeft().whileTrue(klimbKardashian.restClimb());
-	}
-
-	private void setUpTelemetry() {
-		drivetrain.registerTelemetry(logger::telemeterize);
 	}
 
 	public AutonomousController auto() {
